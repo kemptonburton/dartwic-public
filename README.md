@@ -2,8 +2,8 @@
 
 This repository is DARTWIC's public download landing page. It intentionally does not mirror DARTWIC source code, documentation, or release-note files.
 
-- [Download Engine, Interface, client, and SDK artifacts from GitHub Releases](https://github.com/voit-systems/dartwic-public/releases)
-- [Read current documentation and release notes on the DARTWIC website](https://dartwic.com/docs)
+- [Download Engine, Interface, client, and SDK artifacts from GitHub Releases](https://github.com/kemptonburton/dartwic-public/releases)
+- [Read current documentation and release notes on the DARTWIC website](https://kemptonburton.com/docs)
 
 Each artifact has its own versioned GitHub Release. Coordinated DARTWIC releases group those separate artifacts with one combined release note on the website.
 
@@ -43,10 +43,10 @@ Check out the releases page to view current public releases.
 DARTWIC is free to use (with limitations). Beta testing is a work in progress. Reach out for more information if interested.
 
 Useful starting points:
-- [Documentation](https://dartwic.com/docs)
-- [Release notes](https://dartwic.com/releases)
+- [Documentation](https://kemptonburton.com/docs)
+- [Release notes](https://kemptonburton.com/releases)
 - [demos](./demos/README.md)
-- [Example Plugin Repo](https://github.com/voit-systems/dartwic-example-plugin)
+- [Example Plugin Repo](https://github.com/kemptonburton/dartwic-example-plugin)
 - Official Plugins
-   - [Modbus](https://github.com/voit-systems/dartwic-modbus-tcp-client)
-   - [LabJack](https://github.com/voit-systems/dartwic-labjack-plugin)
+   - [Modbus](https://github.com/kemptonburton/dartwic-modbus-tcp-client)
+   - [LabJack](https://github.com/kemptonburton/dartwic-labjack-plugin)
