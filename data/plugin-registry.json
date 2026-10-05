@@ -14,6 +14,20 @@
     "repo": "kemptonburton/dartwic-labjack-plugin"
   },
   {
+    "id": "ethercat",
+    "name": "EtherCAT",
+    "author": "Kempton Burton",
+    "description": "Cyclic EtherCAT I/O with a KickCAT bridge.",
+    "repo": "kemptonburton/dartwic-ethercat-plugin"
+  },
+  {
+    "id": "fprime_bridge",
+    "name": "F Prime Bridge",
+    "author": "Kempton Burton",
+    "description": "F Prime CCSDS ground link exposed as a TEMPEST peer.",
+    "repo": "kemptonburton/fprime-dartwic-plugin"
+  },
+  {
     "id": "checklists",
     "name": "DARTWIC Checklists",
     "author": "Kempton Burton",
