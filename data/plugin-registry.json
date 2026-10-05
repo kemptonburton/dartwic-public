@@ -19,5 +19,12 @@
     "author": "Kempton Burton",
     "description": "First-party collaborative Markdown checklists and DARTWIC interface chips.",
     "repo": "kemptonburton/dartwic-checklists-plugin"
+  },
+  {
+    "id": "example_device_plugin",
+    "name": "Example Device Plugin",
+    "author": "Kempton Burton",
+    "description": "Simulated devices, read/write tasks, discovery, Lua automation, and TEMPEST Peer examples.",
+    "repo": "kemptonburton/dartwic-example-plugin"
   }
 ]
