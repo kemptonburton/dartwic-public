@@ -1,0 +1,17 @@
+{
+  "components": [
+    { "id": "engine", "label": "Engine", "version": "2.0.0" },
+    { "id": "interface-desktop", "label": "Desktop Interface", "version": "2.0.0" },
+    { "id": "interface-webserver", "label": "Webserver Interface", "version": "2.0.0" },
+    { "id": "engine-sdk", "label": "Engine Plugin SDK", "version": "2.0.0" },
+    { "id": "interface-sdk", "label": "Interface Plugin SDK", "version": "0.2.0" }
+  ],
+  "categories": {
+    "Engine": ["engine"],
+    "DCode": ["engine"],
+    "Interface": ["interface-desktop", "interface-webserver"],
+    "Plugins": ["engine-sdk", "interface-sdk"],
+    "Getting Started": ["engine", "interface-desktop", "interface-webserver"],
+    "Clients": ["engine"]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@dartwic/engine-plugin-sdk",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "dartwic": {
+    "minEngineVersion": "2.0.0"
+  }
+}

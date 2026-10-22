@@ -1,0 +1,17 @@
+---
+title: "Tasks"
+summary: "Build task cards and configuration experiences backed by engine task definitions."
+---
+
+| Export | Import path | Description |
+| --- | --- | --- |
+| [defineTaskCard](defineTaskCard.md) | `@dartwic/interface-sdk/tasks` | Defines a task-card component contract. |
+| [defineTaskConfig](defineTaskConfig.md) | `@dartwic/interface-sdk/tasks` | Defines a task configuration editor contract. |
+| [TaskCardDefinition](TaskCardDefinition.md) | `@dartwic/interface-sdk/tasks` | Task type and component registered as a task card. |
+| [TaskCardProps](TaskCardProps.md) | `@dartwic/interface-sdk/tasks` | Props passed to a task card. |
+| [TaskConfigBridgeState](TaskConfigBridgeState.md) | `@dartwic/interface-sdk/tasks` | State published to the host by `useTaskConfigBridge`. |
+| [TaskConfigDefinition](TaskConfigDefinition.md) | `@dartwic/interface-sdk/tasks` | Task type and component registered as a configuration editor. |
+| [TaskConfigProps](TaskConfigProps.md) | `@dartwic/interface-sdk/tasks` | Props passed to a task configuration component. |
+| [TaskConfigRegistration](TaskConfigRegistration.md) | `@dartwic/interface-sdk/tasks` | Bridge exposed by the host task editor to a plugin configuration component. |
+| [TaskUiDefinition](TaskUiDefinition.md) | `@dartwic/interface-sdk` | Registers task card and editor components under one task type. |
+| [useTaskConfigBridge](useTaskConfigBridge.md) | `@dartwic/interface-sdk/tasks` | Synchronizes save, cancel, dirty, and validation state with the host task editor. |

@@ -1,0 +1,15 @@
+---
+title: "Schematic Nodes"
+summary: "Define custom schematic nodes, palette entries, commands, and configuration views."
+---
+
+| Export | Import path | Description |
+| --- | --- | --- |
+| [defineSchematicNode](defineSchematicNode.md) | `@dartwic/interface-sdk/schematic-nodes` | Defines a schematic node renderer and its editing behavior. |
+| [SchematicCommandAction](SchematicCommandAction.md) | `@dartwic/interface-sdk/schematic-nodes` | Operator command exposed by a schematic node. |
+| [SchematicCommandContext](SchematicCommandContext.md) | `@dartwic/interface-sdk/schematic-nodes` | Runtime context supplied while building node command actions. |
+| [SchematicNodeConfigProps](SchematicNodeConfigProps.md) | `@dartwic/interface-sdk/schematic-nodes` | Props passed to a schematic node configuration component. |
+| [SchematicNodeContributionDefinition](SchematicNodeContributionDefinition.md) | `@dartwic/interface-sdk` | Registers a schematic node under a plugin-qualified type. |
+| [SchematicNodeDefinition](SchematicNodeDefinition.md) | `@dartwic/interface-sdk/schematic-nodes` | Complete renderer, editor, palette, sizing, and command contract for a node type. |
+| [SchematicNodePaletteDefinition](SchematicNodePaletteDefinition.md) | `@dartwic/interface-sdk/schematic-nodes` | Palette label and default node data for a schematic contribution. |
+| [SchematicNodeProps](SchematicNodeProps.md) | `@dartwic/interface-sdk/schematic-nodes` | Props passed to the canvas renderer for one schematic node. |
