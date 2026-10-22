@@ -1,52 +1,21 @@
 # DARTWIC
 
-This repository is DARTWIC's public download landing page. It intentionally does not mirror DARTWIC source code, documentation, or release-note files.
+DARTWIC is a controls and data acquisition platform. This repository contains its public client libraries, SDK source, documentation, and release notes. The application implementation is closed source.
 
-- [Download Engine, Interface, client, and SDK artifacts from GitHub Releases](https://github.com/kemptonburton/dartwic-public/releases)
-- [Read current documentation and release notes on the DARTWIC website](https://kemptonburton.com/docs)
+| Folder | Contents |
+| --- | --- |
+| `sdk/` | Engine, Interface, and Engine Protocol SDK source. |
+| [`clients/`](clients/README.md) | Standalone Python, Node.js, React, C++, and C++ TEMPEST peer clients. |
+| `docs/Website/docs/` | Current documentation. |
+| `docs/Website/releases/` | Release notes and attachments. |
 
-Each artifact has its own versioned GitHub Release. Coordinated DARTWIC releases group those separate artifacts with one combined release note on the website.
+Each client folder includes its DARTWIC transport sources and install/build metadata. Download only the client you need and follow its README; third-party dependencies still need to be installed.
 
-# What is DARTWIC?
-Data Aquisition for Rocket Testing With Integrated Controls.
+Each client and SDK has its own version tag, such as `python-client-v2.0.0` or `engine-sdk-v2.1.0`. Clone the tag for the exact source you need. Versioned ZIPs are also available on [GitHub Releases](https://github.com/kemptonburton/dartwic-public/releases).
 
-DARTWIC is a collection of software projects, all put together to create a unified controls and data acquisition platform.
-Its purpose: to unify and create a standard framework for controlling, monitoring, and operating any physical system, ever.
-This includes, but is not limited to: satellites, spacecraft, engines, habitats, rovers, factories, etc.
+The documentation folders contain the latest content. Git history and release tags preserve earlier revisions.
 
-Anything that can have data collected from it, and/ or commands sent to it, DARTWIC can be used for.
-
-DARTWIC was initially created to gather realtime data from hybrid rocket engines during testing, and to operate the engine itself. 
-
-<img width="1917" height="1078" alt="Screenshot_2025-11-08_001012" src="https://github.com/user-attachments/assets/55d6f7dd-12b6-4346-9eba-785c7b2c0fcc" />
-<img width="1919" height="1079" alt="Screenshot_2025-11-08_000620" src="https://github.com/user-attachments/assets/fe93b094-c331-4da8-9b97-2502e838412a" />
-<img width="3447" height="1944" alt="screenshot_2" src="https://github.com/user-attachments/assets/0d49caa9-0634-44f5-b03d-73420ab1f5ee" />
-<img width="2559" height="1439" alt="newdartwicui" src="https://github.com/user-attachments/assets/deb3e2ea-2e06-4c8d-9b35-b5d617a0d471" />
-
-
-# Architecture
-DARTWIC is a monorepo, containing a few different software projects put together, to create the unified controls and data acquisition platform.
-- Engine: The main project that combines RAPID, CAESAR, and TEMPEST, to create a unified controls and data acquisition platform.
-- Interface: The user-interface that is used to interact with DARTWIC. Written in ReactJS. Contains a frontend webserver UI, and an desktop app that is built using Electron.
-- RAPID: Real-time Access Parallel In-memory Database. A database that is highly preformant in multi-threaded environments, focused around data aquisition, automation, and control aplications. DARTWIC uses this to store data and commands called "channels", directly in memory for fastests realtime access, and records historical data to disk.
-- CAESAR: Command Authority Engine for Sensitive Automated Resources. Commanding engine for DARTWIC. This contains the threaded loops that users can create in DARTWIC, and will also later implement command authority triplication by allowing multiple RAPID or DARTWIC nodes to be triplicaited, and voting on the final command in the threaded loops.
-- TEMPEST: Transaction &amp; Event Messaging Platform for Encrypted System Telemetry. A message router that routes all data and commands to and from DARTWIC node. Client libraries, TAARS, and the interface app will use this to connect to a DARTWIC node.
-- SDK: Software Development Kits for embedding functionality into DARTWIC. Includes creating additional user interface components via the ReactJS SDK (planned), or C++ device drivers via the Modules SDK.
-- Modules: Customizable runtime objects to execute within DARTWIC.
-- Clients: Client libraries for connecting to a DARTWIC node. Planned libraires include Python, C++, and ReactJS.
-- Utils: Various utilities or helper functions used by the projects.
-
-# Getting Started
-
-Check out the releases page to view current public releases.
-
-DARTWIC is free to use (with limitations). Beta testing is a work in progress. Reach out for more information if interested.
-
-Useful starting points:
 - [Documentation](https://kemptonburton.com/docs)
 - [Release notes](https://kemptonburton.com/releases)
-- [demos](./demos/README.md)
-- [Example Plugin Repo](https://github.com/kemptonburton/dartwic-example-plugin)
-- Official Plugins
-   - [Modbus](https://github.com/kemptonburton/dartwic-modbus-tcp-client)
-   - [LabJack](https://github.com/kemptonburton/dartwic-labjack-plugin)
+- [Example plugin](https://github.com/kemptonburton/dartwic-example-plugin)
+- [Example workspace](https://github.com/kemptonburton/dartwic-example-workspace)
