@@ -1,6 +1,8 @@
 ---
-title: "workspaceAssetPath"
-summary: "Portable shared-asset path below workspace/global_data."
+title: workspaceAssetPath
+summary: Portable assets/namespace/filename reference below the workspace root. Validated single segments with a filename extension; throws invalid_argument on unsafe names. No I/O.
+created: 2026-10-20T18:59
+updated: 2026-10-22T03:13
 ---
 
 ## Declaration
@@ -8,7 +10,7 @@ summary: "Portable shared-asset path below workspace/global_data."
 ```cpp
 inline std::string workspaceAssetPath(const std::string& asset_namespace, const std::string& filename) {
         const auto safe_segment = [](const std::string& value) {
-            if (value.empty() || value.find("..") != std::string::npos) return false;
+            if (value.empty() || value.find("..") != std::string::npos || value.back() == '.') return false;
             const auto alphanumeric = [](char c) {return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');};
             if (!alphanumeric(value.front())) return false;
             for (char c : value) if (!alphanumeric(c) && c != '_' && c != '-' && c != '.') return false;

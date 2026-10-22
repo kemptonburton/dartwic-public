@@ -1,6 +1,8 @@
 ---
-title: "SDK_API"
-summary: "Host API available to engine plugins and their module instances."
+title: SDK_API
+summary: Host API available to engine plugins and their module instances.
+created: 2026-09-04T17:13
+updated: 2026-10-22T02:44
 ---
 
 Registration functions qualify local identifiers as `<plugin-id>.<local-id>`. Channel authority calls require an active task or plugin loop controller.
@@ -124,14 +126,26 @@ class SDK_API {
             throw std::runtime_error("Pinned TEMPEST peer calls are unavailable in this SDK host.");
         }
         std::string readWorkspaceAsset(const std::string& node, const std::string& asset_namespace, const std::string& filename) {
-            return callTempest(node, "dartwic/get-file", {{"rootDir", "global_data_directory"},
-                {"filePath", workspaceAssetPath(asset_namespace, filename)}}).at("content").get<std::string>();
+            return callTempest(node, "dartwic/get-file", {{"rootDir", "workspace_assets_directory"},
+                {"filePath", workspaceAssetPath(asset_namespace, filename).substr(7)}}).at("content").get<std::string>();
         }
         std::string saveWorkspaceAsset(const std::string& node, const std::string& asset_namespace,
                                       const std::string& filename, const std::string& content) {
             const auto path = workspaceAssetPath(asset_namespace, filename);
-            callTempest(node, "dartwic/save-file", {{"rootDir", "global_data_directory"}, {"path", path}, {"content", content}});
+            callTempest(node, "dartwic/save-file", {{"rootDir", "workspace_assets_directory"}, {"path", path.substr(7)}, {"content", content}});
             return path;
+        }
+        std::string readPluginWorkspaceAsset(const std::string& node, const std::string& plugin_id, const std::string& relative) {
+            return callTempest(node, "dartwic/get-file", {{"rootDir", "workspace_assets_directory"}, {"filePath", pluginWorkspaceAssetPath(plugin_id, relative).substr(7)}}).at("content").get<std::string>();
+        }
+        std::string savePluginWorkspaceAsset(const std::string& node, const std::string& plugin_id, const std::string& relative, const std::string& content) {
+            const auto path = pluginWorkspaceAssetPath(plugin_id, relative);
+            callTempest(node, "dartwic/save-file", {{"rootDir", "workspace_assets_directory"}, {"path", path.substr(7)}, {"content", content}});
+            return path;
+        }
+        std::filesystem::path pluginAssetPath(const std::string& plugin_id, const std::string& relative) {
+            pluginWorkspaceAssetPath(plugin_id, relative);
+            return installationPath("plugins/" + plugin_id + "/assets/" + relative);
         }
         virtual std::string storagePath(const std::string& scope, const std::string& relative,
                                         const std::string& project = "") {

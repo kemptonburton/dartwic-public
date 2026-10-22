@@ -2,7 +2,7 @@
 title: dartwic/get-directory-tree
 summary: Returns a recursive directory tree rooted at a workspace resource directory.
 created: 2026-08-03T16:00
-updated: 2026-10-20T18:59
+updated: 2026-10-22T02:44
 ---
 
 - **Category:** Projects and Files
@@ -11,7 +11,7 @@ updated: 2026-10-20T18:59
 
 | Field | Type | Requirement | Description |
 | --- | --- | --- | --- |
-| `rootDir` | `string` | Required | Logical root name (`projects_directory`, `global_data_directory`, or `workspace_directory`) or an explicit filesystem path. |
+| `rootDir` | `string` | Required | Logical root name (`projects_directory`, `workspace_assets_directory`, or `workspace_directory`) or an explicit filesystem path. |
 | `directoryPath` | `string` | Required | Path below `rootDir`; use an empty string to read the root itself. |
 
 ## Response payload

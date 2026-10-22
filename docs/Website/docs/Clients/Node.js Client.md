@@ -1,10 +1,12 @@
 ---
 summary: Connect Node.js tools, read and write channels, receive telemetry, and export recorded data.
-updated: 2026-10-16T04:48
+updated: 2026-10-22T11:28
 created: 2026-09-07T17:03
 ---
 
 The Node.js client provides promise-based operations for services, dashboard backends, and analysis tools. Use Node.js 20 or newer; browser dashboards use the [React client](React%20Client.md).
+
+The [public client sources](https://github.com/kemptonburton/dartwic-public/tree/main/clients) can also be downloaded directly. Each client folder includes its transport and install/build metadata; follow its README. Third-party dependencies are still required.
 
 ## Download and install locally
 

@@ -1,6 +1,6 @@
 ---
 summary: Run the system that owns channels, tasks, events, and hardware integrations.
-updated: 2026-10-21T15:35
+updated: 2026-10-22T02:21
 created: 2026-08-03T15:41
 ---
 
@@ -19,7 +19,7 @@ The engine runs independently of the interface. It loads a project, hosts hardwa
 
 ## Configure and start
 
-A Release engine launched in an interactive terminal shows a workspace selector before startup. Choose a numbered engine instance; each entry identifies its workspace and node. Separator lines frame the menu, and **Q** exits. Noninteractive Release launches default to `engine/instances/default/`. A Debug executable starts the source checkout's primary instance (`workspaces/engine/instances/primary/`) directly, including from an IDE or terminal. `DARTWIC_CONFIG_DIR` selects an explicit instance directory in either build mode and bypasses the selector. The startup log prints the resolved configuration directory so you can verify which instance you launched.
+A Release engine launched in an interactive terminal shows a workspace selector before startup. Choose a numbered engine instance; each entry identifies its workspace and node. Separator lines frame the menu, and **Q** exits. Noninteractive Release launches default to `engine/instances/default/`. A Debug executable starts the source checkout's primary instance (`tests/engine/instances/primary/`) directly, including from an IDE or terminal. `DARTWIC_CONFIG_DIR` selects an explicit instance directory in either build mode and bypasses the selector. The startup log prints the resolved configuration directory so you can verify which instance you launched.
 
 The instance's `config.json` holds local launch settings such as workspace location, server address/base port, active project, credentials, and capacity. The node name belongs to the workspace's `workspace.json`; portable settings belong in workspace or project settings files. Engine plugins are shared under the installation's `plugins/` directory. Separate instances keep separate local configuration, recordings, and caches.
 

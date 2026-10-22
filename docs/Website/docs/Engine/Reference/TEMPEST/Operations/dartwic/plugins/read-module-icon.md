@@ -2,7 +2,7 @@
 title: dartwic/plugins/read-module-icon
 summary: Reads an installed plugin module icon as a data URL.
 created: 2026-08-03T16:00
-updated: 2026-10-20T18:59
+updated: 2026-10-22T03:13
 ---
 
 - **Category:** Plugins
@@ -13,7 +13,7 @@ updated: 2026-10-20T18:59
 | --- | --- | --- | --- |
 | `plugin_id` | `string` | Required | Installed plugin that owns the module configuration. |
 | `config_path` | `string` | Required | Plugin-relative module configuration path used to authorize the lookup. |
-| `icon_path` | `string` | Required | Engine-configuration-relative icon path. Absolute paths and paths escaping the configuration root are rejected. |
+| `icon_path` | `string` | Required | Installed-plugin-relative icon path, normally assets/icons/name.svg. Absolute paths and paths escaping the plugin directory are rejected. |
 
 ## Response payload
 

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dartwic-client"
+dynamic = ["version"]
+description = "DARTWIC operations, channels, telemetry and history with bundled TEMPEST"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["pyzmq>=25"]
+
+[tool.setuptools.dynamic]
+version = {attr = "dartwic_client.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["dartwic_client*"]

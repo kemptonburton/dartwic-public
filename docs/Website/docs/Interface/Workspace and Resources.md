@@ -1,6 +1,6 @@
 ---
 summary: Navigate projects, resource tabs, and the context panel.
-updated: 2026-10-21T22:19
+updated: 2026-10-22T02:43
 status: coming-soon
 created: 2026-09-06T14:39
 ---
@@ -11,7 +11,7 @@ Set your username in **Settings > User**. All administrator connections use that
 
 ## Add a local workspace
 
-The installation keeps the app in `interface/`, engine binaries and shared plugins in `engine/`, and authored workspaces in `workspaces/`. Each workspace contains `workspace.json`, optional `global_data/`, and project folders containing `project.json`.
+The installation keeps the app in `interface/`, engine binaries and shared plugins in `engine/`, and authored workspaces in `workspaces/`. Each workspace contains `workspace.json`, optional shared `assets/`, and project folders containing `project.json`.
 
 Workspaces placed directly inside the configured **Workspace folder** appear under **Local workspaces** on the connection screen. Use the refresh button after adding a folder. Select **Set up**, or use **Add workspace** to browse to a workspace elsewhere. Discovery does not create configuration or launch an engine.
 
@@ -57,7 +57,7 @@ Track the complete workspace so its projects retain their shared settings and as
 
 Engine-backed resources can synchronize between connected interfaces. Local tab arrangement and interface preferences belong to the interface host. When editing a shared file, check the resource's save or synchronization state before leaving it. A remote view or presence indicator is separate from [TEMPEST peer channel transport](../Engine/TEMPEST%20Peers.md).
 
-Track the complete workspace, including `global_data`, to carry client profiles, notification preferences, recording policy, and authored assets alongside the individual projects. Engine settings remain in the selected local instance's `engine/instances/<instance-id>/config.json`. Project TEMPEST peer endpoints travel with configuration; secret values are supplied locally.
+Track the complete workspace, including shared `assets/`, `settings.json`, and `client_info.json`, to carry client profiles, notification preferences, recording policy, and authored assets alongside the individual projects. Engine settings remain in the selected local instance's `engine/instances/<instance-id>/config.json`. Project TEMPEST peer endpoints travel with configuration; secret values are supplied locally.
 
 ## Viewer access
 

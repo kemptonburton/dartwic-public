@@ -1,6 +1,8 @@
 ---
-title: "Engine Plugin SDK Reference"
-summary: "Public C++ types and APIs for building DARTWIC engine plugins."
+title: Engine Plugin SDK Reference
+summary: Public C++ types and APIs for building DARTWIC engine plugins.
+created: 2026-08-03T15:41
+updated: 2026-10-22T02:44
 ---
 
 ## Categories
@@ -19,4 +21,4 @@ summary: "Public C++ types and APIs for building DARTWIC engine plugins."
 | [Storage](Storage/Overview.md) | 5 |
 | [Tasks and Loops](Tasks%20and%20Loops/Overview.md) | 10 |
 | [TEMPEST](TEMPEST/Overview.md) | 2 |
-| [Workspace Assets](Workspace%20Assets/Overview.md) | 3 |
+| [Workspace Assets](Workspace%20Assets/Overview.md) | 7 |

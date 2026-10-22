@@ -1,6 +1,6 @@
 ---
 summary: Define the manifest, install built output, and publish a repository release.
-updated: 2026-10-21T16:04
+updated: 2026-10-22T02:42
 created: 2026-10-04T18:31
 ---
 
@@ -59,8 +59,8 @@ plugin/
     plugin.json
     ui/index.js
     ...                       # UI assets
-  files/                      # optional content copied to the engine installation
-    workspace/                # portable content for the selected workspace
+  # Each engine/interface plugin directory may contain assets/.
+  # Authored example workspaces are distributed separately.
 ```
 
 Omit both native directories for Interface-only plugins; omit `interface/` for native-only plugins. All included `plugin.json` files must match the root release manifest. Native packages include **both Release and Debug** in the same platform ZIP. A Release engine installs `engine/`; a Debug engine installs `engine-debug/`. There is no separate debug asset to select. Bundle each configuration's required runtime libraries beside its native library; Windows Debug packages include the plugin PDB. Linux Debug libraries retain compiler debug information.
@@ -111,7 +111,7 @@ For a manual install, stop all engine instances using that installation before r
 | --- | --- |
 | `plugin/engine/<id>/` | `<engine-directory>/plugins/<id>/` |
 | `plugin/interface/<id>/` | `<interface-host-root>/plugins/<id>/` |
-| Contents of `plugin/files/` | Corresponding paths beneath `<engine-directory>/`. |
+| Bundled assets | `assets/` inside the installed Engine or Interface plugin directory. |
 
 Each installed side needs its own valid `plugin.json`. Preserve the native `bin/` and UI `ui/` subdirectories and all dependencies. Do not place the entire ZIP or an extra `plugin/engine/` wrapper inside the installed ID directory.
 
@@ -148,3 +148,12 @@ Linux native plugins do not need a separate archive for each real-time kernel. T
 | Installed folder marked invalid | Its manifest has the required side flag, ID, version, and minimum version. |
 | Engine library fails to load | OS, architecture, debug/release mode, SDK compatibility, and binary dependencies. |
 | UI installs but does not appear | `ui/index.js`, the registry definition, matching IDs, and interface reload. |
+
+## Asset ownership during installation
+
+The plugin source `assets/` directory is copied into each built plugin side's
+`assets/`. Update and uninstall operate on that managed plugin directory.
+Archives containing loose `plugin/files/` payloads are rejected by the Engine;
+plugins must not inject default files into a user's workspace during installation.
+Distribute an example workspace separately. Runtime authoring uses the
+[plugin workspace asset helpers](Storage%20and%20Settings.md#bundled-assets-and-custom-plugin-files).

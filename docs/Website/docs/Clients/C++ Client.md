@@ -1,10 +1,12 @@
 ---
 summary: Build a native application with live channels, telemetry, and history queries.
-updated: 2026-10-14T22:35
+updated: 2026-10-22T11:28
 created: 2026-09-07T17:03
 ---
 
 Use `DARTWIC::Client` for ordinary engine operations and analysis tools. It wraps the existing TEMPEST C++ client. Use the [C++ TEMPEST peer client](C%2B%2B%20TEMPEST%20Peer.md) when your application participates as a TEMPEST peer node and exposes its own channels or ARGUS handlers.
+
+The [public client sources](https://github.com/kemptonburton/dartwic-public/tree/main/clients) can also be downloaded directly. Each client folder includes its transport and install/build metadata; follow its README. Third-party dependencies are still required.
 
 ## Build and install
 

@@ -1,10 +1,12 @@
 ---
 summary: Connect a React dashboard and subscribe to channel state.
-updated: 2026-10-14T22:35
+updated: 2026-10-22T11:28
 created: 2026-08-03T15:41
 ---
 
 The React client supplies a provider, connection helpers, and a shared channel store. Use it in an external dashboard; an interface plugin should use the host's SDK connection instead.
+
+The [public client sources](https://github.com/kemptonburton/dartwic-public/tree/main/clients) can also be downloaded directly. Each client folder includes its transport and install/build metadata; follow its README. Third-party dependencies are still required.
 
 ## Download and install locally
 
@@ -39,7 +41,8 @@ function Dashboard() {
   async function open() {
     setStatus("Connecting");
     try {
-      await connect("127.0.0.1", 7000, password);
+      const response = await connect("127.0.0.1", 7000, password);
+      if (response.error) throw new Error(response.payload.error);
       setPassword("");
       setStatus("Connected");
     } catch (error) {

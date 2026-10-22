@@ -1,0 +1,7 @@
+{
+  "name": "dartwic-cpp-client",
+  "version": "2.0.0",
+  "dartwic": {
+    "minEngineVersion": "2.0.0"
+  }
+}

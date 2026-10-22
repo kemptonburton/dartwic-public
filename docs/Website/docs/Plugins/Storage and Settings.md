@@ -1,6 +1,6 @@
 ---
 summary: Choose where settings, private device configuration, runtime files, and shared assets belong.
-updated: 2026-10-20T18:59
+updated: 2026-10-22T02:42
 created: 2026-10-05T15:38
 ---
 
@@ -45,7 +45,7 @@ Do not delete `runtime/` to clear a cache. It may contain the only copy of recor
 
 ## Common paths
 
-Keep module, task, script, and schematic resources in the project. Put shared assets under `global_data/assets/` and portable defaults in `global_data/settings.json`. Project `settings.json` supplies deliberate overrides.
+Keep module, task, script, and schematic resources in the project. Put shared assets under `assets/` and portable defaults in `settings.json`. Project `settings.json` supplies deliberate overrides.
 
 The instance keeps peer credentials under `settings/<project>/tempest_peers/connections.json`, recordings under `runtime/<project>/`, and native compiler output under `cache/<project>/dcode/`. The [workspace layout](../Getting%20Started/Tracking%20a%20Project%20in%20GitHub.md#directory-example) shows these alongside the installation.
 
@@ -54,7 +54,7 @@ The instance keeps peer credentials under `settings/<project>/tempest_peers/conn
 Portable settings use this order:
 
 ```text
-code defaults -> workspace/global_data/settings.json -> workspace/<project>/settings.json
+code defaults -> workspace/settings.json -> workspace/<project>/settings.json
 ```
 
 Only store intentional overrides. For example, the workspace can enable diagnostic warnings, while a simulation project disables them without changing the hardware project:
@@ -143,7 +143,7 @@ The sample settings are stored below your plugin ID:
 ```
 
 The code default is two decimal places. The example workspace intentionally
-sets three in `global_data/settings.json`. Changing the panel to four writes
+sets three in `settings.json`. Changing the panel to four writes
 only `decimal_places: 4` in the selected project's `settings.json`. It does
 not copy `show_units` or unrelated effective settings into that override.
 There is no plugin-specific settings file, localStorage copy, or manually built
@@ -268,7 +268,7 @@ const nodeData = {asset_path: path};
 const calibration = await assets.readJson(nodeData.asset_path);
 ```
 
-That returns `assets/my_driver/calibration-v1.json` and writes `workspace/global_data/assets/my_driver/calibration-v1.json`. Use your plugin ID as a namespace. Use a new filename when content changes, or invalidate the helper's cache after an external overwrite. Do not assume that one project's reference means the asset is unused everywhere else.
+That returns `assets/my_driver/calibration-v1.json` and writes `workspace/assets/my_driver/calibration-v1.json`. Use your plugin ID as a namespace. Use a new filename when content changes, or invalidate the helper's cache after an external overwrite. Do not assume that one project's reference means the asset is unused everywhere else.
 
 The built-in 3D node follows the same sequence:
 
@@ -298,3 +298,60 @@ Engine plugins can save the same kind of text package with `api.saveWorkspaceAss
 Read settings back through the same SDK helper and selected project. Confirm that only the intended override was saved and that reset reveals the inherited value. Test a stale revision and a disconnect so the panel reports an unsaved change rather than presenting it as saved.
 
 See the [storage SDK reference](Reference/Interface/Storage/Overview.md) for helper signatures, and the example plugin's settings files for the complete autosave implementation.
+
+## Bundled assets and custom plugin files
+
+Put files distributed with your plugin in the plugin source repository's
+`assets/`. Maintained build scripts copy them into each installed plugin side's
+`assets/` directory. They are managed software: an update replaces them and an
+uninstall removes them. Root descriptors such as `plugin.json` remain at their
+required package locations. Renderer code remains part of the compiled plugin.
+
+Use the shared authored-file helpers for user-created data:
+
+```js
+import {createPluginWorkspaceAssetClient, createBundledPluginAssetClient}
+    from '@dartwic/interface-sdk/assets';
+
+const pluginId = 'my_driver'; // The ID from plugin.json.
+const authored = createPluginWorkspaceAssetClient(operation, pluginId);
+const reference = await authored.saveJson('layouts/operator.json', {version: 1});
+const layout = await authored.readJson('layouts/operator.json');
+// reference: assets/plugins/my_driver/layouts/operator.json
+
+// Call after the Interface plugin runtime has registered its host adapter.
+const bundled = createBundledPluginAssetClient(pluginId);
+const labels = await bundled.readJson('labels.json');
+```
+
+The plugin ID and relative file segments are validated. Authored files may use
+subdirectories and require a filename extension. Writes require administrator
+access and finish when the connected Engine write completes. Reads are cached
+per operation callback; invalidate a file after external edits. Failed reads are
+evicted. JSON readers parse JSON but do not validate your plugin's schema.
+
+For Engine plugins:
+
+```cpp
+const auto bundled_labels = api.pluginAssetPath("my_driver", "labels.json");
+const auto reference = api.savePluginWorkspaceAsset(
+    node_name, "my_driver", "layouts/operator.json", layout.dump());
+const auto text = api.readPluginWorkspaceAsset(
+    node_name, "my_driver", "layouts/operator.json");
+```
+
+C++ file operations are synchronous and can block or throw. Keep filesystem and
+network asset work outside timing-sensitive task callbacks. Interface helpers
+return Promises; awaiting a write establishes file-operation completion, not an
+equipment response. Bundled readers provide no write operation.
+
+Shared authored files are distinct from layered settings: keep project-specific
+settings in project scope, shared settings defaults in workspace scope, and
+secrets/runtime/cache in their instance scopes. Do not turn an inherited default
+into a shared file merely because it belongs to a plugin.
+
+Use generic workspace, project, instance and installation APIs when a deliberate
+workflow needs broader access. Plugin helpers guide conventional storage; they
+are not a sandbox around arbitrary plugin code. Generic APIs retain host
+permissions and containment checks. Installation never copies loose files into
+a workspace. See [the installation layout](../Getting%20Started/Tracking%20a%20Project%20in%20GitHub.md).

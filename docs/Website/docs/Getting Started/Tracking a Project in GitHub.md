@@ -1,6 +1,6 @@
 ---
 summary: Open and share Git workspaces using one engine installation and separately installed interfaces.
-updated: 2026-10-21T15:54
+updated: 2026-10-22T12:25
 created: 2026-09-08T14:04
 ---
 
@@ -9,57 +9,66 @@ Track the **whole workspace folder** in Git. Each computer selects a default eng
 ## Directory example
 
 ```text
-DARTWIC Engine/
-  engine/
-    bin/                           # one executable and libraries
-    plugins/                       # shared engine plugins
-    .dartwic/                      # plugin ledger and installation lock
-    instances/
-      default/config.json          # default for directly launching the binary
-      <instance-id>/
-        config.json                # local workspace path, project, IP, port, password
-        license.json
-        runtime/<project-name>/
-          rapid/                   # recordings, exports, live channel state
-          argus/                   # events, logs, sessions, database sidecars
-        settings/<project-name>/
-          tempest_peers/           # local peer secret values
-        cache/<project-name>/
-          dcode/                   # generated native compiler cache
-
-Projects/                          # any location outside the engine
-  test-stand/                      # Git repository / workspace
-    workspace.json                 # node name and shared dependencies
-    .gitignore
-    .gitattributes
-    global_data/                   # recording policy, profiles, mute choices
-    default/
-      project.json                 # project dependencies
-      edge_node_connections.json   # peer endpoints and secret references
-      scripts/
-      rapid/channel_snapshot.json
-      schematics/
-      schematic_nodes/
-      modules/
-      tasks/
-      checklists/
-      sequences/
-    flight/
-      project.json
-      scripts/
-  another-repo/
-    workspace.json
-    global_data/
-    default/project.json
-
-DARTWIC Desktop/                   # installed separately
-  plugins/                         # desktop interface plugins
-DARTWIC Webserver/                 # installed separately
-  config.json                      # interface HTTP listener
-  plugins/                         # webserver interface plugins
+dartwic/
+  engine/                         # installed software and local state; ignore in workspace Git
+    bin/
+    assets/                       # managed stock assets and generated inventory
+    plugins/<plugin-id>/assets/   # managed plugin assets
+    instances/primary/
+      config.json                 # private endpoint/installation configuration
+      settings/<project>/         # private durable settings
+      runtime/<project>/          # recordings and operational state
+      cache/<project>/            # regenerable files
+  interface/
+    plugins/<plugin-id>/assets/
+  workspaces/
+    experiment/                   # authored workspace; its own Git repository
+      workspace.json              # node identity
+      settings.json               # shared policy defaults
+      client_info.json            # shared operator profiles
+      assets/
+        media/
+        models/
+        schematic_nodes/          # custom shared presets
+        plugins/<plugin-id>/      # custom shared plugin files
+      default/                    # project
+        project.json
+        settings.json             # deliberate project overrides
+        modules/
+        tasks/
+        scripts/
+        schematics/
+        schematic_nodes/          # project-specific presets
 ```
 
 The interface hosts share a local engine registry at `%LOCALAPPDATA%/DARTWIC/local-engines.json` on Windows or `~/.local/share/DARTWIC/local-engines.json` on Linux. `DARTWIC_LOCAL_ENGINE_REGISTRY_PATH` overrides it. It remembers local credentials; keep it out of Git.
+
+## Managed software and authored content
+
+`engine/` and `interface/` contain installed binaries, plugins and local state.
+Keep them outside workspace Git. A plugin's source repository is separate and
+tracks its own source assets; its installed copy is replaceable software.
+
+`workspaces/` contains authored setups. Track each workspace's custom resources,
+assets and nonsecret settings, and include them in backups. A workspace can live
+elsewhere on disk and be selected through the Interface. Keep secrets,
+recordings and caches in their Engine-instance scopes rather than workspace Git.
+
+DARTWIC owns `engine/assets/`; Engine updates replace it together with the
+binaries. Plugins own the `assets/` inside their installed directories. Custom
+shared plugin files belong in workspace `assets/plugins/<plugin-id>/`.
+
+Stock schematic presets come from the Engine. Shared workspace presets and then
+project presets override matching stock entries. Updating a preset changes new
+insertions, without rewriting saved schematic nodes. On startup, the Engine
+creates missing instance configuration, workspace identity/settings and standard
+project structure from its own definitions, including in a clone outside the
+installation. Existing authored files are preserved. Fresh Engine packages use
+`workspaces/workspace/` for the initial workspace; its structural files are created
+on first launch. No workspace template synchronization step is required.
+
+The workspace folder `assets` is reserved, ignoring case. It cannot be created,
+renamed, selected or discovered as a project, even if it contains `project.json`.
 
 ## Install the interface and open a clone
 
@@ -126,7 +135,7 @@ Projects declare dependencies in `project.json`. Common dependencies can live in
 
 Versions are exact. Omit `version` to accept an installed version or resolve a compatible release. Engine start, graceful shutdown, and restart automatically record loaded engine-plugin versions in both manifests. Local interface-managed lifecycle actions also record declared interface-plugin versions from that interface host. Missing plugins keep their declarations until they are installed. Setup mode does not pin engine versions. A declared repository supports plugins outside the public registry; releases need `plugin.json` and `plugin.zip` for an Interface-only plugin, or a matching platform ZIP for a native plugin; see [Packaging and Installation](../Plugins/Packaging%20and%20Installation.md#github-release-contract) for the exact filenames and layout.
 
-The checklist checks versions, required files, project and `global_data` JSON, machine paths, common credential fields, local connection secret references, and native execution requirements. For native DCode it compiles a fresh C++20 library. Hardware reachability, licensing, plugin drivers and dependencies hidden in arbitrary code require engine-host configuration. See [Native C++ Execution](../DCode/Native%20C%2B%2B%20Execution.md).
+The checklist checks versions, required files, project and shared workspace JSON, machine paths, common credential fields, local connection secret references, and native execution requirements. For native DCode it compiles a fresh C++20 library. Hardware reachability, licensing, plugin drivers and dependencies hidden in arbitrary code require engine-host configuration. See [Native C++ Execution](../DCode/Native%20C%2B%2B%20Execution.md).
 
 Peer credentials stay in `settings/<project>/tempest_peers/connections.json` under the local instance. Project connections retain endpoints and JSON pointer `secret_fields`, such as `/password`. A receiver supplies local secrets before connecting to those peers. Missing receiver secrets are expected; embedded secrets and absolute resource paths need fixing before publishing.
 

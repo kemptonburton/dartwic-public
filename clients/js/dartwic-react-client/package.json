@@ -1,0 +1,21 @@
+{
+  "name": "@dartwic/dartwic.react-client",
+  "version": "2.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./transport": "./src/tempest/index.js"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "package.json"
+  ],
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "dartwic": {
+    "minEngineVersion": "2.0.0"
+  }
+}

@@ -1,10 +1,12 @@
 ---
 summary: Build a C++ TEMPEST peer that exchanges channels and ARGUS events with an engine.
-updated: 2026-10-14T18:06
+updated: 2026-10-22T11:28
 created: 2026-09-06T14:49
 ---
 
 Use a TEMPEST peer when your application is a node in the system: it owns measurements, accepts commands, and publishes its own events or logs. For an analysis tool that only calls an engine, use the ordinary [C++ client](C%2B%2B%20Client.md).
+
+The [public client sources](https://github.com/kemptonburton/dartwic-public/tree/main/clients) can also be downloaded directly. Each client folder includes its transport and install/build metadata; follow its README. Third-party dependencies are still required.
 
 The [flight-computer example](https://github.com/kemptonburton/dartwic-example-workspace/tree/main/flight-computer) is a complete C++ application. It simulates flight telemetry and accepts launch, land, and telemetry-rate commands. The same handlers work over native TEMPEST and a plugin-defined custom transport.
 

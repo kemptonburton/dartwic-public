@@ -1,10 +1,12 @@
 ---
 summary: Connect, query, write, and subscribe; then turn recorded channels into an analysis plot.
-updated: 2026-10-16T04:48
+updated: 2026-10-22T11:28
 created: 2026-08-03T15:41
 ---
 
 Use the Python client for analysis scripts, live monitors, and applications that write data into an engine. Calls are synchronous; telemetry callbacks run on a receiver thread.
+
+The [public client sources](https://github.com/kemptonburton/dartwic-public/tree/main/clients) can also be downloaded directly. Each client folder includes its transport and install/build metadata; follow its README. Third-party dependencies are still required.
 
 ## Download and install locally
 
