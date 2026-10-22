@@ -15,7 +15,7 @@ state <name>:
 
 ## Example
 
-```lua
+```dcode
 state idle:
     -- state work
 ```

@@ -19,7 +19,7 @@ elseif <condition> then
 
 ## Example
 
-```lua
+```dcode
 elif condition:
     -- body
 ```

@@ -16,6 +16,6 @@ false
 
 ## Example
 
-```lua
+```dcode
 false
 ```

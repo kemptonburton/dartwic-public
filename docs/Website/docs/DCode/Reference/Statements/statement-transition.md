@@ -15,6 +15,6 @@ transition <state>
 
 ## Example
 
-```lua
+```dcode
 transition state_name
 ```

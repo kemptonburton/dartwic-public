@@ -1,6 +1,6 @@
 ---
 title: "message"
-summary: "Display an ARGUS message."
+summary: "Report an ARGUS message and return a numeric host result, normally 1. Reporting does not wait for acknowledgement or resolution."
 ---
 
 ## Syntax
@@ -18,9 +18,13 @@ message(title, description, channels?, resolution?, auto_acknowledge?, separatio
 
 Native C++ calls this function through the engine host. It can allocate or block; review use in a control callback.
 
+## Rules
+
+- Arguments are positional. To supply separation_seconds with default graph, resolution, and acknowledgement settings, pass [], "", 0 before the interval. A positive interval ends the ARGUS occurrence after quiet time; zero disables automatic expiry. Expiry does not answer a prompt or release a hold.
+
 ## Example
 
-```lua
+```dcode
 message(title, description, [], "", 0, 0)
 ```
 
@@ -37,4 +41,4 @@ message(title, description, [], "", 0, 0)
 
 ## Outputs
 
-- `event_id` (number): ARGUS event result
+- `result` (number): Numeric host result, normally 1; this is not an event ID

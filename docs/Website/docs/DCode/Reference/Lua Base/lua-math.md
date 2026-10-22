@@ -1,6 +1,8 @@
 ---
-title: "math"
-summary: "Lua mathematical functions and constants."
+title: math
+summary: Lua mathematical functions and constants.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -20,6 +22,6 @@ Native bindings: abs, acos, asin, atan (one or two arguments), ceil, cos, deg, e
 
 ## Example
 
-```lua
+```dcode
 math.
 ```

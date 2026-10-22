@@ -20,6 +20,6 @@ Lua only. This feature has no Native C++ code-generation binding.
 
 ## Example
 
-```lua
+```dcode
 ipairs(table_value)
 ```

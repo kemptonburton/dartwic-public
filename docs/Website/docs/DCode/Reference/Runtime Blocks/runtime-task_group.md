@@ -1,6 +1,8 @@
 ---
-title: "task_group"
-summary: "Order existing CAESAR tasks or loops whenever their own absolute monotonic releases are due."
+title: task_group
+summary: Order existing CAESAR tasks or loops whenever their own absolute monotonic releases are due.
+created: 2026-10-04T18:31
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -23,7 +25,7 @@ A task group is ordering configuration, not a combined task and not a separate u
 
 ## Example
 
-```lua
+```dcode
 task_group group_name:
     run: first_task
     run: second_task

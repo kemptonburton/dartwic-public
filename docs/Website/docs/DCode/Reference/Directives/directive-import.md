@@ -1,6 +1,8 @@
 ---
-title: "import"
-summary: "Import a helper .dcode module in either backend, or a .lua helper in Lua mode. Relative paths resolve from the importing file."
+title: import
+summary: Import a helper .dcode module in either backend, or a .lua helper in Lua mode. Relative paths resolve from the importing file.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -20,6 +22,6 @@ Compiles helper-only .dcode modules, including nested imports, into the native a
 
 ## Example
 
-```lua
+```dcode
 import "./helpers/math"
 ```

@@ -1,8 +1,8 @@
 ---
 title: callback
 summary: Register an externally callable ordinary DCode function with a separate scope per invocation.
-created: 2026-10-04T21:47
-updated: 2026-10-19T18:29
+created: 2026-10-20T18:59
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -25,7 +25,7 @@ Activation registers the callback. Direct calls and callDcodeCallback wait for a
 
 ## Example
 
-```lua
+```dcode
 callback name(arguments):
     return null
 ```

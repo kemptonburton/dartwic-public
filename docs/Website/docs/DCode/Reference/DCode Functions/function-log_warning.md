@@ -1,8 +1,6 @@
 ---
-title: log_warning
-summary: Append a warning line to a named ARGUS stream without creating an event.
-created: 2026-10-04T18:31
-updated: 2026-10-14T15:33
+title: "log_warning"
+summary: "Append a warning line to a named ARGUS stream without creating an event."
 ---
 
 ## Syntax
@@ -22,6 +20,6 @@ Supported as a statement with a string-literal stream and a value expression con
 
 ## Example
 
-```lua
+```dcode
 log_warning("Device", message)
 ```

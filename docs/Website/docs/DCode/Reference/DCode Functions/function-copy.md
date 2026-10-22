@@ -16,6 +16,6 @@ copy(value)
 
 ## Example
 
-```lua
+```dcode
 copy(value)
 ```

@@ -15,7 +15,7 @@ states:
 
 ## Example
 
-```lua
+```dcode
 states:
     idle
     running

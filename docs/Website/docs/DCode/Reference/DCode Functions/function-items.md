@@ -16,6 +16,6 @@ items(object)
 
 ## Example
 
-```lua
+```dcode
 items(object)
 ```

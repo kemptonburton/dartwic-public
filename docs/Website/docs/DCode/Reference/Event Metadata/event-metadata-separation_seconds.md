@@ -1,7 +1,9 @@
 ---
 title: "separation_seconds"
-summary: "Optional finite non-negative quiet interval; defaults to zero. Zero keeps firing until explicit stop; a positive interval ends firing after the last accepted report."
+summary: "Optional finite nonnegative ARGUS quiet interval; defaults to zero."
 ---
+
+Optional finite nonnegative ARGUS quiet interval; defaults to zero. Zero disables ARGUS automatic expiry. Condition deassertion or the end of a five-second pulse explicitly stops the occurrence. A positive interval does not configure the generated pulse window and can expire the ARGUS occurrence while the maintained firing signal stays asserted; use zero for maintained conditions.
 
 ## Syntax
 
@@ -15,6 +17,6 @@ separation_seconds: <seconds>
 
 ## Example
 
-```lua
+```dcode
 separation_seconds: 0
 ```

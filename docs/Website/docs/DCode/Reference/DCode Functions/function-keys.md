@@ -16,6 +16,6 @@ keys(object)
 
 ## Example
 
-```lua
+```dcode
 keys(object)
 ```

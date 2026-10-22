@@ -15,7 +15,7 @@ once when <condition>:
 
 ## Example
 
-```lua
+```dcode
 once when condition:
     -- one-time work
 ```

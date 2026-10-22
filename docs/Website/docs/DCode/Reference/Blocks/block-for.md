@@ -19,7 +19,7 @@ for <clause> do ... end
 
 ## Example
 
-```lua
+```dcode
 for index = 1, 10:
     -- body
 ```

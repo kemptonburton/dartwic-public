@@ -1,6 +1,8 @@
 ---
-title: "elapsed_seconds"
-summary: "Seconds elapsed for the current timed handler."
+title: elapsed_seconds
+summary: Seconds elapsed for the current timed handler.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -15,6 +17,6 @@ elapsed_seconds
 
 ## Example
 
-```lua
+```dcode
 elapsed_seconds
 ```

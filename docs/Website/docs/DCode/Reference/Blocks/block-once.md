@@ -15,7 +15,7 @@ once:
 
 ## Example
 
-```lua
+```dcode
 once:
     -- state-entry work
 ```

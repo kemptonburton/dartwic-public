@@ -1,6 +1,8 @@
 ---
-title: "new_value"
-summary: "Newest dependency value supplied to a calculation."
+title: new_value
+summary: "Alias of value: the proposed value on a direct target write, or the committed input value on a dependency invocation. Event reactions receive their authoritative generated state."
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -15,6 +17,6 @@ new_value
 
 ## Example
 
-```lua
+```dcode
 new_value
 ```

@@ -1,8 +1,6 @@
 ---
-title: wait_until
-summary: Wait for continuous truth for time seconds. A positive timeout raises an execution error; zero disables expiry. In a timeline bucket, only that bucket waits; the mission clock and other due buckets continue. A task hold pauses duration and timeout accounting; a clock hold does not.
-created: 2026-10-10T20:46
-updated: 2026-10-19T17:54
+title: "wait_until"
+summary: "Wait for continuous truth for time seconds. A positive timeout raises an execution error; zero disables expiry. In a timeline bucket, only that bucket waits; the mission clock and other due buckets continue. A task hold pauses duration and timeout accounting; a clock hold does not."
 ---
 
 ## Syntax
@@ -22,6 +20,6 @@ Reevaluates the condition live; continuous truth resets on false, and holds paus
 
 ## Example
 
-```lua
+```dcode
 wait_until(|ready| == 1, 0, 0)
 ```

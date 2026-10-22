@@ -15,7 +15,7 @@ else:
 
 ## Example
 
-```lua
+```dcode
 else:
     -- body
 ```

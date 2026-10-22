@@ -1,6 +1,8 @@
 ---
-title: "not"
-summary: "Negate a value using DCode truthiness."
+title: not
+summary: Negate a value using DCode truthiness.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -19,6 +21,6 @@ Uses the shared DCode truthiness rule: zero, empty string, empty array, empty ob
 
 ## Example
 
-```lua
+```dcode
 not
 ```

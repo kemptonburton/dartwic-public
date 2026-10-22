@@ -1,6 +1,6 @@
 ---
 summary: Run ordered steps and control task start, hold, stop, and persistent state.
-updated: 2026-10-19T18:26
+updated: 2026-10-22T17:46
 created: 2026-10-04T18:31
 ---
 
@@ -29,10 +29,12 @@ A task named `docs_demo_steps` creates the following channels:
 | --- | --- |
 | `_running` | Write `1` to start or `0` to stop. |
 | `_hold` | Write `1` to hold execution; write `0` to release the hold. |
-| `_target_frequency` | Requested scheduler frequency in Hz; defaults to 10. |
-| `_actual_frequency` | Observe-only measured frequency; zero while stopped. |
+| `_current_line` | Current sequence source line; zero after completion. |
+| `_failed_cycles` | Counted callback failures. |
 
-These controls also apply to periodic and state-machine tasks. A hold pauses execution without being an output reset. Stopping releases the task's automatic channel ownership, but the last stored output value is not itself a physical stop command. Put final actions in an `end:` section or driver shutdown path as appropriate to your application.
+Periodic and state-machine tasks share the running and hold controls and additionally expose `_target_frequency`, `_actual_frequency`, `_execution_time`, and `_missed_cycles`; their default target frequency is 10 Hz. Sequences run their body once per start and do not create these frequency diagnostics. A sequence header accepts the common optional frequency/priority settings, but frequency does not pace individual statements; use waits for procedure timing.
+
+A hold pauses execution without being an output reset. Stopping releases the task's automatic channel ownership, but the last stored output value is not itself a physical stop command. Put final actions in an `end:` section or driver shutdown path as appropriate to your application.
 
 Timelines follow the same authority boundary: hold keeps their channel control, while completed stop releases it. If a timeline is restored in a stopped state, activation also clears any saved timeline control over output channels. An operator's manual override remains active.
 
@@ -84,7 +86,7 @@ Each bucket publishes `<name>_bucket_<bucket>_started_at` and `_ended_at` on the
 
 ## Keep state between calls
 
-Task variables remember their values between iterations. Initialize them in `start:` when they should reset on every run:
+Task variables remember their values between iterations within one run. Each task start recreates its working state; initialize variables in `start:` before reading them:
 
 ```dcode
 task_periodic docs_demo_count:

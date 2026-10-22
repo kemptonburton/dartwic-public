@@ -2,7 +2,7 @@
 title: loop
 summary: Define a lightweight repeated automation loop in DCode.
 created: 2026-08-04T17:38
-updated: 2026-10-03T01:16
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -25,7 +25,7 @@ Activation starts a named repeated body at the requested frequency under a CAESA
 
 ## Persistence
 
-Values stored in state remain available between iterations while the loop is loaded. Initialize a state field before reading it; `once when true:` can do this on the first iteration.
+Ordinary runtime variables and state fields persist between iterations until reactivation. Initialize before reading; `once when true:` can initialize the first iteration. A loop has no start section.
 
 ## Reload behavior
 
@@ -45,7 +45,7 @@ DARTWIC tracks changes to the block when loading the loop.
 
 ## Example
 
-```lua
+```dcode
 loop name 10:
     current = |channel|
 ```

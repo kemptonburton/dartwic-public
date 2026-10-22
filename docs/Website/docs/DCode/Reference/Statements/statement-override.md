@@ -1,8 +1,6 @@
 ---
-title: automatic override
-summary: Temporarily supersede automatic control until explicitly freed.
-created: 2026-09-09T17:13
-updated: 2026-09-09T20:25
+title: "automatic override"
+summary: "Temporarily supersede automatic control until explicitly freed."
 ---
 
 ## Syntax
@@ -24,6 +22,6 @@ Supported for numeric channel values. An automatic override remains active until
 
 ## Example
 
-```lua
+```dcode
 override |channel| = value
 ```

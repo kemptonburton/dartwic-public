@@ -15,7 +15,7 @@ while <condition>:
 
 ## Example
 
-```lua
+```dcode
 while condition:
     -- body
 ```

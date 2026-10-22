@@ -15,6 +15,6 @@ transition <task_name> to <state>
 
 ## Example
 
-```lua
+```dcode
 transition task_name to state_name
 ```

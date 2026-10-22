@@ -1,10 +1,12 @@
 ---
 summary: Run named states and make state requests explicit.
-updated: 2026-10-14T15:02
+updated: 2026-10-22T17:46
 created: 2026-08-03T15:41
 ---
 
 Use `task_state_machine` when behavior is easier to understand as named stages. A CAESAR task loop executes the current state's handler at the target frequency.
+
+The header accepts `task_state_machine <name> [frequency_hz] [priority] [disable_warnings]:`, just like a periodic task. Frequency defaults to 10 Hz and must be positive. Priority defaults to `normal`; supply a frequency before `background`, `normal`, `high`, or `critical`.
 
 ## A two-state example
 

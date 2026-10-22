@@ -1,6 +1,8 @@
 ---
-title: "return"
-summary: "Return values from a function, handler, or calculation."
+title: return
+summary: Return values from a function, handler, or calculation.
+created: 2026-08-04T17:39
+updated: 2026-10-22T18:02
 ---
 
 ## Syntax
@@ -15,10 +17,10 @@ return [values]
 
 ## Native C++
 
-Functions return a DCode value. Calculations publish a returned number; null suppresses an update. Task callbacks ignore a returned value.
+Functions return a DCode value. Calculations supply a numeric result; null supplies no result, skipping dependency-driven target publication without canceling a direct write. Task callbacks ignore a returned value.
 
 ## Example
 
-```lua
+```dcode
 return value
 ```

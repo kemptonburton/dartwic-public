@@ -1,12 +1,14 @@
 ---
-title: "task_sequence"
-summary: "Define a sequential CAESAR task in DCode."
+title: task_sequence
+summary: Define a sequential CAESAR task in DCode.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:46
 ---
 
 ## Syntax
 
 ```dcode
-task_sequence <name> [disable_warnings]:
+task_sequence <name> [frequency_hz] [priority] [disable_warnings]:
 ```
 
 ## Available in
@@ -15,11 +17,11 @@ task_sequence <name> [disable_warnings]:
 
 ## Lifecycle
 
-Activation creates the task; each run executes the sequence in order while publishing its current source line. Optional disable_warnings suppresses timing warnings while keeping measurements, skipped-cycle counts and callback errors.
+Activation creates the task; each start executes the sequence body once in order while publishing its current source line. Waits pace the procedure; an accepted header frequency does not pace individual statements or create frequency channels. Optional disable_warnings suppresses timing warnings while keeping callback errors and internal measurements.
 
 ## Persistence
 
-Values stored in state remain available throughout sequence execution while the task is loaded.
+Ordinary runtime variables and state fields persist across the sequence's lifecycle sections within a run. Each task start recreates working state; initialize it before reading, usually in start.
 
 ## Reload behavior
 
@@ -35,15 +37,13 @@ DARTWIC tracks changes to the block and its template dependencies when loading t
 ## Generated channels
 
 - `<name>_running`
-- `<name>_target_frequency`
-- `<name>_actual_frequency`
 - `<name>_hold`
 - `<name>_current_line`
 - `<name>_failed_cycles`
 
 ## Example
 
-```lua
+```dcode
 task_sequence task_name:
     wait(1.0)
 ```

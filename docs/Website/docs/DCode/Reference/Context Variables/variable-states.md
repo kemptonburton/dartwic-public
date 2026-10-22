@@ -1,6 +1,8 @@
 ---
-title: "states"
-summary: "Map of declared state names to their numeric channel values."
+title: states
+summary: Map of declared state names to their numeric channel values.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -15,6 +17,6 @@ states.<declared_name>
 
 ## Example
 
-```lua
+```dcode
 states.name
 ```

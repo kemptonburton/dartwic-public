@@ -1,6 +1,8 @@
 ---
-title: "task_periodic"
-summary: "Define a periodic CAESAR task in DCode."
+title: task_periodic
+summary: Define a periodic CAESAR task in DCode.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:46
 ---
 
 ## Syntax
@@ -23,11 +25,15 @@ Activation creates the task and its channels; start runs once, task repeats whil
 
 ## Persistence
 
-Values stored in state remain available between handler calls while the task is loaded.
+Ordinary runtime variables and state fields persist across lifecycle sections and iterations within a run. Each task start recreates working state; initialize it before reading, usually in start. File globals require an explicit global declaration and instead reset on file activation.
 
 ## Reload behavior
 
 DARTWIC tracks changes to the block and its template dependencies when loading the task.
+
+## Rules
+
+- Frequency is positive Hz and defaults to 10. Priority is background, normal (default), high, or critical; supply a frequency before priority. The optional disable_warnings flag comes last.
 
 ## Runtime sections
 
@@ -48,8 +54,8 @@ DARTWIC tracks changes to the block and its template dependencies when loading t
 
 ## Example
 
-```lua
-task_periodic task_name 100 ${3|background,normal,high,critical|}:
+```dcode
+task_periodic task_name 100 background:
     start:
         -- setup
 

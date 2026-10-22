@@ -15,7 +15,7 @@ when <condition>:
 
 ## Example
 
-```lua
+```dcode
 when condition:
     -- body
 ```

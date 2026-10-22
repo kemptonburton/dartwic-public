@@ -15,7 +15,7 @@ system: "<system>"
 
 ## Example
 
-```lua
+```dcode
 system: "SOFTWARE"
 subsystem: "DCODE"
 ```

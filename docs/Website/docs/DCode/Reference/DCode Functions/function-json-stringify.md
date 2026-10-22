@@ -16,6 +16,6 @@ json.stringify(value)
 
 ## Example
 
-```lua
+```dcode
 json.stringify(value)
 ```

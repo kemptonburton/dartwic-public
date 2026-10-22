@@ -15,6 +15,6 @@ run: <task-or-loop-name>
 
 ## Example
 
-```lua
+```dcode
 run: runtime_name
 ```

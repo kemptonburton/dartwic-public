@@ -20,6 +20,6 @@ Accepts a number or numeric string; the optional Lua base argument is unavailabl
 
 ## Example
 
-```lua
+```dcode
 tonumber(value)
 ```

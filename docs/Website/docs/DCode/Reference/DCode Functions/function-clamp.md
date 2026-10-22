@@ -16,6 +16,6 @@ clamp(value, min_value, max_value)
 
 ## Example
 
-```lua
+```dcode
 clamp(value, min_value, max_value)
 ```

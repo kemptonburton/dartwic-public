@@ -1,6 +1,8 @@
 ---
-title: "tempest_publish"
-summary: "Publish custom telemetry to TEMPEST clients and peers."
+title: tempest_publish
+summary: Publish custom telemetry to TEMPEST clients and peers.
+created: 2026-10-04T18:31
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -20,6 +22,6 @@ Native C++ invokes the engine TEMPEST host API; review its cost in a control cal
 
 ## Example
 
-```lua
+```dcode
 tempest_publish(topic, payload)
 ```

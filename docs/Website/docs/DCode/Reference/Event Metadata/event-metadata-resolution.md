@@ -15,6 +15,6 @@ resolution: "<instructions>"
 
 ## Example
 
-```lua
+```dcode
 resolution: "Resolution steps"
 ```

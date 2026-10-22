@@ -1,6 +1,8 @@
 ---
-title: "template(params)"
-summary: "Expand a runtime block or event declaration once per YAML row before either backend compiles it."
+title: template(params)
+summary: Expand a runtime block or event declaration once per YAML row before either backend compiles it.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -15,7 +17,7 @@ template(<params>) <runtime block>
 
 ## Example
 
-```lua
+```dcode
 template(params) loop name 10:
     -- body
 ```

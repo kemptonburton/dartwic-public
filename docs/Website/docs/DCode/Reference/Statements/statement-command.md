@@ -16,6 +16,6 @@ command |channel| = <value>
 
 ## Example
 
-```lua
+```dcode
 command |channel| = value
 ```

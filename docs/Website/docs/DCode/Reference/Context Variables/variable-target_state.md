@@ -15,6 +15,6 @@ target_state
 
 ## Example
 
-```lua
+```dcode
 target_state
 ```

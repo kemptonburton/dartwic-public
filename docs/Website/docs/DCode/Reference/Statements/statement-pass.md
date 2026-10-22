@@ -15,6 +15,6 @@ pass
 
 ## Example
 
-```lua
+```dcode
 pass
 ```

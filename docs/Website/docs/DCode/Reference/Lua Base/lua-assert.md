@@ -20,6 +20,6 @@ Supported as an assert(condition) statement. An optional message and Lua-style r
 
 ## Example
 
-```lua
+```dcode
 assert(condition, message)
 ```

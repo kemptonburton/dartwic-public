@@ -2,7 +2,7 @@
 title: stopDataFrame
 summary: Close a live dataframe time range by its returned ID at engine time. Recording policy and channel samples are unchanged.
 created: 2026-10-04T18:31
-updated: 2026-10-14T22:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -22,6 +22,6 @@ Uses the engine dataframe registry; may wait on the calling callback.
 
 ## Example
 
-```lua
+```dcode
 stopDataFrame(id)
 ```

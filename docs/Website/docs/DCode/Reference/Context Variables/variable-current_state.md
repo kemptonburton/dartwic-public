@@ -1,6 +1,8 @@
 ---
-title: "current_state"
-summary: "Numeric value of the state whose handler is executing."
+title: current_state
+summary: Numeric value of the state whose handler is executing.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -15,6 +17,6 @@ current_state
 
 ## Example
 
-```lua
+```dcode
 current_state
 ```

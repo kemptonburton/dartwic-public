@@ -16,6 +16,6 @@ values(object)
 
 ## Example
 
-```lua
+```dcode
 values(object)
 ```

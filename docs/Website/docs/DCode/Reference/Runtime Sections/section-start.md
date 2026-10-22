@@ -17,7 +17,7 @@ start:
 
 ## Example
 
-```lua
+```dcode
 start:
     -- setup
 ```

@@ -15,7 +15,7 @@ task [elapsed_seconds]:
 
 ## Example
 
-```lua
+```dcode
 task elapsed_seconds:
     -- repeated work
 ```

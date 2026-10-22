@@ -1,6 +1,6 @@
 ---
 title: "type"
-summary: "Return the Lua type name."
+summary: "Return the DCode value kind: number, string, boolean, array, object, or null for shared DCode values in both backends."
 ---
 
 ## Syntax
@@ -20,6 +20,6 @@ Returns DCode value kinds, including array, object and null, in both backends.
 
 ## Example
 
-```lua
+```dcode
 type(value)
 ```

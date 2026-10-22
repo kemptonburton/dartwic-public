@@ -19,7 +19,7 @@ if <condition> then ... end
 
 ## Example
 
-```lua
+```dcode
 if condition:
     -- body
 ```

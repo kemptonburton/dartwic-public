@@ -2,7 +2,7 @@
 title: channels
 summary: Configure the channel graphs stacked in the ARGUS event panel's Channels section.
 created: 2026-10-04T18:31
-updated: 2026-10-14T13:14
+updated: 2026-10-22T17:43
 ---
 
 ## Syntax
@@ -24,6 +24,6 @@ channels: <series> [, <series> ...] [; <series> ...]
 
 ## Example
 
-```lua
-channels: |channel|@${2|1,2,3,4,5|}, >100@${4|1,2,3,4,5|}; |other_channel|@${6|1,2,3,4,5|}
+```dcode
+channels: |channel|@1, >100@1; |other_channel|@1
 ```

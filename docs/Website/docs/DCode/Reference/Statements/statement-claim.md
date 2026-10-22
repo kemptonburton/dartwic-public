@@ -16,6 +16,6 @@ claim |channel|
 
 ## Example
 
-```lua
+```dcode
 claim |channel|
 ```

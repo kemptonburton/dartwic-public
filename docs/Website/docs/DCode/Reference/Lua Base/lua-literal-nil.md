@@ -1,6 +1,8 @@
 ---
-title: "nil"
-summary: "Compatibility spelling for null. Explicit null stays distinct from a missing or uninitialized name."
+title: nil
+summary: Compatibility spelling for null. Explicit null stays distinct from a missing or uninitialized name.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -20,6 +22,6 @@ Compatibility spelling for DCode null; use null in new scripts.
 
 ## Example
 
-```lua
+```dcode
 nil
 ```

@@ -2,7 +2,7 @@
 title: task_timeline
 summary: Schedule cooperative DCode sequence buckets against a signed T-/T+ mission clock. Buckets share one tick thread; ordinary blocking code stalls the entire timeline.
 created: 2026-10-04T18:31
-updated: 2026-10-19T18:29
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -60,7 +60,7 @@ Ticks at a configurable frequency (default 10 Hz). Inside a bucket, wait, wait_u
 
 ## Example
 
-```lua
+```dcode
 task_timeline timeline_name:
     clock:
         start: T-30m

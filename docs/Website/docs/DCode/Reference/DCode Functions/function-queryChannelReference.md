@@ -1,6 +1,8 @@
 ---
-title: "queryChannelReference"
-summary: "Query a typed channel reference."
+title: queryChannelReference
+summary: Query a typed channel reference.
+created: 2026-09-04T17:13
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -20,6 +22,6 @@ Native C++ calls this function through the engine host. It can allocate or block
 
 ## Example
 
-```lua
+```dcode
 queryChannelReference(channel_reference)
 ```

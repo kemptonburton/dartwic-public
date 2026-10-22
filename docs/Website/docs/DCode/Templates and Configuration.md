@@ -1,6 +1,6 @@
 ---
 summary: Create several controllers or warnings from one DCode definition and a YAML file.
-updated: 2026-10-15T19:40
+updated: 2026-10-22T17:37
 created: 2026-10-14T15:04
 ---
 
@@ -37,6 +37,7 @@ template(params) event docs_limit_{params.name}:
     trigger:
         if |{params.channel}| > {params.high}:
             return 1
+        return 0
 ```
 
 The `#sensors` suffix selects the YAML list. For each row, the template inserts its fields into the declaration before compilation. It creates `docs_limit_pressure` and `docs_limit_temperature`. Names must stay unique.

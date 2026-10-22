@@ -16,6 +16,6 @@ json.parse(text)
 
 ## Example
 
-```lua
+```dcode
 json.parse(text)
 ```

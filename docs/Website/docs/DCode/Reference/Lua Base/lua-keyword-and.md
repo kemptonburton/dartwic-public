@@ -19,6 +19,6 @@ Short-circuits and returns the selected DCode operand in both backends.
 
 ## Example
 
-```lua
+```dcode
 and
 ```

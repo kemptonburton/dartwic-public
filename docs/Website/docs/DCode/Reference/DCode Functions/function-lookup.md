@@ -16,6 +16,6 @@ lookup(object, key, fallback)
 
 ## Example
 
-```lua
+```dcode
 lookup(object, key, fallback)
 ```

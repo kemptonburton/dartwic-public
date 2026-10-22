@@ -2,13 +2,13 @@
 title: task_state_machine
 summary: Define a named-state CAESAR task in DCode.
 created: 2026-08-04T17:38
-updated: 2026-10-03T00:15
+updated: 2026-10-22T17:46
 ---
 
 ## Syntax
 
 ```dcode
-task_state_machine <name> [disable_warnings]:
+task_state_machine <name> [frequency_hz] [priority] [disable_warnings]:
 ```
 
 ## Available in
@@ -21,11 +21,15 @@ Activation declares states and task channels; the current handler runs while act
 
 ## Persistence
 
-The state table and current state remain available between handler calls while the task is loaded.
+Runtime variables and current state persist between handlers within a run. Each task start recreates working state; initialize data before reading it. A state once block runs again on each state entry.
 
 ## Reload behavior
 
 DARTWIC tracks changes to the block and its template dependencies when loading the task.
+
+## Rules
+
+- Frequency is positive Hz and defaults to 10. Priority is background, normal (default), high, or critical; supply a frequency before priority. The optional disable_warnings flag comes last.
 
 ## Runtime sections
 
@@ -40,6 +44,8 @@ DARTWIC tracks changes to the block and its template dependencies when loading t
 - `<name>_running`
 - `<name>_target_frequency`
 - `<name>_actual_frequency`
+- `<name>_execution_time`
+- `<name>_missed_cycles`
 - `<name>_hold`
 - `<name>_current_state`
 - `<name>_target_state`
@@ -47,7 +53,7 @@ DARTWIC tracks changes to the block and its template dependencies when loading t
 
 ## Example
 
-```lua
+```dcode
 task_state_machine task_name:
     states:
         idle

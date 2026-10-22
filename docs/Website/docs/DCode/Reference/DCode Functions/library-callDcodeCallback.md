@@ -1,8 +1,6 @@
 ---
-title: callDcodeCallback
-summary: Invoke a registered DCode callback with named arguments and wait for its result.
-created: 2026-10-04T21:47
-updated: 2026-10-19T18:26
+title: "callDcodeCallback"
+summary: "Invoke a registered DCode callback with named arguments and wait for its result."
 ---
 
 Invoke a registered DCode callback with named arguments and wait for its result. A timeline bucket yields while waiting, so other buckets and mission time continue. Outside a timeline this is synchronous. Missing callbacks, invalid arguments and body errors fail the call. No execution handle is returned.
@@ -23,6 +21,6 @@ Uses the engine callback registry with the same arguments and return values as L
 
 ## Example
 
-```lua
+```dcode
 callDcodeCallback(callback_name, arguments)
 ```

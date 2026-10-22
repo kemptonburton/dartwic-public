@@ -15,7 +15,7 @@ do:
 
 ## Example
 
-```lua
+```dcode
 do:
     -- body
 ```

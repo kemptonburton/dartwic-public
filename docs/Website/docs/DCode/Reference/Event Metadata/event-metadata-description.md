@@ -15,6 +15,6 @@ description: "<text>"
 
 ## Example
 
-```lua
+```dcode
 description: "What happened"
 ```

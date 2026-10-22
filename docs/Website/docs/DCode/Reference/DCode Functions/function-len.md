@@ -16,6 +16,6 @@ len(value)
 
 ## Example
 
-```lua
+```dcode
 len(value)
 ```

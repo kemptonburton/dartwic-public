@@ -15,6 +15,6 @@ title: "<display title>"
 
 ## Example
 
-```lua
+```dcode
 title: "Event title"
 ```

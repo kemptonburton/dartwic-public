@@ -16,7 +16,7 @@ summary: "Define a DCode function with its own scope. Use global name before rea
 
 ## Example
 
-```lua
+```dcode
 function name(arguments):
     -- body
 ```

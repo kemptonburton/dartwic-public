@@ -1,6 +1,6 @@
 ---
 summary: Compile DCode on the engine, use shared values, and review fixed-channel execution.
-updated: 2026-10-20T15:40
+updated: 2026-10-22T18:02
 created: 2026-09-07T05:26
 ---
 
@@ -16,7 +16,7 @@ Fixed channels reserve numeric storage and resolve handles before execution. Nat
 
 Each read or accepted write takes effect at its DCode line. A later error does not roll back earlier writes. Inline calculations and event reactions add to the writer's duration; device I/O and plugin calls have their own costs too. Use [Deterministic Automation](../Engine/Deterministic%20Automation.md) to choose and measure the complete path.
 
-Start with the small example below, then try the [read â†’ control â†’ write cycle](../Engine/Tasks.md#try-a-read-control-write-cycle). Neither example needs hardware.
+Start with the small example below, then try the [read → control → write cycle](../Engine/Tasks.md#try-a-read-control-write-cycle). Neither example needs hardware.
 
 ## Install tools on the engine machine
 
@@ -46,12 +46,12 @@ task_periodic native_demo 10 normal:
         |demo_native_twice| = ticks * 2
 ```
 
-1. Select **DCode Â· Native C++** in the editor's backend selector.
+1. Select **DCode · Native C++** in the editor's backend selector.
 2. Run the script to save, build, and activate it. Changing the selector alone does not replace the loaded runtime.
 3. Follow compiler output in **Project → Builder logs** or the **DARTWIC BUILDER** ARGUS log stream. Wait for activation to succeed; compiler output alone does not establish runtime readiness. The structured [Builder report](../Engine/DARTWIC%20Builder.md#inspect-builder-through-tempest) also records `VERIFY / READY`.
 4. Start `native_demo` from Tasks. Its channels should advance at about ten updates per second, with `demo_native_twice` twice the tick count. Stop the task when finished.
 
-Activation registers tasks; starting a task executes it. The editor should show **2 fixed Â· 0 dynamic** for this example's two static output bindings. These counts describe script references, not every task diagnostic channel in the engine.
+Activation registers tasks; starting a task executes it. The editor should show **2 fixed · 0 dynamic** for this example's two static output bindings. These counts describe script references, not every task diagnostic channel in the engine.
 
 The selector persists per file in the project's `scripts/scripts_config.json`. For a project managed as files, merge this entry into that file:
 
@@ -71,9 +71,11 @@ An absent execution mode defaults to `lua`. Enable **Run on startup** after veri
 | Construct | Native C++ behavior |
 | --- | --- |
 | Periodic tasks, state machines, sequences, loops | Compiled callbacks run through CAESAR, including lifecycle sections, state transitions, `once` and `when`. A sequence may use ordinary supported statements. |
-| Channel calculations and declared events | Compiled callbacks share RAPID dependency ordering, authority and event handling. A numeric calculation return publishes a value; `return null` or falling through publishes nothing. |
+| Callbacks | Compiled ordinary functions have independent working variables per invocation. Registered calls use the same named argument validation and result values as Lua. |
+| Channel calculations and declared events | Compiled callbacks share RAPID dependency ordering, authority and event handling. A calculation returns a numeric result, or no result for `return null` or fallthrough. See [Channel Calculations](Channel%20Calculations.md) for the different direct-write and dependency effects. |
 | Task groups and templates | Task groups order their configured members. YAML templates expand before either backend compiles the result. Arrays and objects in YAML rows expand as DCode collection literals. |
 | Values and expressions | Both backends support strings, booleans, numbers, explicit `null`, arrays `[]`, objects `{key: value}`, zero-based indexing, nested collections, functions and arithmetic. `5 / 2` is `2.5`. |
+| Collection mutation | Existing array items and object fields can change. Array lengths and object keys remain fixed; `push`, `pop`, and adding keys require Lua. Assigning a new collection is supported, subject to prepared-storage escape checks. |
 | File globals | Top-level prelude assignments use one synchronized store per file across its runtime blocks. It resets on activation and uses the host bridge in native callbacks. Runtime-block variables stay private. |
 | Plugin and host functions | A plugin call with a validated fixed numeric schema and typed prepared handler uses a retained binding and caller-owned result storage. Other host calls use the native bridge and may allocate, block, publish telemetry or perform I/O. Review their use in control callbacks. |
 | Static channel pipes | Static `|channel|` value access uses pre-resolved bindings. A fixed RAPID channel gives the prepared numeric path; static metadata reads call the host API. |
@@ -82,6 +84,8 @@ An absent execution mode defaults to `lua`. Enable **Run on startup** after veri
 | Waits and timelines | `wait(seconds)` and `wait_until(condition, time=0, timeout=0)` run in both backends. Sequence holds pause duration and timeout accounting. They block their callback while waiting and belong outside fixed-rate control loops. `task_timeline` still requires Lua. The former statement wait forms and public `sleep` are rejected. |
 
 Static pipe writes inside imported `.dcode` helpers participate in native fixed-output declaration and binding. `tempest_operation` and `tempest_pinned_operation` block the calling DCode callback until the response or timeout. Keep them in sequences or other non-control work.
+
+Native pipe assignments write numeric values; metadata pipe assignments require Lua. Typed host functions such as `upsertChannelReference` use the host bridge instead of a prepared numeric binding. Native `print` takes one expression, `log`/`log_warning`/`log_error` are statements with a literal stream name, and `assert` takes one condition without Lua's optional message or returned values. The generated reference records each function's backend limits.
 
 For collection syntax, truthiness, and variable lifetime, see [Values and Scope](Values%20and%20Scope.md). Use runtime variables for intermediate values. File globals and dynamic channel names use the host bridge; they are not prepared fixed numeric operations.
 
@@ -97,7 +101,7 @@ Check three things separately:
 | Bound as intended | Editor fixed/dynamic chip and Builder binding details. A successful build may still contain dynamic inputs. |
 | Running as intended | Start the task, check output values, actual frequency, execution time, and missed-cycle diagnostics. Test input-to-output behavior under realistic load. |
 
-The engine keeps one shared CMake build directory per project at `engine/instances/<instance-id>/cache/<project-name>/dcode/native_dcode/build/`. Generated C++ for each script is under `src/`, matching its relative script path. The named libraries are under `bin/<script-path>/<script-name>/`, and the latest compiler log for each script is under `logs/`. For example, `other/fill_sim.dcode` produces `src/other/fill_sim.cpp`, `bin/other/fill_sim/fill_sim-<artifact-key>.dll` on Windows (or `.so` on Linux), and `logs/other/fill_sim.log`. The shared build directory contains only the current compiler scratch project, not a separate CMake tree for every script. When a copied or migrated CMake build tree still names its previous directory, the engine recreates that scratch build while preserving the named libraries and logs. The key includes the source/dependency hash, native backend cache version, and host build stamp. This cache stays outside the Git-tracked project. A matching library can be reused without invoking the compiler; a cache hit alone does not verify that the machine can compile a new script. After activation, the engine removes older libraries once their callbacks have unloaded.
+The engine keeps one shared CMake build directory per project at `<instance-root>/cache/<project-name>/dcode/native_dcode/build/`. Generated C++ for each script is under `src/`, matching its relative script path. The named libraries are under `bin/<script-path>/<script-name>/`, and the latest compiler log for each script is under `logs/`. For example, `other/fill_sim.dcode` produces `src/other/fill_sim.cpp`, `bin/other/fill_sim/fill_sim-<artifact-key>.dll` on Windows (or `.so` on Linux), and `logs/other/fill_sim.log`. The shared build directory contains only the current compiler scratch project, not a separate CMake tree for every script. When a copied or migrated CMake build tree still names its previous directory, the engine recreates that scratch build while preserving the named libraries and logs. The key includes the source/dependency hash, native backend cache version, and host build stamp. This cache stays outside the Git-tracked project. A matching library can be reused without invoking the compiler; a cache hit alone does not verify that the machine can compile a new script. After activation, the engine removes older libraries once their callbacks have unloaded.
 
 During a new build, Builder shows CMake output as it arrives and marks configuration, compilation, and library loading separately. ARGUS stores the same live output in the `DARTWIC BUILDER` stream, and the script's `logs/<script-path>/<script-name>.log` is flushed during compilation so partial output survives an interruption. A loaded library still needs binding resolution and activation; the Builder `VERIFY / READY` event is the final readiness signal. A compilation failure leaves the previous runtime installed. A later failure after runtime replacement begins does not guarantee restoration; inspect the activation result.
 

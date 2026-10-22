@@ -2,7 +2,7 @@
 title: promptYesNo
 summary: Display a yes/no ARGUS prompt and return 1 or 0. In a timeline bucket, suspends only that bucket until the response arrives; the mission clock and other due buckets continue. Other execution contexts wait on their invoking thread.
 created: 2026-08-04T17:38
-updated: 2026-10-19T17:54
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -20,9 +20,13 @@ promptYesNo(title, description, channels?, resolution?, auto_acknowledge?, separ
 
 Native C++ calls this function through the engine host. It can allocate or block; review use in a control callback.
 
+## Rules
+
+- Arguments are positional. To supply separation_seconds with default graph, resolution, and acknowledgement settings, pass [], "", 0 before the interval. A positive interval ends the ARGUS occurrence after quiet time; zero disables automatic expiry. Expiry does not answer a prompt or release a hold.
+
 ## Example
 
-```lua
+```dcode
 promptYesNo("title", "description", [], "", 0, 0)
 ```
 

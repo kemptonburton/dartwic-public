@@ -15,6 +15,6 @@ auto_acknowledge: <seconds>
 
 ## Example
 
-```lua
+```dcode
 auto_acknowledge: 0
 ```

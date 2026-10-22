@@ -1,6 +1,6 @@
 ---
 title: "hold"
-summary: "Display an ARGUS hold."
+summary: "Display an ARGUS hold and block the invoking thread until release. This is not a cooperative timeline wait: calling it in a bucket can stall the entire timeline. Quiet expiry and acknowledgement do not release it. Returns a numeric host result, normally 1 after release, rather than an event ID."
 ---
 
 ## Syntax
@@ -18,9 +18,13 @@ hold(title, description, channels?, resolution?, auto_acknowledge?, separation_s
 
 Native C++ calls this function through the engine host. It can allocate or block; review use in a control callback.
 
+## Rules
+
+- Arguments are positional. To supply separation_seconds with default graph, resolution, and acknowledgement settings, pass [], "", 0 before the interval. A positive interval ends the ARGUS occurrence after quiet time; zero disables automatic expiry. Expiry does not answer a prompt or release a hold.
+
 ## Example
 
-```lua
+```dcode
 hold(title, description, [], "", 0, 0)
 ```
 
@@ -37,4 +41,4 @@ hold(title, description, [], "", 0, 0)
 
 ## Outputs
 
-- `event_id` (number): ARGUS event result
+- `result` (number): Numeric host result, normally 1; this is not an event ID

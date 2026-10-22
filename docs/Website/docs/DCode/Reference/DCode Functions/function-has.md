@@ -16,6 +16,6 @@ has(object, key)
 
 ## Example
 
-```lua
+```dcode
 has(object, key)
 ```

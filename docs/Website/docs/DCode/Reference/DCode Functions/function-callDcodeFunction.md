@@ -20,6 +20,6 @@ Native C++ calls this function through the engine host. It can allocate or block
 
 ## Example
 
-```lua
+```dcode
 callDcodeFunction(function_name, payload)
 ```

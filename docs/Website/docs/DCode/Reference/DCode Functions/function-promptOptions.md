@@ -1,8 +1,6 @@
 ---
-title: promptOptions
-summary: Display an ARGUS options prompt. In a timeline bucket, suspends only that bucket until the response arrives; the mission clock and other due buckets continue. Other execution contexts wait on their invoking thread.
-created: 2026-08-04T17:38
-updated: 2026-10-19T17:54
+title: "promptOptions"
+summary: "Display an ARGUS options prompt. In a timeline bucket, suspends only that bucket until the response arrives; the mission clock and other due buckets continue. Other execution contexts wait on their invoking thread."
 ---
 
 ## Syntax
@@ -20,9 +18,13 @@ promptOptions(title, description, options, channels?, resolution?, auto_acknowle
 
 Native C++ calls this function through the engine host. It can allocate or block; review use in a control callback.
 
+## Rules
+
+- Arguments are positional. To supply separation_seconds with default graph, resolution, and acknowledgement settings, pass [], "", 0 before the interval. A positive interval ends the ARGUS occurrence after quiet time; zero disables automatic expiry. Expiry does not answer a prompt or release a hold.
+
 ## Example
 
-```lua
+```dcode
 promptOptions("title", "description", {"option"}, "", 0, 0)
 ```
 

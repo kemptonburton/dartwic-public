@@ -1,6 +1,8 @@
 ---
-title: "end"
-summary: "Run cleanup when the containing task stops."
+title: end
+summary: Run cleanup when the containing task stops.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
@@ -17,7 +19,7 @@ end:
 
 ## Example
 
-```lua
+```dcode
 end:
     -- cleanup
 ```

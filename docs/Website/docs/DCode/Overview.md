@@ -1,6 +1,6 @@
 ---
 summary: Write readable automation with channels, scoped state, reusable logic, and YAML templates.
-updated: 2026-10-14T17:55
+updated: 2026-10-22T17:38
 created: 2026-08-03T15:41
 ---
 
@@ -81,7 +81,7 @@ Edit the YAML and reactivate the consuming script to apply new settings. [Templa
 
 The controller above is a [periodic task](Writing%20Periodic%20Tasks.md): it reads pressure when its scheduled iteration runs. The template creates [channel calculations](Channel%20Calculations.md), which run in response to their input updates. Choose the block that matches the job:
 
-- [Events](Events.md) watch conditions and expose warnings, prompts, or abort reactions to the operator.
+- [Events](Events.md) expose maintained conditions and one-shot reports as messages, warnings, errors, or abort events. Separate prompt functions wait for operator input.
 - [State machines](Building%20State%20Machines.md) give a process named stages, such as filling, venting, and complete.
 - [Sequences and timelines](Sequences%20and%20Task%20Lifecycle.md) organize ordered steps, waits, and actions at test times.
 - [Callbacks](Callbacks.md) expose actions that a schematic, client, or another script can call.

@@ -1,8 +1,8 @@
 ---
 title: Runtime Blocks
-summary: Top-level declarations that create engine-managed tasks, calculations, or loops with persistent runtime state.
+summary: Top-level declarations for tasks, loops, calculations, events, task groups, and callbacks. Scheduled blocks retain runtime state; callbacks use a separate function scope per invocation.
 created: 2026-08-04T17:38
-updated: 2026-10-04T21:47
+updated: 2026-10-22T17:40
 ---
 
 | Feature | Family | Syntax | Available in |
@@ -13,6 +13,6 @@ updated: 2026-10-04T21:47
 | [loop](runtime-loop.md) | Loop | `loop <name> <frequency_hz> [disable_warnings]:` | File scope |
 | [task_group](runtime-task_group.md) | Task Group | `task_group <name>:` | File scope |
 | [task_periodic](runtime-task_periodic.md) | Task | `task_periodic <name> [frequency_hz] [priority] [disable_warnings]:` | File scope |
-| [task_sequence](runtime-task_sequence.md) | Task | `task_sequence <name> [disable_warnings]:` | File scope |
-| [task_state_machine](runtime-task_state_machine.md) | Task | `task_state_machine <name> [disable_warnings]:` | File scope |
+| [task_sequence](runtime-task_sequence.md) | Task | `task_sequence <name> [frequency_hz] [priority] [disable_warnings]:` | File scope |
+| [task_state_machine](runtime-task_state_machine.md) | Task | `task_state_machine <name> [frequency_hz] [priority] [disable_warnings]:` | File scope |
 | [task_timeline](runtime-task_timeline.md) | Task | `task_timeline <name> [frequency_hz] [priority] [disable_warnings]:` | File scope |

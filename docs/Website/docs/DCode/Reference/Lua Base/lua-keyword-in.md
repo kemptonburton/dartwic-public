@@ -19,6 +19,6 @@ Portable for array and object iteration; arbitrary Lua iterators remain Lua-spec
 
 ## Example
 
-```lua
+```dcode
 in
 ```

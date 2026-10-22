@@ -15,6 +15,6 @@ break
 
 ## Example
 
-```lua
+```dcode
 break
 ```

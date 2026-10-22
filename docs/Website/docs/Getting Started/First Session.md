@@ -1,6 +1,6 @@
 ---
 summary: Open a workspace, connect to its engine, and inspect your first signal.
-updated: 2026-10-20T13:38
+updated: 2026-10-22T17:54
 created: 2026-08-03T15:41
 status: coming-soon
 ---
@@ -13,13 +13,15 @@ Public Engine/Interface downloads and license signup are still being prepared. T
 
 The [example workspace](Example%20Workspace.md) is a useful first project because it supplies a simulated device and working scripts. Keep its repository folders together; the actual workspace is the nested `example-workspace/` folder.
 
-1. In **Settings → Interface**, select your installed engine directory.
+1. In **Settings → Interface**, choose **Add** to download the packaged engine and workspace into a destination folder. Both folder selections start blank in a fresh Interface installation and fill automatically after installation. They are read-only; use their folder buttons to select existing folders. **Add workspace** also offers **Download engine** when no engine is configured. Wait for installation to finish before adding another workspace.
 2. Choose **Add workspace** on the landing page and select the workspace folder, not its `default/` project folder.
 3. Select the project and local engine settings. If an existing engine instance matches this workspace, review the settings loaded from it. Enter a license key if needed for the project's capacity.
 4. Choose **Add node** to save the setup. Open its **Start** console, review dependencies, and prepare the workspace while stopped.
 5. Choose **Start engine**, then **Open workspace** when it is ready.
 
 The engine runs the tasks and owns the recordings. The Interface can close and reconnect without stopping them. [Tracking a Project in GitHub](Tracking%20a%20Project%20in%20GitHub.md) explains the installation, instance, and workspace folders.
+
+Desktop preferences, saved connections and local workspace registrations stay with each Interface installation in its `.dartwic/` folder. Separate extracted copies have separate settings; keep that folder when moving or updating an installation. The first launch with installation-local storage starts fresh rather than importing the old shared settings. Hosted Interface preferences still belong to the browser origin; its local workspace registry is stored beside the web host.
 
 **Forget** removes a node's saved entry from this Interface. It leaves the engine running and preserves its instance configuration, workspace, recordings and installed files. A forgotten engine may still appear in network discovery, and its workspace can be added again later. Use **Stop engine** separately when you want to stop it.
 

@@ -20,6 +20,6 @@ Converts shared DCode values to text in both backends.
 
 ## Example
 
-```lua
+```dcode
 tostring(value)
 ```

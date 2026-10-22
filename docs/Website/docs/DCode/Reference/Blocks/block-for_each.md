@@ -19,7 +19,7 @@ for _, <name> in __dc_iter(<collection>) do ... end
 
 ## Example
 
-```lua
+```dcode
 for item in items:
     -- body
 ```

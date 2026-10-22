@@ -1,6 +1,8 @@
 ---
-title: "error"
-summary: "Display an ARGUS error."
+title: error
+summary: Report an ARGUS error and return a numeric host result, normally 1. Successful reporting creates an operator event instead of throwing a Lua exception or stopping tasks; invalid arguments or host failures can still raise errors.
+created: 2026-08-04T17:38
+updated: 2026-10-22T18:02
 ---
 
 ## Syntax
@@ -18,9 +20,13 @@ error(title, description, channels?, resolution?, auto_acknowledge?, separation_
 
 Native C++ calls this function through the engine host. It can allocate or block; review use in a control callback.
 
+## Rules
+
+- Arguments are positional. To supply separation_seconds with default graph, resolution, and acknowledgement settings, pass [], "", 0 before the interval. A positive interval ends the ARGUS occurrence after quiet time; zero disables automatic expiry. Expiry does not answer a prompt or release a hold.
+
 ## Example
 
-```lua
+```dcode
 error(title, description, [], "", 0, 0)
 ```
 
@@ -37,4 +43,4 @@ error(title, description, [], "", 0, 0)
 
 ## Outputs
 
-- `event_id` (number): ARGUS event result
+- `result` (number): Numeric host result, normally 1; this is not an event ID
