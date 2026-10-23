@@ -1,6 +1,6 @@
 ---
 summary: Open a workspace, connect to its engine, and inspect your first signal.
-updated: 2026-10-23T00:45
+updated: 2026-10-23T01:58
 created: 2026-08-03T15:41
 status: coming-soon
 ---
@@ -75,3 +75,5 @@ Use [DataFrames](../Interface/DataFrames.md) to capture a named run, or [Recorde
 When finished, stop your demo tasks. Stop the engine through its local node controls if you also want the engine process to end.
 
 The login chooser checks whether saved endpoints answer without registering or sending the saved password. An online indicator means the endpoint answered; connecting still verifies credentials and compatibility. Local process controls also verify ownership of the Engine process.
+
+The chooser also refreshes runtime details separately from its online check. Successful reads show the Engine's current name, project and version and recover its local process identity after restart. Incorrect saved credentials pause those detail reads until the saved connection or process state changes; the unauthenticated online check continues. After a completed local Engine update, the version menu uses the installed or verified running version rather than an older saved connection label.

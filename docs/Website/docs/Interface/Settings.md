@@ -1,6 +1,6 @@
 ---
 summary: Configure the interface, engine connection, history retention, diagnostics, and plugins.
-updated: 2026-10-23T00:24
+updated: 2026-10-23T02:15
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -19,6 +19,8 @@ Open the gear icon in the left navigation to open **Settings**. The available pa
 Select a plugin to inspect its installation, version, and contributed settings. A manually installed plugin can appear as unmanaged. See [Plugins](Plugins.md).
 
 ## User profile
+
+User settings save to this Interface's local profile immediately, including edits made while connected to an Engine. Disconnecting or reloading keeps the saved display name, avatar, category, role label, and preferred username. Engine synchronization is debounced separately; a failed sync leaves the local profile saved and reports a warning in User settings.
 
 If your profile has no username, connecting opens **Choose a username**. Enter a name and choose **Continue** to save it locally and resume that connection; **Cancel** leaves you disconnected. You can also set it in **User** settings. Every administrator connection uses this name, including saved connections and startup reconnect. Changing it applies to your next connection; it does not rename an active session. Other profile fields are optional presentation defaults. Viewer connections remain anonymous.
 

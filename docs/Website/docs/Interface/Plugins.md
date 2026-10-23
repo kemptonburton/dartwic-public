@@ -1,6 +1,6 @@
 ---
 summary: Install compatible engine and interface extensions and inspect their status.
-updated: 2026-10-23T00:45
+updated: 2026-10-23T02:15
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -47,6 +47,12 @@ Workspaces using the same engine installation share its plugin directory. Stop a
 Installing a driver does not automatically configure every device. Follow the plugin's README for connection parameters, channel names, acquisition timing, and outputs.
 
 Contribution badges show the modules, tasks, TEMPEST peers, operations, telemetry topics, DCode functions, loops, resources, and schematic nodes registered by the loaded plugin. They describe what the host has registered; a badge does not mean a device instance is configured or connected.
+
+## Installed and loaded states
+
+Installed means the plugin files are present on disk. A newly installed Engine plugin can be **installed, not loaded** until the Engine restarts. Queued updates and removals are shown separately; they are not missing components to patch. Plugin settings that call Engine-provided operations become available after that Engine plugin loads. An unavailable status request is shown as unavailable rather than evidence that files are missing.
+
+Interface updates stage and validate the replacement before swapping directories. If staging or replacement fails, the previous installed version is retained or restored. Interface-only actions do not install, update, or remove Engine components and do not request an Engine restart. Removing a queued Engine update cancels its replacement as well; a missing staged replacement cannot erase the previous installed files during startup.
 
 ## Manual installations
 
