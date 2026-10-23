@@ -1,6 +1,6 @@
 ---
 summary: Open and share Git workspaces using one engine installation and separately installed interfaces.
-updated: 2026-10-22T12:25
+updated: 2026-10-22T23:39
 created: 2026-09-08T14:04
 ---
 
@@ -64,8 +64,10 @@ insertions, without rewriting saved schematic nodes. On startup, the Engine
 creates missing instance configuration, workspace identity/settings and standard
 project structure from its own definitions, including in a clone outside the
 installation. Existing authored files are preserved. Fresh Engine packages use
-`workspaces/workspace/` for the initial workspace; its structural files are created
-on first launch. No workspace template synchronization step is required.
+`workspaces/workspace/` for the initial workspace. Its workspace identity and empty
+`default` project are included, so the Interface can discover it immediately.
+First launch creates remaining settings and directories. No workspace template
+synchronization step is required.
 
 The workspace folder `assets` is reserved, ignoring case. It cannot be created,
 renamed, selected or discovered as a project, even if it contains `project.json`.
