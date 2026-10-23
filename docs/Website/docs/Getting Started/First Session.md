@@ -1,6 +1,6 @@
 ---
 summary: Open a workspace, connect to its engine, and inspect your first signal.
-updated: 2026-10-22T23:40
+updated: 2026-10-23T00:45
 created: 2026-08-03T15:41
 status: coming-soon
 ---
@@ -15,7 +15,7 @@ The [example workspace](Example%20Workspace.md) is a useful first project becaus
 
 1. In **Settings → Interface**, choose **Add** to download the packaged engine and workspace into a destination folder. Its `engine/` and `workspaces/` contents go directly into the folder you select. Both folder selections start blank in a fresh Interface installation and fill automatically after installation. They are read-only; use their folder buttons to select existing folders. **Add workspace** also offers **Download engine** when no engine is configured. The shared progress toast shows the current stage, a blue loading bar, and transfer size when available. Wait for installation to finish before adding another workspace. If configured folders are moved or deleted, Settings marks the affected paths as errors and the version popup offers Add again.
 2. The downloaded `workspaces/workspace/` starter appears on the landing page with an empty `default` project. Add it there, or choose **Add workspace** and select another workspace folder, not its `default/` project folder.
-3. Select the project and local engine settings. If an existing engine instance matches this workspace, review the settings loaded from it. Enter a license key if needed for the project's capacity.
+3. Select the project and expand **Engine settings** if needed. The engine folder starts with your configured default; use its folder button to select another installation. If an existing engine instance matches this workspace, review the settings loaded from it. Enter a license key if needed for the project's capacity.
 4. Choose **Add node** to save the setup. Open its **Start** console, review dependencies, and prepare the workspace while stopped.
 5. Choose **Start engine**, then **Open workspace** when it is ready.
 
@@ -73,3 +73,5 @@ Open an existing schematic to see the signals in context. [Schematics](../Interf
 Use [DataFrames](../Interface/DataFrames.md) to capture a named run, or [Recorded Data](../Interface/Recorded%20Data.md) to find history already on the engine. A frame selects data; recording policy determines which samples exist. [Telemetry Exporter](../Interface/Telemetry%20Exporter.md) compares a time range and exports CSV.
 
 When finished, stop your demo tasks. Stop the engine through its local node controls if you also want the engine process to end.
+
+The login chooser checks whether saved endpoints answer without registering or sending the saved password. An online indicator means the endpoint answered; connecting still verifies credentials and compatibility. Local process controls also verify ownership of the Engine process.

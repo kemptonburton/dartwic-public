@@ -1,6 +1,6 @@
 ---
 summary: Investigate event causes and use acknowledgement, resolution, prompts, and holds.
-updated: 2026-10-20T18:59
+updated: 2026-10-23T00:49
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -14,6 +14,8 @@ Open **Events** or **Events Board** to review ARGUS records. The bottom event ba
 Read the title and description, then the resolution text. The details include node, system/subsystem, source, and related channels when the producer supplies them. Channel graphs help you compare the event with measurements. A graph opened from a recorded event starts paused around its occurrence. Use **Show realtime** in its toolbar to follow current channel values, even after the event stops firing. The time-window field shows the full visible span and can be edited while paused or live.
 
 For declared DCode events, **Trigger Origin** explains what fired the event; **Definition Origin** links back to its declaration. The generated firing and event-state channels appear with that origin context.
+
+For Engine diagnostic events, the warning-triangle **Open diagnostics** button beside **Fired by** opens the relevant measurement or runtime condition in Settings. Channel Search uses the same button for Engine diagnostic channel origins.
 
 Use the board filters to narrow by node, type, status, source grouping, text, session, or time. An event disappearing from the active board does not mean its historical record never existed.
 

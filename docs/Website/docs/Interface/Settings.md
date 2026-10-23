@@ -1,6 +1,6 @@
 ---
 summary: Configure the interface, engine connection, history retention, diagnostics, and plugins.
-updated: 2026-10-21T15:37
+updated: 2026-10-23T00:24
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -54,6 +54,6 @@ Discovery uses active IPv4 adapters and localhost without scanning IP ranges or 
 
 On the login page, choose **Edit engine** for a configured local engine and select **Engine config settings**. It edits the node identity, TEMPEST bind address and base port, administrator password, viewer access, startup project, runtime persistence interval, fixed-channel capacity, and license key. Passwords and license keys are write-only; leaving them blank keeps the saved values. The license removal switch clears the saved key.
 
-Choose **Save startup configuration** to save for the next start. A running engine continues using its current settings; the editor shows **Engine restart required** for pending changes. Saving does not stop or restart the engine, and a changed address or password does not replace the current process's connection credentials before restart. Reload settings if another editor has changed the configuration.
+Edits save automatically after a short pause or when you leave a field; switches and project selection save immediately. Closing the editor flushes pending edits. A warning icon beside each affected field indicates **Engine restart needed**. Save failures use the normal settings error indicators. Saving does not stop or restart a running engine, and changed connection credentials apply after restart.
 
 The connected **Engine** settings tab shows the same local startup section for a registered local engine. Its existing connection settings remain above that section. Workspace and installation paths are shown for reference; use the workspace and engine setup selectors to change their association. Web access to host-side startup editing requires a browser on the interface host, as with other local engine management controls.

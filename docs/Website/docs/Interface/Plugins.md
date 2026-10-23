@@ -1,6 +1,6 @@
 ---
 summary: Install compatible engine and interface extensions and inspect their status.
-updated: 2026-10-21T16:14
+updated: 2026-10-23T00:45
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -55,3 +55,7 @@ The settings view can also identify unmanaged plugins installed outside the brow
 If only one side appears, check the other host's installation and minimum version. If a plugin reports a load error, inspect its manifest and dependencies before recreating project resources.
 
 To build your own extension, start at [Plugin Development](../Plugins/Overview.md).
+
+The installed-plugin summary works without contacting the online catalog when no plugins are installed. If an update check cannot reach the catalog, Settings shows a catalog availability warning separately from installed-plugin errors. Browsing new plugins requires the online catalog.
+
+Desktop and web-host plugin requests can use IPv4 when IPv6 is unavailable, including catalog, release, README and archive requests. A remaining timeout means the host could not finish the request within its deadline; it does not indicate that an installed plugin failed to load.

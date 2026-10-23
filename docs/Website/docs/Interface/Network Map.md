@@ -1,6 +1,6 @@
 ---
 summary: Inspect connected clients, remote nodes, and TEMPEST Peer traffic.
-updated: 2026-10-20T18:59
+updated: 2026-10-23T00:53
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -22,6 +22,8 @@ The interface-to-engine connection and the engine-to-peer link are separate conn
 | Uplink / downlink | Payload traffic in the direction shown for the selected node or peer. Transport counters are measured where available; fallback application-payload estimates are labelled. |
 
 Use the map's **fit view** control after opening or resizing the resource. Select a node or its connection control to inspect or manage the link. Connection options depend on whether the node is local, connected, or remembered.
+
+Peer connection and traffic RAPID channels are sampled by the `engine_tempest_peer` CAESAR loop at a target rate of 1 Hz. A removed peer's disconnected channel status is published on the next sample; operation completion and that diagnostic observation are separate. Open the loop in Tasks to inspect its execution.
 
 ## Connect and reconnect
 

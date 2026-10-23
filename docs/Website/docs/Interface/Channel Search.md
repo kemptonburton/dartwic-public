@@ -1,6 +1,6 @@
 ---
 summary: Find live signals, inspect metadata, and open graphs or controls.
-updated: 2026-10-20T23:17
+updated: 2026-10-23T00:49
 status: coming-soon
 created: 2026-09-04T17:13
 ---
@@ -46,6 +46,8 @@ Rows show the channel name, a small graph, and the current value. Results are gr
 The **Update** selector controls how often the view redraws received telemetry. It defaults to **LIVE**; slower options are available when you want them. It does not change device acquisition, a task's target frequency, or recording policy. A stopped simulation can display a flat graph with perfectly valid stored values, as in the screenshot.
 
 ## Inspect and edit a channel
+
+Engine diagnostic channel origins offer both **Open in loop search** and **Open diagnostics**. The warning-triangle Diagnostics button opens the relevant measurement in Settings; the loop button opens its running publisher. The same Diagnostics button appears beside **Fired by** in ARGUS event details.
 
 | Field | What it tells you |
 | --- | --- |
