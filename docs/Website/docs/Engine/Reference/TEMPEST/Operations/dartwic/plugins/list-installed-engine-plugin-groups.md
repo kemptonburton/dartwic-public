@@ -13,5 +13,5 @@ This operation accepts an empty payload (`{}`).
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `plugins` | `array<EnginePluginGroup>` | Installed packages with engine_installed, engine_files_exist, engine_loaded_in_process, installed version, loaded_version, pending_version, queue flags, and restart requirement. |
+| `plugins` | `array<EnginePluginGroup>` | Filesystem and runtime inventory with engine_installed, engine_files_exist, engine_install_incomplete, engine_loaded_in_process, installed version, loaded_version, pending_version, queue flags, and restart requirement. Missing manifest or native binary is incomplete, not restartable. |
 | `change_failures` | `array<object>` | Durable failed restart changes, including operation, error, failed_path, locked, and restored when known. A failed status request is an error, not an empty inventory. |

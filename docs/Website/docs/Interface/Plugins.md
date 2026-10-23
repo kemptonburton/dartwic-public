@@ -58,7 +58,7 @@ Interface updates stage and validate the replacement before swapping directories
 
 The settings view can also identify unmanaged plugins installed outside the browser. The folder still needs a valid manifest and correctly laid-out binaries or UI bundle. [Packaging and Installation](../Plugins/Packaging%20and%20Installation.md#install-locally) gives the exact paths.
 
-If only one side appears, check the other host's installation and minimum version. If a plugin reports a load error, inspect its manifest and dependencies before recreating project resources.
+If only one side appears, check the other host's installation and minimum version. A folder with a missing manifest, native binary, or Interface entry script shows **Installation incomplete** and its file error; reinstall that side instead of restarting. A load error means the files are present but the runtime could not load them, so inspect its manifest and dependencies before recreating project resources.
 
 To build your own extension, start at [Plugin Development](../Plugins/Overview.md).
 
