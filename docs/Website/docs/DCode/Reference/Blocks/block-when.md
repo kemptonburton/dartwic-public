@@ -1,6 +1,8 @@
 ---
-title: "when"
-summary: "Run an indented block whenever its condition is true."
+title: when
+summary: Run an indented block whenever its condition is true.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

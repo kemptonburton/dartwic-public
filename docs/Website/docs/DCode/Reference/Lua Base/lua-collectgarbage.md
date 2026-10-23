@@ -1,6 +1,8 @@
 ---
-title: "collectgarbage"
-summary: "Control the Lua garbage collector."
+title: collectgarbage
+summary: Control the Lua garbage collector.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

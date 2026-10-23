@@ -1,6 +1,8 @@
 ---
-title: "once when"
-summary: "Run a block once when its condition first becomes true for the runtime instance."
+title: once when
+summary: Run a block once when its condition first becomes true for the runtime instance.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

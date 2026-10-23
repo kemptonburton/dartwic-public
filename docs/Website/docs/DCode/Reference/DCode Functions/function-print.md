@@ -1,6 +1,8 @@
 ---
-title: "print"
-summary: "Write values to stdout and the Engine log without creating an ARGUS event."
+title: print
+summary: Write values to stdout and the Engine log without creating an ARGUS event.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

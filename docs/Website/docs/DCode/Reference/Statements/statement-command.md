@@ -1,6 +1,8 @@
 ---
-title: "command channel"
-summary: "Claim automatic authority and write as the current task or loop."
+title: command channel
+summary: Claim automatic authority and write as the current task or loop.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

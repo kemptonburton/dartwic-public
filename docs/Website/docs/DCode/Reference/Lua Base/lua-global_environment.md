@@ -1,6 +1,8 @@
 ---
-title: "_G"
-summary: "Lua global environment table."
+title: _G
+summary: Lua global environment table.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

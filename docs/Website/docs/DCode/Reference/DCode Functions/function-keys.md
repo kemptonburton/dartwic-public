@@ -1,6 +1,8 @@
 ---
-title: "keys"
-summary: "Return object keys as an array in insertion order."
+title: keys
+summary: Return object keys as an array in insertion order.
+created: 2026-10-04T18:31
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

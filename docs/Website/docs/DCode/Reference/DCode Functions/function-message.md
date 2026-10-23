@@ -1,6 +1,8 @@
 ---
-title: "message"
-summary: "Report an ARGUS message and return a numeric host result, normally 1. Reporting does not wait for acknowledgement or resolution."
+title: message
+summary: Report an ARGUS message and return a numeric host result, normally 1. Reporting does not wait for acknowledgement or resolution.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

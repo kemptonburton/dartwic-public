@@ -1,6 +1,8 @@
 ---
-title: "insertChannelReference"
-summary: "Insert a typed channel reference without taking automation authority."
+title: insertChannelReference
+summary: Insert a typed channel reference without taking automation authority.
+created: 2026-09-04T17:13
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

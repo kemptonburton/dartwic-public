@@ -1,6 +1,8 @@
 ---
-title: "log"
-summary: "Append an info line to a named ARGUS stream; returns whether the log queue accepted it in Lua."
+title: log
+summary: Append an info line to a named ARGUS stream; returns whether the log queue accepted it in Lua.
+created: 2026-10-04T18:31
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

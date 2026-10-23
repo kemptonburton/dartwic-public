@@ -1,6 +1,8 @@
 ---
-title: "log_error"
-summary: "Append a red stderr/error line to a named ARGUS stream without creating an event."
+title: log_error
+summary: Append a red stderr/error line to a named ARGUS stream without creating an event.
+created: 2026-10-04T18:31
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

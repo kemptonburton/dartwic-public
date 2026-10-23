@@ -1,6 +1,8 @@
 ---
-title: "in"
-summary: "Iterate array values or object keys with for name in collection."
+title: in
+summary: Iterate array values or object keys with for name in collection.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

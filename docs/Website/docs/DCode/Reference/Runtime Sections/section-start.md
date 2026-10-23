@@ -1,6 +1,8 @@
 ---
-title: "start"
-summary: "Run setup when the containing task starts."
+title: start
+summary: Run setup when the containing task starts.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

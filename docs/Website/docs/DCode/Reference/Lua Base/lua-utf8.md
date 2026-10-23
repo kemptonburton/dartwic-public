@@ -1,6 +1,8 @@
 ---
-title: "utf8"
-summary: "Lua UTF-8 text utilities."
+title: utf8
+summary: Lua UTF-8 text utilities.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

@@ -1,6 +1,8 @@
 ---
-title: "wait_until"
-summary: "Wait for continuous truth for time seconds. A positive timeout raises an execution error; zero disables expiry. In a timeline bucket, only that bucket waits; the mission clock and other due buckets continue. A task hold pauses duration and timeout accounting; a clock hold does not."
+title: wait_until
+summary: Wait for continuous truth for time seconds. A positive timeout raises an execution error; zero disables expiry. In a timeline bucket, only that bucket waits; the mission clock and other due buckets continue. A task hold pauses duration and timeout accounting; a clock hold does not.
+created: 2026-10-20T18:59
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

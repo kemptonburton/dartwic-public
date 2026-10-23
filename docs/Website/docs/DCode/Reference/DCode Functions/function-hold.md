@@ -1,6 +1,8 @@
 ---
-title: "hold"
+title: hold
 summary: "Display an ARGUS hold and block the invoking thread until release. This is not a cooperative timeline wait: calling it in a bucket can stall the entire timeline. Quiet expiry and acknowledgement do not release it. Returns a numeric host result, normally 1 after release, rather than an event ID."
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

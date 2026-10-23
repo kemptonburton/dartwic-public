@@ -1,6 +1,8 @@
 ---
-title: "transition task"
-summary: "Request a state on another state-machine task."
+title: transition task
+summary: Request a state on another state-machine task.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

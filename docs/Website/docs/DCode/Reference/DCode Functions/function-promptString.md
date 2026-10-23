@@ -1,6 +1,8 @@
 ---
-title: "promptString"
-summary: "Display a free-text ARGUS prompt. In a timeline bucket, suspends only that bucket until the response arrives; the mission clock and other due buckets continue. Other execution contexts wait on their invoking thread."
+title: promptString
+summary: Display a free-text ARGUS prompt. In a timeline bucket, suspends only that bucket until the response arrives; the mission clock and other due buckets continue. Other execution contexts wait on their invoking thread.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

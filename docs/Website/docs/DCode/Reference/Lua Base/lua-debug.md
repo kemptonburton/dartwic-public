@@ -1,6 +1,8 @@
 ---
-title: "debug"
-summary: "Lua debugging and introspection library."
+title: debug
+summary: Lua debugging and introspection library.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

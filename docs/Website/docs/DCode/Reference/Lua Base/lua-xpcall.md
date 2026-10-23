@@ -1,6 +1,8 @@
 ---
-title: "xpcall"
-summary: "Call a function with an error handler."
+title: xpcall
+summary: Call a function with an error handler.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

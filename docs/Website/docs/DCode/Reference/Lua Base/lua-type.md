@@ -1,6 +1,8 @@
 ---
-title: "type"
+title: type
 summary: "Return the DCode value kind: number, string, boolean, array, object, or null for shared DCode values in both backends."
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

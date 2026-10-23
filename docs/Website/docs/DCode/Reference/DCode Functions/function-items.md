@@ -1,6 +1,8 @@
 ---
-title: "items"
-summary: "Return an array of [key, value] pairs in object key order."
+title: items
+summary: Return an array of [key, value] pairs in object key order.
+created: 2026-10-04T18:31
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

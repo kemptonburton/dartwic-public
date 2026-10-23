@@ -1,6 +1,8 @@
 ---
-title: "string"
-summary: "Lua string functions."
+title: string
+summary: Lua string functions.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

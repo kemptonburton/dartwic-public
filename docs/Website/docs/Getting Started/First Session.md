@@ -1,6 +1,6 @@
 ---
 summary: Open a workspace, connect to its engine, and inspect your first signal.
-updated: 2026-10-22T17:54
+updated: 2026-10-22T20:08
 created: 2026-08-03T15:41
 status: coming-soon
 ---
@@ -23,6 +23,8 @@ The engine runs the tasks and owns the recordings. The Interface can close and r
 
 Desktop preferences, saved connections and local workspace registrations stay with each Interface installation in its `.dartwic/` folder. Separate extracted copies have separate settings; keep that folder when moving or updating an installation. The first launch with installation-local storage starts fresh rather than importing the old shared settings. Hosted Interface preferences still belong to the browser origin; its local workspace registry is stored beside the web host.
 
+The desktop version popup shows **Local engine** on the login page. Without a configured installation, its **+ Add** button downloads the engine/workspace package using the same setup control as Interface settings. Once configured, select an Engine version there to update the local installation. Stop engines using that installation first; the updater uses preparation mode and leaves workspace engines stopped. When connected, the row becomes **Connected engine** and targets that connection instead. Connected Engine updates and webserver Interface updates require administrator access. The Desktop Interface can update itself without connecting to an Engine.
+
 **Forget** removes a node's saved entry from this Interface. It leaves the engine running and preserves its instance configuration, workspace, recordings and installed files. A forgotten engine may still appear in network discovery, and its workspace can be added again later. Use **Stop engine** separately when you want to stop it.
 
 ## Launch an engine directly
@@ -41,6 +43,8 @@ For another computer to connect, use a reachable bind address and network access
 4. Confirm the connected node and active project in the top bar.
 
 A rejected password, unreachable engine, and incompatible version require different fixes. Read the connection error before changing settings. Viewer access must be enabled on the engine; a viewer cannot run the editing or command steps below.
+
+Canceling the username dialog returns to the login page and keeps automatic reconnect from reopening it after a reload. Choose a connection manually when ready to enter a username, or set one in **User settings**. Cancel does not connect without a name.
 
 ## Find nearby engines
 

@@ -1,6 +1,8 @@
 ---
-title: "assert"
-summary: "Raise an error if a condition is false."
+title: assert
+summary: Raise an error if a condition is false.
+created: 2026-08-04T17:39
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

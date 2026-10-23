@@ -1,6 +1,8 @@
 ---
-title: "log_warning"
-summary: "Append a warning line to a named ARGUS stream without creating an event."
+title: log_warning
+summary: Append a warning line to a named ARGUS stream without creating an event.
+created: 2026-10-04T18:31
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

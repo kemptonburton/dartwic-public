@@ -1,6 +1,8 @@
 ---
-title: "automatic override"
-summary: "Temporarily supersede automatic control until explicitly freed."
+title: automatic override
+summary: Temporarily supersede automatic control until explicitly freed.
+created: 2026-10-04T18:31
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

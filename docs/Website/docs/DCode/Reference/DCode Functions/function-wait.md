@@ -1,6 +1,8 @@
 ---
-title: "wait"
-summary: "Pause for finite nonnegative seconds; a task hold pauses elapsed time. In a timeline bucket, only that bucket waits while mission time and other due buckets continue. A clock hold freezes mission time but lets the wait progress."
+title: wait
+summary: Pause for finite nonnegative seconds; a task hold pauses elapsed time. In a timeline bucket, only that bucket waits while mission time and other due buckets continue. A clock hold freezes mission time but lets the wait progress.
+created: 2026-10-20T18:59
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax

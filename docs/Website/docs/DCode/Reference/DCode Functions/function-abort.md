@@ -1,6 +1,8 @@
 ---
-title: "abort"
-summary: "Report an ARGUS abort and return a numeric host result, normally 1. Reporting does not automatically stop tasks or command hardware; configure the required control reaction separately."
+title: abort
+summary: Report an ARGUS abort and return a numeric host result, normally 1. Reporting does not automatically stop tasks or command hardware; configure the required control reaction separately.
+created: 2026-08-04T17:38
+updated: 2026-10-22T17:41
 ---
 
 ## Syntax
