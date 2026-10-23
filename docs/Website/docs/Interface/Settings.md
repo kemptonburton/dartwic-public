@@ -22,9 +22,11 @@ Select a plugin to inspect its installation, version, and contributed settings. 
 
 User settings save to this Interface's local profile immediately, including edits made while connected to an Engine. Disconnecting or reloading keeps the saved display name, avatar, category, role label, and preferred username. Engine synchronization is debounced separately; a failed sync leaves the local profile saved and reports a warning in User settings.
 
+On desktop, local preferences belong to `.dartwic` beside the installed Interface executable. They stay with that installation across restarts and updates. Separate installations keep separate preferences. Browser-based Interfaces use the browser's storage for that site.
+
 If your profile has no username, connecting opens **Choose a username**. Enter a name and choose **Continue** to save it locally and resume that connection; **Cancel** leaves you disconnected. You can also set it in **User** settings. Every administrator connection uses this name, including saved connections and startup reconnect. Changing it applies to your next connection; it does not rename an active session. Other profile fields are optional presentation defaults. Viewer connections remain anonymous.
 
-The engine retains profiles by username so names and avatars remain available after disconnecting. If its saved profile differs from this interface at login, compare them and choose **USE ENGINE PROFILE** to update this interface, or **USE INTERFACE PROFILE** to replace the engine's saved presentation. **CANCEL** disconnects without changing either profile. Matching profiles connect normally; a new username saves the interface profile. This comparison covers display name, avatar, category, and role label, and does not change authentication permissions.
+The engine retains profiles by username so names and avatars remain available after disconnecting. If its saved profile differs from this interface at login, compare them and choose **USE ENGINE PROFILE** to save that presentation locally for future connections, or **USE INTERFACE PROFILE** to replace the engine's saved presentation. **CANCEL** disconnects without changing either profile. Matching profiles connect normally; a new username saves the interface profile. This comparison covers display name, avatar, category, and role label, and does not change authentication permissions. Editing the preferred username keeps the chosen display name and avatar.
 
 ## Save and apply changes
 

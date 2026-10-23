@@ -44,3 +44,5 @@ Read [Execution and Timing](Execution%20and%20Timing.md) before choosing where t
 | Connect remote engines or custom nodes | [TEMPEST Peer](TEMPEST%20Peers.md). |
 
 The generated [TEMPEST reference](Reference/TEMPEST/Overview.md) lists operation and telemetry contracts. Engine implementation details are separate from the public [plugin SDK](../Plugins/Reference/Engine/Overview.md).
+
+An Engine update stops the selected instance, replaces its managed `bin/` and `assets/` files, then checks that it reconnects. Other Engines sharing the installation are not stopped automatically. If one still holds a file, the update rolls back and restarts the selected Engine with its previous files; the failure names the blocked path. Stop the other Engine before retrying. Plugin installation and loading have their own [separate status](../Interface/Plugins.md#installed-and-loaded-states).

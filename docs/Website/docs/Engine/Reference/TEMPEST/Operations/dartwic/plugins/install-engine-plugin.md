@@ -1,6 +1,6 @@
 ---
 title: "dartwic/plugins/install-engine-plugin"
-summary: "Installs an engine plugin package."
+summary: "Installs an Engine plugin package's files without loading native code into the running Engine. A replacement is staged for restart."
 ---
 
 - **Category:** Plugins
@@ -16,7 +16,7 @@ summary: "Installs an engine plugin package."
 
 ## Response payload
 
-**PluginInstallResult:** Installation result containing `plugin_id`, `plugins_dir`, installed `plugins`, `platform_key`, restart/queue flags, and a human-readable `message`.
+**PluginInstallResult:** Installation result containing `plugin_id`, `plugins_dir`, installed `plugins`, `platform_key`, restart/queue flags, `installed_inventory` reread from the destination and runtime, and a human-readable `message`. Completion establishes files or a queued replacement, not loaded code.
 
 ## Errors
 

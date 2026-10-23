@@ -1,6 +1,6 @@
 ---
 title: "dartwic/plugins/uninstall-engine-plugin"
-summary: "Uninstalls an engine plugin package."
+summary: "Queues removal of an Engine plugin package. Installed files and loaded code remain until restart."
 ---
 
 - **Category:** Plugins
@@ -13,7 +13,7 @@ summary: "Uninstalls an engine plugin package."
 
 ## Response payload
 
-**PluginUninstallResult:** Removal result containing `plugin_id`, `removed`, queue/restart flags, `removed_plugins`, and a human-readable `message`.
+**PluginUninstallResult:** Removal result containing `plugin_id`, `removed`, queue/restart flags, `removed_plugins`, `installed_inventory` observed after queuing, and a human-readable `message`.
 
 ## Errors
 

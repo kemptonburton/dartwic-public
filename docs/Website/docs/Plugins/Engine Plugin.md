@@ -6,6 +6,8 @@ created: 2026-09-06T14:32
 
 An engine plugin is a native library loaded by DARTWIC. It registers reusable behavior when loaded and can create module instances from project configuration. Start with the [example project](Overview.md#start-from-the-example); this guide uses its existing class and build setup.
 
+Installing its native files through the plugin browser does not load the library into an already running Engine. Settings checks the destination manifest and binary for **Installed** and the connected Engine's runtime registry for **Loaded**. Restart the selected Engine to load a fresh plugin or apply a queued update/removal. If another Engine holds the shared library, replacement fails and the selected Engine restarts with the previous version; the error names the locked file. [Interface Plugins](../Interface/Plugins.md) explains the operator workflow.
+
 ## 1. Set the plugin identity
 
 Edit the root `plugin.json`. Keep `contains_engine_plugin: true`, and set `contains_interface_plugin` to whether you ship UI. Set `minEngineVersion` to the oldest engine you actually support. Keep the plugin ID consistent in the manifest, interface definition, and generated output folders. The [manifest table](Packaging%20and%20Installation.md#manifest) explains every required field.

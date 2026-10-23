@@ -105,7 +105,7 @@ npm run deploy
 
 Use your actual shared engine installation directory and interface plugin host root. The engine directory contains `bin/`, `plugins/`, and `instances/`; it is not an individual instance's configuration directory. You can instead copy `deployment-settings.example.json` to `deployment-settings.json` and set `engine_dir` and `interface_dir`. `deploy-debug` targets a debug engine; `deploy:interface` rebuilds and copies only UI.
 
-For a manual install, stop all engine instances using that installation before replacing engine files, and stop the interface host before replacing its loaded files. Extract the archive and copy each **ID directory**:
+For a manual copy, stop all Engine instances using that installation before replacing native files, and stop the Interface host before replacing its loaded files. The in-app browser uses a staged transaction instead: it can install a fresh plugin while the Engine runs, queues native updates/removals for restart, and hot-reloads the Interface side. Extract the archive and copy each **ID directory**:
 
 | Package source | Installation destination |
 | --- | --- |
@@ -115,7 +115,7 @@ For a manual install, stop all engine instances using that installation before r
 
 Each installed side needs its own valid `plugin.json`. Preserve the native `bin/` and UI `ui/` subdirectories and all dependencies. Do not place the entire ZIP or an extra `plugin/engine/` wrapper inside the installed ID directory.
 
-Start the engine and reload the interface. In **Settings → Plugins**, check the installed side, version, and any load error. Create a module instance only after its engine plugin is loaded. See [Interface Plugins](../Interface/Plugins.md) for the normal plugin-browser workflow.
+Start the Engine and reload the Interface after a manual copy. In **Settings → Plugins**, check each side's files, installed version, loaded version, and any load error. A missing manifest, native binary, or `ui/index.js` is incomplete even if a directory exists. Create a module instance only after its Engine plugin is loaded. See [Interface Plugins](../Interface/Plugins.md) for the normal plugin-browser workflow.
 
 ![Settings lists the installed engine and interface sides separately.](../_attachments/plugins.jpg)
 

@@ -54,7 +54,7 @@ npm run verify
 npm run package
 ```
 
-The built entry is `plugin/interface/example_device_plugin/ui/index.js`. Install it using [Packaging and Installation](Packaging%20and%20Installation.md), reload the interface, and look for **Test Notes** in the resource navigation.
+The built entry is `plugin/interface/example_device_plugin/ui/index.js`. Install it using [Packaging and Installation](Packaging%20and%20Installation.md). An in-app install or update invalidates the old script and contributions and loads the new bundle in the current Interface without an Engine restart. A manual file copy requires an Interface reload. Look for **Test Notes** in the resource navigation; if loading fails, Settings keeps the files marked installed and shows the load error.
 
 ## Choose a contribution
 

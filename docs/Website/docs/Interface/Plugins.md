@@ -14,8 +14,8 @@ Open **Settings → Plugins** to inspect installed plugins and browse available 
 1. Connect to the engine you intend to extend.
 2. Open the plugin browser and search for a plugin.
 3. Read its description, repository README, release version, and minimum host versions.
-4. Install interface sides in the current interface host. For engine sides, declare the dependency in the workspace or project manifest, add that workspace to the node list, then open the node's **Start** console. Enable **Install required plugins before start** and choose **Prepare workspace** while the workspace is stopped. The console shows setup progress; the assistant starts preparation mode, installs engine plugins in the selected installation, and stops preparation mode again.
-5. Inspect the installed version and load status before creating a module or opening a new resource.
+4. Choose **Install** while connected to the Engine. The Interface installs its files in the current host and loads its bundle immediately. The Engine downloads and verifies its native side, installs the files in its shared installation, and offers **Restart Engine** to load them.
+5. Inspect each side's installed version and load status before creating a module or opening a new resource. You can decline the restart and do it later; refreshing Settings keeps the Engine side marked **Installed · Not loaded · Restart required**.
 
 The browser resolves compatible releases from the public registry. A plugin without compatible release assets cannot be installed just because its source repository exists.
 
@@ -32,7 +32,7 @@ displayed release; they do not establish compatibility with the connected host.
 
 For a public repository outside the registry, use **Open plugin from GitHub** and paste its repository link. The preview uses the same release and compatibility checks and marks the plugin **Unlisted**.
 
-Workspaces using the same engine installation share its plugin directory. Stop all normal engine instances before installing, replacing, or removing an engine plugin. Setup mode keeps workspace startup scripts and device tasks idle. A pinned version conflict with another registered workspace must be resolved before replacing a shared plugin. Interface plugins belong to the desktop or webserver host and are installed separately from the engine. See [Tracking a Project in GitHub](../Getting%20Started/Tracking%20a%20Project%20in%20GitHub.md) for the manifest and directory examples.
+Workspaces using the same Engine installation share its plugin directory. A fresh plugin can be installed while the Engine runs; native code loads at the next restart. Updates and removals are queued while existing code continues running. Restart only the selected Engine to apply a queued change. If another Engine still holds a native file, the change fails, the selected Engine restarts with its previous plugin, and a popup names the locked path. Stop the Engine holding that file and explicitly retry. The Interface side updates or removes immediately. A pinned version conflict with another registered workspace must be resolved before replacing a shared plugin. See [Tracking a Project in GitHub](../Getting%20Started/Tracking%20a%20Project%20in%20GitHub.md) for manifest and directory examples.
 
 ## What installation adds
 
@@ -50,7 +50,7 @@ Contribution badges show the modules, tasks, TEMPEST peers, operations, telemetr
 
 ## Installed and loaded states
 
-Installed means the plugin files are present on disk. A newly installed Engine plugin can be **installed, not loaded** until the Engine restarts. Queued updates and removals are shown separately; they are not missing components to patch. Plugin settings that call Engine-provided operations become available after that Engine plugin loads. An unavailable status request is shown as unavailable rather than evidence that files are missing.
+Installed means the destination has a valid manifest and its required native binary or Interface entry script. Loaded means the connected Engine API or current Interface runtime reports it. Installed, loaded, and queued versions can differ. A newly installed Engine plugin is **Installed · Not loaded · Restart required** until restart. Queued updates and removals leave the current installed and loaded versions visible. Missing files are an incomplete installation; an unavailable status request is **Status unavailable**, not missing files. A load error leaves the files installed and reports **Load failed**. Plugin settings that call Engine-provided operations become available after that Engine plugin loads.
 
 Interface updates stage and validate the replacement before swapping directories. If staging or replacement fails, the previous installed version is retained or restored. Interface-only actions do not install, update, or remove Engine components and do not request an Engine restart. Removing a queued Engine update cancels its replacement as well; a missing staged replacement cannot erase the previous installed files during startup.
 

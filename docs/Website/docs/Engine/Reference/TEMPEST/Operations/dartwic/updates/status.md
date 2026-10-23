@@ -1,8 +1,6 @@
 ---
-title: dartwic/updates/status
-summary: Returns the persistent engine update state, including any staged release.
-created: 2026-09-04T17:13
-updated: 2026-10-20T18:59
+title: "dartwic/updates/status"
+summary: "Returns the persistent engine update state, including any staged release."
 ---
 
 - **Category:** Engine Updates
@@ -16,3 +14,7 @@ This operation accepts an empty payload (`{}`).
 | Field | Type | Description |
 | --- | --- | --- |
 | `state` | `string` | Update lifecycle state. |
+| `error` | `string` | Failure details; rollback means the selected Engine reconnected with its previous files. |
+| `locked` | `boolean` | A replacement target was still locked after the selected Engine stopped. |
+| `failedPath` | `string` | The file that could not be replaced, when known. |
+| `recovered` | `boolean` | Whether the previous Engine passed its reconnect health check. |
