@@ -1,6 +1,6 @@
 ---
 summary: Open a workspace, connect to its engine, and inspect your first signal.
-updated: 2026-10-22T20:08
+updated: 2026-10-22T21:55
 created: 2026-08-03T15:41
 status: coming-soon
 ---
@@ -13,7 +13,7 @@ Public Engine/Interface downloads and license signup are still being prepared. T
 
 The [example workspace](Example%20Workspace.md) is a useful first project because it supplies a simulated device and working scripts. Keep its repository folders together; the actual workspace is the nested `example-workspace/` folder.
 
-1. In **Settings → Interface**, choose **Add** to download the packaged engine and workspace into a destination folder. Both folder selections start blank in a fresh Interface installation and fill automatically after installation. They are read-only; use their folder buttons to select existing folders. **Add workspace** also offers **Download engine** when no engine is configured. Wait for installation to finish before adding another workspace.
+1. In **Settings → Interface**, choose **Add** to download the packaged engine and workspace into a destination folder. Its `engine/` and `workspaces/` contents go directly into the folder you select. Both folder selections start blank in a fresh Interface installation and fill automatically after installation. They are read-only; use their folder buttons to select existing folders. **Add workspace** also offers **Download engine** when no engine is configured. The status panel shows download and installation progress. Wait for installation to finish before adding another workspace.
 2. Choose **Add workspace** on the landing page and select the workspace folder, not its `default/` project folder.
 3. Select the project and local engine settings. If an existing engine instance matches this workspace, review the settings loaded from it. Enter a license key if needed for the project's capacity.
 4. Choose **Add node** to save the setup. Open its **Start** console, review dependencies, and prepare the workspace while stopped.
