@@ -19,6 +19,7 @@ Follow each repository's README for setup and compatible versions.
 | [`clients/`](clients/README.md) | Standalone Python, Node.js, React, C++, and C++ TEMPEST peer clients. |
 | `docs/Website/docs/` | Current documentation. |
 | `docs/Website/releases/` | Release notes and attachments. |
+| `media/readme/` | Screenshots used by the private application repository's main README. |
 
 Each client folder includes its DARTWIC transport sources and install/build metadata. Download only the client you need and follow its README; third-party dependencies still need to be installed.
 
