@@ -1,6 +1,6 @@
 ---
 summary: Navigate projects, resource tabs, and the context panel.
-updated: 2026-10-23T17:49
+updated: 2026-10-23T21:47
 status: coming-soon
 created: 2026-09-06T14:39
 ---
@@ -21,7 +21,7 @@ Choose a project and enter an administrator password, or leave it blank to gener
 
 Each plugin has one row showing whether its Engine and Interface components are installed. Its searchable version picker lists each version once: **v2.0.0 · Installed** keeps a complete installation, and **v2.0.0 · Patch** fills missing components at that version. Selecting a different version changes both components together. Only versions available for all required components are offered. Use **Install plugins** to apply the selections, or skip changes and start the Engine directly. Plugin names open their repositories.
 
-The trash button on a registered local node deletes its instance folder, including local configuration, recordings and cache. The confirmation shows the folder when available. Stop the local engine first: Edit and Delete are disabled while it is running, and confirmation checks its status again. Workspace files and shared engine binaries/plugins are kept. Deletion removes the saved connection only after folder removal succeeds, so a status or file error leaves the node available for retry. A workspace that remains in the discovery folder can still appear under **Local workspaces** and be set up again with a fresh instance. Remote entries stay editable, and their trash button only forgets the saved connection.
+The trash button on a registered local node deletes its instance folder, including local configuration, recordings and cache. The confirmation shows the folder when available. Stop the local engine first: Edit and Delete are disabled while it is running, and the deletion checks again before removing files. If you already removed the Engine, workspace, or instance files manually, Delete still removes its saved entry. The row shows when the Engine, instance config, or workspace is missing instead of retaining their old details. Workspace files and shared engine binaries/plugins are kept when present. Deletion removes the saved connection only after folder removal succeeds, so a host or file error leaves the node available for retry. A workspace that remains in the discovery folder can still appear under **Local workspaces** and be set up again with a fresh instance. Remote entries stay editable, and their trash button only forgets the saved connection.
 
 Multiple workspace engines share the Engine installation selected in Interface settings. New configurations live under `engine/instances/<instance>/config.json`; each instance selects its workspace and uses a separate port range. Changing the configured Engine affects subsequent local starts, including existing nodes. Their instance folders and recordings stay at their original locations. Local node Restart controls switch a running older installation to the configured one. A workspace already running in another managed engine cannot be launched again through the Interface.
 
