@@ -1,10 +1,12 @@
 ---
 summary: Find signals, operate automation, and review data in the DARTWIC interface.
-updated: 2026-10-23T15:51
+updated: 2026-10-23T19:57
 created: 2026-08-03T15:41
 ---
 
 The interface is your workspace for a running engine. The top bar identifies the connected node and active project. The left navigation opens resource types; resources open in tabs, and the context panel shows details for the current selection.
+
+On Windows, extract the complete Desktop or Webserver download folder before opening `DARTWIC Interface.exe` or `DARTWIC Webserver.exe`. Keep the other files beside the executable. Updates reuse that executable path, so a Desktop shortcut or taskbar pin to it continues to open the updated app. A UI-only update reloads the current Interface; a full update restarts its host.
 
 Markdown documents, plugin READMEs, release notes and chat responses share readable
 typography: regular-weight prose, normal letter spacing, compact headings and
