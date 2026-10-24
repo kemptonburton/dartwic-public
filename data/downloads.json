@@ -1,0 +1,1343 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-24T21:34:04.845Z",
+  "repositories": {
+    "kemptonburton/dartwic-ethercat-plugin": [
+      {
+        "tag_name": "v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:57:38Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/zipball/v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/tarball/v2.0.0",
+        "assets": [
+          {
+            "name": "plugin-linux-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.0/plugin-linux-x64.zip",
+            "size": 2159082,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.0/plugin-win32-x64.zip",
+            "size": 3717851,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.0/plugin.json",
+            "size": 547,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-ethercat-plugin-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.0/release-manifest-ethercat-plugin-2.0.0.json",
+            "size": 1279,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.0/SHA256SUMS.txt",
+            "size": 252,
+            "state": "uploaded"
+          }
+        ]
+      }
+    ],
+    "kemptonburton/dartwic-example-plugin": [
+      {
+        "tag_name": "v2.0.3",
+        "html_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/tag/v2.0.3",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:57:26Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-plugin/zipball/v2.0.3",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-plugin/tarball/v2.0.3",
+        "assets": [
+          {
+            "name": "plugin-linux-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.3/plugin-linux-x64.zip",
+            "size": 7125079,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.3/plugin-win32-x64.zip",
+            "size": 2842701,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.3/plugin.json",
+            "size": 339,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-example-plugin-2.0.3.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.3/release-manifest-example-plugin-2.0.3.json",
+            "size": 1717,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.3/SHA256SUMS.txt",
+            "size": 252,
+            "state": "uploaded"
+          }
+        ]
+      }
+    ],
+    "kemptonburton/dartwic-example-workspace": [
+      {
+        "tag_name": "v2.0.4",
+        "html_url": "https://github.com/kemptonburton/dartwic-example-workspace/releases/tag/v2.0.4",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:57:15Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/zipball/v2.0.4",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/tarball/v2.0.4",
+        "assets": []
+      }
+    ],
+    "kemptonburton/dartwic-labjack-plugin": [
+      {
+        "tag_name": "v1.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/tag/v1.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:57:32Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-labjack-plugin/zipball/v1.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-labjack-plugin/tarball/v1.0.0",
+        "assets": [
+          {
+            "name": "plugin-linux-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.0/plugin-linux-x64.zip",
+            "size": 1478760,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.0/plugin-win32-x64.zip",
+            "size": 3250955,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.0/plugin.json",
+            "size": 567,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-labjack-plugin-1.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.0/release-manifest-labjack-plugin-1.0.0.json",
+            "size": 1279,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.0/SHA256SUMS.txt",
+            "size": 252,
+            "state": "uploaded"
+          }
+        ]
+      }
+    ],
+    "kemptonburton/dartwic-modbus-tcp-client": [
+      {
+        "tag_name": "v1.0.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/tag/v1.0.1",
+        "prerelease": false,
+        "published_at": "2026-10-22T18:33:35Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-modbus-tcp-client/zipball/v1.0.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-modbus-tcp-client/tarball/v1.0.1",
+        "assets": [
+          {
+            "name": "plugin-linux-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.1/plugin-linux-x64.zip",
+            "size": 1650033,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.1/plugin-win32-x64.zip",
+            "size": 3194088,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.1/plugin.json",
+            "size": 956,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-modbus-plugin-1.0.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.1/release-manifest-modbus-plugin-1.0.1.json",
+            "size": 1279,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.1/SHA256SUMS.txt",
+            "size": 252,
+            "state": "uploaded"
+          }
+        ]
+      }
+    ],
+    "kemptonburton/dartwic-public": [
+      {
+        "tag_name": "cpp-client-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/cpp-client-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:58:17Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/cpp-client-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/cpp-client-v2.0.0",
+        "assets": [
+          {
+            "name": "dartwic-cpp-client-2.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-client-v2.0.0/dartwic-cpp-client-2.0.0.zip",
+            "size": 19180,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-cpp-client-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-client-v2.0.0/release-manifest-cpp-client-2.0.0.json",
+            "size": 1002,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-client-v2.0.0/SHA256SUMS.txt",
+            "size": 95,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "cpp-peer-client-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/cpp-peer-client-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:56:40Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/cpp-peer-client-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/cpp-peer-client-v2.0.0",
+        "assets": [
+          {
+            "name": "release-manifest-cpp-peer-client-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-peer-client-v2.0.0/release-manifest-cpp-peer-client-2.0.0.json",
+            "size": 1009,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-peer-client-v2.0.0/SHA256SUMS.txt",
+            "size": 96,
+            "state": "uploaded"
+          },
+          {
+            "name": "tempest-peer-client-2.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-peer-client-v2.0.0/tempest-peer-client-2.0.0.zip",
+            "size": 31216,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "dartwic-peer-protocol-sdk-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/dartwic-peer-protocol-sdk-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:57:05Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/dartwic-peer-protocol-sdk-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/dartwic-peer-protocol-sdk-v2.0.0",
+        "assets": [
+          {
+            "name": "release-manifest-dartwic-peer-protocol-sdk-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/dartwic-peer-protocol-sdk-v2.0.0/release-manifest-dartwic-peer-protocol-sdk-2.0.0.json",
+            "size": 1050,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/dartwic-peer-protocol-sdk-v2.0.0/SHA256SUMS.txt",
+            "size": 98,
+            "state": "uploaded"
+          },
+          {
+            "name": "tempest-peer-protocol-2.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/dartwic-peer-protocol-sdk-v2.0.0/tempest-peer-protocol-2.0.0.zip",
+            "size": 32485,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-sdk-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-sdk-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:56:48Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-sdk-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-sdk-v2.0.0",
+        "assets": [
+          {
+            "name": "engine-plugin-sdk-2.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-sdk-v2.0.0/engine-plugin-sdk-2.0.0.zip",
+            "size": 26431,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-sdk-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-sdk-v2.0.0/release-manifest-engine-sdk-2.0.0.json",
+            "size": 1032,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-sdk-v2.0.0/SHA256SUMS.txt",
+            "size": 94,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:56:11Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.0.0",
+        "assets": [
+          {
+            "name": "engine-2.0.0-linux.tar.gz",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.0/engine-2.0.0-linux.tar.gz",
+            "size": 26130954,
+            "state": "uploaded"
+          },
+          {
+            "name": "engine-2.0.0-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.0/engine-2.0.0-win64.zip",
+            "size": 18068632,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.0/release-manifest-engine-2.0.0.json",
+            "size": 3144,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.0/SHA256SUMS.txt",
+            "size": 181,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.0.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.0.1",
+        "prerelease": false,
+        "published_at": "2026-10-23T00:27:28Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.0.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.0.1",
+        "assets": [
+          {
+            "name": "engine-2.0.1-linux.tar.gz",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.1/engine-2.0.1-linux.tar.gz",
+            "size": 26145056,
+            "state": "uploaded"
+          },
+          {
+            "name": "engine-2.0.1-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.1/engine-2.0.1-win64.zip",
+            "size": 18081933,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.0.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.1/release-manifest-engine-2.0.1.json",
+            "size": 3170,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.1/SHA256SUMS.txt",
+            "size": 181,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.0.2",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.0.2",
+        "prerelease": false,
+        "published_at": "2026-10-23T05:12:54Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.0.2",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.0.2",
+        "assets": [
+          {
+            "name": "engine-2.0.2-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.2/engine-2.0.2-win64.zip",
+            "size": 18082802,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.0.2.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.2/release-manifest-engine-2.0.2.json",
+            "size": 1741,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.2/SHA256SUMS.txt",
+            "size": 89,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.0.3",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.0.3",
+        "prerelease": false,
+        "published_at": "2026-10-23T06:32:05Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.0.3",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.0.3",
+        "assets": [
+          {
+            "name": "engine-2.0.3-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.3/engine-2.0.3-win64.zip",
+            "size": 18084616,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.0.3.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.3/release-manifest-engine-2.0.3.json",
+            "size": 1741,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.3/SHA256SUMS.txt",
+            "size": 89,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.0.4",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.0.4",
+        "prerelease": false,
+        "published_at": "2026-10-23T07:45:51Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.0.4",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.0.4",
+        "assets": [
+          {
+            "name": "engine-2.0.4-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.4/engine-2.0.4-win64.zip",
+            "size": 18085745,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.0.4.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.4/release-manifest-engine-2.0.4.json",
+            "size": 1741,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.4/SHA256SUMS.txt",
+            "size": 89,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.0.5",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.0.5",
+        "prerelease": false,
+        "published_at": "2026-10-23T09:38:13Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.0.5",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.0.5",
+        "assets": [
+          {
+            "name": "engine-2.0.5-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.5/engine-2.0.5-win64.zip",
+            "size": 18110862,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.0.5.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.5/release-manifest-engine-2.0.5.json",
+            "size": 1741,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.5/SHA256SUMS.txt",
+            "size": 89,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.0.6",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.0.6",
+        "prerelease": false,
+        "published_at": "2026-10-24T00:45:52Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.0.6",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.0.6",
+        "assets": [
+          {
+            "name": "engine-2.0.6-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.6/engine-2.0.6-win64.zip",
+            "size": 18111341,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.0.6.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.6/release-manifest-engine-2.0.6.json",
+            "size": 1741,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.6/SHA256SUMS.txt",
+            "size": 89,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:56:20Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.0",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.0-linux-x64.tar.gz",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.0/interface-desktop-2.0.0-linux-x64.tar.gz",
+            "size": 144272852,
+            "state": "uploaded"
+          },
+          {
+            "name": "interface-desktop-2.0.0-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.0/interface-desktop-2.0.0-win64.zip",
+            "size": 93439464,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.0/release-manifest-interface-desktop-2.0.0.json",
+            "size": 2920,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.0/SHA256SUMS.txt",
+            "size": 207,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.1",
+        "prerelease": false,
+        "published_at": "2026-10-23T00:27:36Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.1",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.1-linux-x64.tar.gz",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.1/interface-desktop-2.0.1-linux-x64.tar.gz",
+            "size": 144272417,
+            "state": "uploaded"
+          },
+          {
+            "name": "interface-desktop-2.0.1-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.1/interface-desktop-2.0.1-win64.zip",
+            "size": 93438243,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.1/release-manifest-interface-desktop-2.0.1.json",
+            "size": 3001,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.1/SHA256SUMS.txt",
+            "size": 207,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.10",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.10",
+        "prerelease": false,
+        "published_at": "2026-10-24T01:39:16Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.10",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.10",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.10-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.10/interface-desktop-2.0.10-win64.zip",
+            "size": 142114615,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.10.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.10/release-manifest-interface-desktop-2.0.10.json",
+            "size": 1676,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.10/SHA256SUMS.txt",
+            "size": 101,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.11",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.11",
+        "prerelease": false,
+        "published_at": "2026-10-24T03:04:05Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.11",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.11",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.11-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.11/interface-desktop-2.0.11-win64.zip",
+            "size": 142114835,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.11.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.11/release-manifest-interface-desktop-2.0.11.json",
+            "size": 1676,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.11/SHA256SUMS.txt",
+            "size": 101,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.2",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.2",
+        "prerelease": false,
+        "published_at": "2026-10-23T02:08:13Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.2",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.2",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.2-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.2/interface-desktop-2.0.2-win64.zip",
+            "size": 93438644,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.2.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.2/release-manifest-interface-desktop-2.0.2.json",
+            "size": 1668,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.2/SHA256SUMS.txt",
+            "size": 100,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.3",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.3",
+        "prerelease": false,
+        "published_at": "2026-10-23T04:13:06Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.3",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.3",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.3-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.3/interface-desktop-2.0.3-win64.zip",
+            "size": 93661586,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.3.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.3/release-manifest-interface-desktop-2.0.3.json",
+            "size": 1976,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.3/SHA256SUMS.txt",
+            "size": 197,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.4",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.4",
+        "prerelease": false,
+        "published_at": "2026-10-23T05:13:02Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.4",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.4",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.4-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.4/interface-desktop-2.0.4-win64.zip",
+            "size": 93664195,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.4.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.4/release-manifest-interface-desktop-2.0.4.json",
+            "size": 1668,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.4/SHA256SUMS.txt",
+            "size": 100,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.5",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.5",
+        "prerelease": false,
+        "published_at": "2026-10-23T06:32:16Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.5",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.5",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.5-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.5/interface-desktop-2.0.5-win64.zip",
+            "size": 93665441,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.5.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.5/release-manifest-interface-desktop-2.0.5.json",
+            "size": 1668,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.5/SHA256SUMS.txt",
+            "size": 100,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.6",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.6",
+        "prerelease": false,
+        "published_at": "2026-10-23T07:46:02Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.6",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.6",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.6-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.6/interface-desktop-2.0.6-win64.zip",
+            "size": 93668473,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.6.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.6/release-manifest-interface-desktop-2.0.6.json",
+            "size": 1668,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.6/SHA256SUMS.txt",
+            "size": 100,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.7",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.7",
+        "prerelease": false,
+        "published_at": "2026-10-23T09:38:21Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.7",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.7",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.7-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.7/interface-desktop-2.0.7-win64.zip",
+            "size": 93682429,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.7.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.7/release-manifest-interface-desktop-2.0.7.json",
+            "size": 1668,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.7/SHA256SUMS.txt",
+            "size": 100,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.8",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.8",
+        "prerelease": false,
+        "published_at": "2026-10-24T00:46:00Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.8",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.8",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.8-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.8/interface-desktop-2.0.8-win64.zip",
+            "size": 93690644,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.8.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.8/release-manifest-interface-desktop-2.0.8.json",
+            "size": 1668,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.8/SHA256SUMS.txt",
+            "size": 100,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.0.9",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.0.9",
+        "prerelease": false,
+        "published_at": "2026-10-24T01:09:12Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.0.9",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.0.9",
+        "assets": [
+          {
+            "name": "interface-desktop-2.0.9-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.9/interface-desktop-2.0.9-win64.zip",
+            "size": 143743514,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.0.9.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.9/release-manifest-interface-desktop-2.0.9.json",
+            "size": 1669,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.0.9/SHA256SUMS.txt",
+            "size": 100,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-sdk-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-sdk-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:56:57Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-sdk-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-sdk-v2.0.0",
+        "assets": [
+          {
+            "name": "interface-plugin-sdk-2.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-sdk-v2.0.0/interface-plugin-sdk-2.0.0.zip",
+            "size": 53204,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-sdk-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-sdk-v2.0.0/release-manifest-interface-sdk-2.0.0.json",
+            "size": 1019,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-sdk-v2.0.0/SHA256SUMS.txt",
+            "size": 97,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:56:31Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.0",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.0-linux-x64.tar.gz",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.0/interface-webserver-2.0.0-linux-x64.tar.gz",
+            "size": 49471019,
+            "state": "uploaded"
+          },
+          {
+            "name": "interface-webserver-2.0.0-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.0/interface-webserver-2.0.0-win64.zip",
+            "size": 46800456,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.0/release-manifest-interface-webserver-2.0.0.json",
+            "size": 3112,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.0/SHA256SUMS.txt",
+            "size": 211,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.1",
+        "prerelease": false,
+        "published_at": "2026-10-23T00:27:45Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.1",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.1-linux-x64.tar.gz",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.1/interface-webserver-2.0.1-linux-x64.tar.gz",
+            "size": 49478514,
+            "state": "uploaded"
+          },
+          {
+            "name": "interface-webserver-2.0.1-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.1/interface-webserver-2.0.1-win64.zip",
+            "size": 46801925,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.1/release-manifest-interface-webserver-2.0.1.json",
+            "size": 3195,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.1/SHA256SUMS.txt",
+            "size": 211,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.10",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.10",
+        "prerelease": false,
+        "published_at": "2026-10-24T01:39:24Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.10",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.10",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.10-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.10/interface-webserver-2.0.10-win64.zip",
+            "size": 35133475,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.10.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.10/release-manifest-interface-webserver-2.0.10.json",
+            "size": 1766,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.10/SHA256SUMS.txt",
+            "size": 103,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.11",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.11",
+        "prerelease": false,
+        "published_at": "2026-10-24T03:04:14Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.11",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.11",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.11-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.11/interface-webserver-2.0.11-win64.zip",
+            "size": 35134459,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.11.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.11/release-manifest-interface-webserver-2.0.11.json",
+            "size": 1766,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.11/SHA256SUMS.txt",
+            "size": 103,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.2",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.2",
+        "prerelease": false,
+        "published_at": "2026-10-23T02:08:37Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.2",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.2",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.2-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.2/interface-webserver-2.0.2-win64.zip",
+            "size": 46811927,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.2.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.2/release-manifest-interface-webserver-2.0.2.json",
+            "size": 1793,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.2/SHA256SUMS.txt",
+            "size": 102,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.3",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.3",
+        "prerelease": false,
+        "published_at": "2026-10-23T04:13:15Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.3",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.3",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.3-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.3/interface-webserver-2.0.3-win64.zip",
+            "size": 47087684,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.3.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.3/release-manifest-interface-webserver-2.0.3.json",
+            "size": 2105,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.3/SHA256SUMS.txt",
+            "size": 201,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.4",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.4",
+        "prerelease": false,
+        "published_at": "2026-10-23T05:13:09Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.4",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.4",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.4-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.4/interface-webserver-2.0.4-win64.zip",
+            "size": 47089895,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.4.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.4/release-manifest-interface-webserver-2.0.4.json",
+            "size": 1793,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.4/SHA256SUMS.txt",
+            "size": 102,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.5",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.5",
+        "prerelease": false,
+        "published_at": "2026-10-23T06:32:25Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.5",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.5",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.5-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.5/interface-webserver-2.0.5-win64.zip",
+            "size": 47093817,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.5.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.5/release-manifest-interface-webserver-2.0.5.json",
+            "size": 1793,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.5/SHA256SUMS.txt",
+            "size": 102,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.6",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.6",
+        "prerelease": false,
+        "published_at": "2026-10-23T07:46:11Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.6",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.6",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.6-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.6/interface-webserver-2.0.6-win64.zip",
+            "size": 47098005,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.6.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.6/release-manifest-interface-webserver-2.0.6.json",
+            "size": 1793,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.6/SHA256SUMS.txt",
+            "size": 102,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.7",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.7",
+        "prerelease": false,
+        "published_at": "2026-10-23T09:38:29Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.7",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.7",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.7-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.7/interface-webserver-2.0.7-win64.zip",
+            "size": 47112382,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.7.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.7/release-manifest-interface-webserver-2.0.7.json",
+            "size": 1793,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.7/SHA256SUMS.txt",
+            "size": 102,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.8",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.8",
+        "prerelease": false,
+        "published_at": "2026-10-24T00:46:08Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.8",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.8",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.8-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.8/interface-webserver-2.0.8-win64.zip",
+            "size": 47126658,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.8.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.8/release-manifest-interface-webserver-2.0.8.json",
+            "size": 1793,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.8/SHA256SUMS.txt",
+            "size": 102,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.0.9",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.0.9",
+        "prerelease": false,
+        "published_at": "2026-10-24T01:09:19Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.0.9",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.0.9",
+        "assets": [
+          {
+            "name": "interface-webserver-2.0.9-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.9/interface-webserver-2.0.9-win64.zip",
+            "size": 36268162,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.0.9.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.9/release-manifest-interface-webserver-2.0.9.json",
+            "size": 1759,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.0.9/SHA256SUMS.txt",
+            "size": 102,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "node-client-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/node-client-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:58:09Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/node-client-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/node-client-v2.0.0",
+        "assets": [
+          {
+            "name": "dartwic-node-client-2.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/node-client-v2.0.0/dartwic-node-client-2.0.0.zip",
+            "size": 9569,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-node-client-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/node-client-v2.0.0/release-manifest-node-client-2.0.0.json",
+            "size": 1011,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/node-client-v2.0.0/SHA256SUMS.txt",
+            "size": 96,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "python-client-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/python-client-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:57:58Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/python-client-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/python-client-v2.0.0",
+        "assets": [
+          {
+            "name": "dartwic-python-client-2.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/python-client-v2.0.0/dartwic-python-client-2.0.0.zip",
+            "size": 13823,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-python-client-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/python-client-v2.0.0/release-manifest-python-client-2.0.0.json",
+            "size": 1012,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/python-client-v2.0.0/SHA256SUMS.txt",
+            "size": 98,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "react-client-v2.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/react-client-v2.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-22T20:57:48Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/react-client-v2.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/react-client-v2.0.0",
+        "assets": [
+          {
+            "name": "dartwic-react-client-2.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/react-client-v2.0.0/dartwic-react-client-2.0.0.zip",
+            "size": 17488,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-react-client-2.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/react-client-v2.0.0/release-manifest-react-client-2.0.0.json",
+            "size": 1006,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/react-client-v2.0.0/SHA256SUMS.txt",
+            "size": 97,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "react-client-v2.0.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/react-client-v2.0.1",
+        "prerelease": false,
+        "published_at": "2026-10-24T00:46:15Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/react-client-v2.0.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/react-client-v2.0.1",
+        "assets": [
+          {
+            "name": "dartwic-react-client-2.0.1.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/react-client-v2.0.1/dartwic-react-client-2.0.1.zip",
+            "size": 17703,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-react-client-2.0.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/react-client-v2.0.1/release-manifest-react-client-2.0.1.json",
+            "size": 1038,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/react-client-v2.0.1/SHA256SUMS.txt",
+            "size": 97,
+            "state": "uploaded"
+          }
+        ]
+      }
+    ]
+  }
+}
