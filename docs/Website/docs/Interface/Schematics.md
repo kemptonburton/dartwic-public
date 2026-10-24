@@ -1,6 +1,6 @@
 ---
 summary: Build an operator view from channels, controls, diagrams, and graphs.
-updated: 2026-10-20T18:59
+updated: 2026-10-23T18:49
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -28,6 +28,11 @@ The toolbar separates editing and interaction modes. Use editing to arrange and 
 The node palette previews remain visible outside edit mode; enter edit mode to drag a node onto the schematic. Its category strip scrolls horizontally when the tabs do not fit. **Channel parameter card** and **Channel control card** provide card layouts for the same channel display and control nodes. Dragging a channel from Channel Search onto the schematic also offers both compact and card layouts for these nodes.
 
 Channel status distinguishes an explicit missing-channel response from telemetry that has not arrived or is not subscribed. Task cards retain their last successful task inventory when a refresh fails; a failed request alone does not establish that a task was removed.
+
+Channel graphs use each series' selected line color. Their legend values show
+stale data in the stale color and unavailable data in Not Found purple, retaining
+the last number when available. Status segment overlays are omitted while existing
+recorded-gap breaks remain. The same renderer serves Telemetry and event details.
 
 In command mode, select mission time or target T0 on a timeline task card to edit it. The full card also has a shift button beside mission time. Submit the time to preview the resulting clock position, choose an action for each crossed bucket, then apply the change. The input is replaced by the preview and its single Apply Time button; select Edit to enter a different time. Preview holds a running timeline; it stays held after applying until you resume it. These task operations do not require manual control of the timeline's read-only clock status channel.
 

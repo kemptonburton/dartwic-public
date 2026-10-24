@@ -472,6 +472,8 @@ export function DartwicProvider({
     }, [clientIdentityMetadata]);
 
     const disconnect = useCallback(async () => {
+        // Stop recovery before store notifications can run subscription cleanup.
+        const disconnected = clientRef.current.disconnect();
         desiredTelemetryChannelCountsRef.current.clear();
         channelUpdateQueueRef.current = {};
         if (channelFlushTimerRef.current != null) {
@@ -479,7 +481,7 @@ export function DartwicProvider({
             channelFlushTimerRef.current = null;
         }
         channelStoreRef.current.replace({});
-        return clientRef.current.disconnect();
+        return disconnected;
     }, []);
 
     const operation = useCallback(async (name, payload = {}, timeoutMs = 5000, options = {}) => {

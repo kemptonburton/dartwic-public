@@ -1,6 +1,6 @@
 ---
 summary: Start, stop, hold, and inspect runtime tasks.
-updated: 2026-10-20T22:37
+updated: 2026-10-23T18:19
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -9,7 +9,7 @@ Open **Tasks** to operate CAESAR tasks. A task card presents controls and diagno
 
 Your card or list view choice is remembered in this browser or desktop app when you reopen Tasks, including after restarting the interface. Timelines use their own view without replacing that saved choice.
 
-Click a DCode task row or card to open its script at the task declaration. DCode loop, calculation, and callback rows also open their declaring script; focused rows support Enter or Space. Callback source buttons open the same declaration. Runtime controls such as status and target frequency remain separate from that navigation. Unavailable list values display `-`, including target frequency for tasks that do not expose that control.
+Use the source buttons on DCode task cards and rows to open their script; clicking the card or row itself does not open the file. DCode loop, calculation, and callback rows open their declaring script; focused rows support Enter or Space. Callback source buttons open the same declaration. Runtime controls such as status and target frequency remain separate from that navigation. Unavailable list values display `-`, including target frequency for tasks that do not expose that control.
 
 Module-backed tasks show the module link and its shared connection indicator in both list and card views. Green means the declared device connection is healthy, red means disconnected, and a muted icon means the observation is unavailable or stale. Hover for the endpoint and current state. A healthy connection does not guarantee that every configured mapping succeeds.
 
@@ -19,7 +19,10 @@ Tasks includes Tasks, Timelines, Loops, Calculations, and Callbacks. The Callbac
 
 ## Task controls
 
-Starting, stopping or holding a task keeps the list visible while its status updates, preserving its scroll position and selection.
+Starting, stopping, holding or refreshing tasks keeps the current rows visible,
+preserving scroll position and selection while the inventory request completes.
+A temporary refresh failure retains the last successful results. A new search or
+connection can show the initial loading view.
 
 | Control | Effect |
 | --- | --- |
@@ -31,6 +34,8 @@ Starting, stopping or holding a task keeps the list visible while its status upd
 | **Target state** | Requests a state; acceptance depends on the task implementation. |
 
 Start a task, then confirm its running state and actual frequency. A running-but-held task is not advancing normally. Releasing its **TASK HOLD** event also clears that task's hold channel, allowing its execution path to resume; the accepted release request is not proof that the next cycle has completed. Stopping clears hold and releases the task's automatic channel ownership; it does not imply that every output has been driven to a hardware-safe value.
+
+A newly created DCode scheduled task starts with its declared target frequency: `task_periodic example 100 normal:` initializes a 100 Hz target. Reconfiguring an existing task preserves its current target, including an operator's adjustment. The target is a requested rate; inspect actual frequency separately.
 
 To start a task when the Engine opens a workspace, configure startup value `1` on its `<task_name>_running` channel. Startup holds callbacks until task and fixed-channel configuration has finished, then starts the requested task. Confirm its running and actual-frequency channels after connection.
 

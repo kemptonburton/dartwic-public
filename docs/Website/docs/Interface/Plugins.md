@@ -1,6 +1,6 @@
 ---
 summary: Install compatible engine and interface extensions and inspect their status.
-updated: 2026-10-23T02:15
+updated: 2026-10-23T16:11
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -32,7 +32,7 @@ displayed release; they do not establish compatibility with the connected host.
 
 For a public repository outside the registry, use **Open plugin from GitHub** and paste its repository link. The preview uses the same release and compatibility checks and marks the plugin **Unlisted**.
 
-Workspaces using the same Engine installation share its plugin directory. A fresh plugin can be installed while the Engine runs; native code loads at the next restart. Updates and removals are queued while existing code continues running. Restart only the selected Engine to apply a queued change. If another Engine still holds a native file, the change fails, the selected Engine restarts with its previous plugin, and a popup names the locked path. Stop the Engine holding that file and explicitly retry. The Interface side updates or removes immediately. A pinned version conflict with another registered workspace must be resolved before replacing a shared plugin. See [Tracking a Project in GitHub](../Getting%20Started/Tracking%20a%20Project%20in%20GitHub.md) for manifest and directory examples.
+Workspaces using the same Engine installation share its plugin directory. A fresh plugin can be installed while the Engine runs; native code loads at the next restart. Updates and removals are queued while existing code continues running. Restart only the selected Engine to apply a queued change. If another Engine still holds a native file, the change fails, the selected Engine restarts with its previous plugin, and a popup names the locked path. Stop the Engine holding that file and explicitly retry. The Interface side updates or removes immediately. Workspace setup retains installed versions by default and offers published releases for explicit installation; recorded workspace versions do not force downgrades or block Engine startup. Host compatibility checks still apply to installation. See [Tracking a Project in GitHub](../Getting%20Started/Tracking%20a%20Project%20in%20GitHub.md) for manifest and directory examples.
 
 ## What installation adds
 

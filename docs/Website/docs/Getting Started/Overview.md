@@ -1,6 +1,6 @@
 ---
 summary: Connect your equipment, write control logic, and build a workspace your team can use.
-updated: 2026-10-14T14:58
+updated: 2026-10-23T15:22
 created: 2026-09-04T17:13
 ---
 
@@ -33,3 +33,7 @@ For a smaller introduction, [First Session](First%20Session.md) takes you throug
 - [Clients](../Clients/Overview.md) connects Python scripts, dashboards, and other applications to an engine.
 
 If your system spans several computers, [TEMPEST Peer](../Engine/TEMPEST%20Peers.md) connects named nodes and makes their channels available together. [DARTWIC Ecosystem](DARTWIC%20Ecosystem.md) explains where each piece runs, and [Tracking a Project in GitHub](Tracking%20a%20Project%20in%20GitHub.md) covers moving your project between machines and sharing it with a team.
+
+## Documentation, bugs and feedback
+
+Open the Interface's version menu or General settings for **Docs**, **Report a bug** and **Give feedback**. Bug reports include reproduction steps and expected versus actual behavior; feedback drafts ask about your use case and suggested feature or improvement. Both open an editable GitHub issue draft with known Interface and Engine versions. Engine OS follows the version source: the connected Engine when connected, otherwise the selected local installation. Both Engine fields identify that source. Unavailable OS information stays unknown. Review the draft, add relevant details (including the Engine's OS version if useful), and remove private information before submitting. A GitHub account is required to submit an issue. Reports use the `bug` label; feedback uses `feature`.

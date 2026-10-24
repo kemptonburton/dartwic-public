@@ -1,6 +1,6 @@
 ---
 summary: Find signals, operate automation, and review data in the DARTWIC interface.
-updated: 2026-10-21T15:56
+updated: 2026-10-23T15:51
 created: 2026-08-03T15:41
 ---
 
@@ -29,6 +29,10 @@ monospace presentation, highlighting and copy controls.
 Scripts and module configuration are also resources. [Workspace and Resources](Workspace%20and%20Resources.md) explains navigation and project files.
 
 An administrator connection can command and configure the engine. **Connect as viewer** opens the permitted read-only views without a username or password when the engine allows viewers. [Viewer access](Workspace%20and%20Resources.md#viewer-access) explains the available controls.
+
+**Disconnect** returns to the node chooser and stops automatic reconnection. If the network drops while the Interface is open, it stays on the connected page and tries to recover. Reloading that window attempts to reconnect to its active node once; if that fails, it returns to the chooser and later reloads stay disconnected. Closing and reopening starts disconnected. Saved nodes remain available for explicit selection. An explicit connection link is consumed once; a successful connection then follows the same reload behavior.
+
+The version menu's yellow download icon signals an available update. Open the menu to see the same icon beside each Interface or Engine version that has a newer release.
 
 ## Reading live state
 

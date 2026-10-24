@@ -1,6 +1,6 @@
 ---
 summary: Configure the interface, engine connection, history retention, diagnostics, and plugins.
-updated: 2026-10-23T02:15
+updated: 2026-10-23T18:11
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -18,19 +18,21 @@ Open the gear icon in the left navigation to open **Settings**. The available pa
 
 Select a plugin to inspect its installation, version, and contributed settings. A manually installed plugin can appear as unmanaged. See [Plugins](Plugins.md).
 
+The **Default engine** version identifies the selected executable, independently of the connected Engine. It comes from compiled binary data or a verified-download receipt whose checksum matches that executable. Folder names, source manifests and update history cannot override it. An older binary without readable version evidence shows **Version unavailable**, with an error on the Default engine field, the Interface settings indicators and the version selector. Hover the error icon for the explanation. The error clears when the executable version becomes readable; it does not prevent starting the Engine, and a connected runtime can still report its own version.
+
 ## User profile
 
 User settings save to this Interface's local profile immediately, including edits made while connected to an Engine. Disconnecting or reloading keeps the saved display name, avatar, category, role label, and preferred username. Engine synchronization is debounced separately; a failed sync leaves the local profile saved and reports a warning in User settings.
 
 On desktop, local preferences belong to `.dartwic` beside the installed Interface executable. They stay with that installation across restarts and updates. Separate installations keep separate preferences. Browser-based Interfaces use the browser's storage for that site.
 
-If your profile has no username, connecting opens **Choose a username**. Enter a name and choose **Continue** to save it locally and resume that connection; **Cancel** leaves you disconnected. You can also set it in **User** settings. Every administrator connection uses this name, including saved connections and startup reconnect. Changing it applies to your next connection; it does not rename an active session. Other profile fields are optional presentation defaults. Viewer connections remain anonymous.
+If your profile has no username, connecting opens **Choose a username**. Enter a name and choose **Continue** to save it locally and resume that connection; **Cancel** leaves you disconnected. You can also set it in **User** settings. Every administrator connection uses this name, including saved connections and explicit connection links. Changing it applies to your next connection; it does not rename an active session. Other profile fields are optional presentation defaults. Viewer connections remain anonymous.
 
 The engine retains profiles by username so names and avatars remain available after disconnecting. If its saved profile differs from this interface at login, compare them and choose **USE ENGINE PROFILE** to save that presentation locally for future connections, or **USE INTERFACE PROFILE** to replace the engine's saved presentation. **CANCEL** disconnects without changing either profile. Matching profiles connect normally; a new username saves the interface profile. This comparison covers display name, avatar, category, and role label, and does not change authentication permissions. Editing the preferred username keeps the chosen display name and avatar.
 
 ## Save and apply changes
 
-In **Interface**, choose **Default engine** and **Workspace folder** using the folder buttons, or enter a path and press Enter. The default discovery folder is `workspaces/` beside the selected `engine/` folder. An explicitly selected workspace folder stays selected when you change the default engine. Existing workspace associations retain their engine installation.
+In **Interface**, choose **Default engine** and **Workspace folder** using the folder buttons, or enter a path and press Enter. The selected Engine supplies the local installation version and executable for all subsequent local node starts. Existing nodes use this selection too; their instance data stays in place. Local node Restart controls switch an older running installation to the configured one. A connected Engine still reports its actual running version until restarted. The default discovery folder is `workspaces/` beside the selected `engine/` folder. An explicitly selected workspace folder stays selected when you change the Engine folder.
 
 Engine text fields save when you leave the field or press Enter; switches save immediately. Saved connection settings can differ from the running engine. The field's warning identifies a change awaiting restart; **Restart now** applies it and reconnects the interface. Node name changes belong to the workspace; connection settings belong to the local engine instance.
 

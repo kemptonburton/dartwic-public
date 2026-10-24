@@ -1,6 +1,6 @@
 ---
 summary: Find live signals, inspect metadata, and open graphs or controls.
-updated: 2026-10-23T00:49
+updated: 2026-10-23T18:49
 status: coming-soon
 created: 2026-09-04T17:13
 ---
@@ -31,6 +31,11 @@ the view.
 The Modules / Tasks header shows **# modules · # tasks** for the current search
 and filters, including matching resources inside collapsed branches.
 
+Task start/stop and inventory updates keep the current results visible while
+refreshing in the background. Channel additions and removals update the affected
+rows; the Modules / Tasks tree waits for ownership information before placing a
+new channel. A temporary refresh failure retains the last successful results.
+
 Both browser layouts use the same channel state and colors for names, graphs and
 values. Missing or unavailable channels use the Not Found color; otherwise active
 event colors take priority over stale coloring. Without an active event, stale
@@ -42,6 +47,9 @@ normal text color. Event badges still identify active alerts on a missing channe
 Rows show the channel name, a small graph, and the current value. Results are grouped by node; remote channel keys retain their node prefix. **+ more channels** reveals up to 10 additional results per click, and **SHOW ALL** reveals the full group. Use the field filter to narrow by metadata when a text search is too broad.
 
 **SHOW ALL** expands the browsable results; live value subscriptions follow the rows currently on screen and any focused channel as you scroll. It does not subscribe to every result at once.
+
+Live value updates reuse the catalog's grouping and sorting. Visible sparklines
+share a redraw clock, while off-screen sparklines remain suspended.
 
 The **Update** selector controls how often the view redraws received telemetry. It defaults to **LIVE**; slower options are available when you want them. It does not change device acquisition, a task's target frequency, or recording policy. A stopped simulation can display a flat graph with perfectly valid stored values, as in the screenshot.
 

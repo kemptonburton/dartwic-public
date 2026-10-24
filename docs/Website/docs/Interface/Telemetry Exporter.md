@@ -1,6 +1,6 @@
 ---
 summary: Compare recorded signals with events and logs, and export raw samples to CSV.
-updated: 2026-10-21T01:46
+updated: 2026-10-23T18:49
 status: coming-soon
 created: 2026-08-03T15:41
 ---
@@ -10,6 +10,12 @@ Open **Telemetry** from the left navigation, or open selected channels from Chan
 ![Telemetry resource with time-range and channel controls.](../_attachments/telemetry-exporter.jpg)
 
 A live channel may have no recorded history. Check its `record_mode` and [DataFrame](DataFrames.md) before querying.
+
+Graph lines keep their selected series colors. The legend value uses the stale
+color for stale data or Not Found purple when unavailable, retaining the last
+numeric value when one exists. Stale and Not Found segment overlays are omitted;
+existing recorded-gap breaks remain visible. Schematic and event side-panel
+graphs share this behavior.
 
 ## Query a range
 
