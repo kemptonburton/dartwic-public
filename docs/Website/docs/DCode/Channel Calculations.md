@@ -1,12 +1,12 @@
 ---
 summary: Derive channels inline when their inputs change.
-updated: 2026-10-22T18:22
+updated: 2026-10-26T14:16
 created: 2026-08-03T15:41
 ---
 
-A channel calculation derives a numeric value from other channels. It runs as part of the channel update path, so use it for conversions and immediate reactions that must not wait for a periodic task.
+A channel calculation derives a number from live inputs, such as a unit conversion or a level percentage. It runs inline in the channel-write path, so use it when the result should follow accepted input writes without waiting for a scheduled task.
 
-## Derive a value
+# Derive a value
 
 This example updates a percentage whenever either input changes. Create the two input channels first and use the same units for both.
 
@@ -20,7 +20,9 @@ channel_calculation docs_demo_level_percent:
 
 Here, zero capacity produces zero as an explicit fallback. In a real controller, choose an appropriate invalid-input policy and report the fault separately; a plausible numeric fallback should not hide a failed sensor.
 
-## When it runs
+Activate the file and update `docs_demo_level` or `docs_demo_capacity`. Inspect `docs_demo_level_percent`; it should remain between 0 and 100.
+
+# When it runs
 
 | Update | Calculation behavior |
 | --- | --- |
@@ -32,11 +34,9 @@ Accepted equal-valued writes also run the calculation; a change in the numeric v
 
 A calculation runs on the thread that writes its channel or dependency. Keep it short: a wait, slow plugin call, or long calculation delays that writer too. Task start/stop channel writes enqueue lifecycle requests; the lifecycle handlers run later on the task or group thread.
 
-If a target calculation fails or produces no numeric result, DCode uses the original value submitted by the writer, subject to channel authority and RAPID's normal numeric channel conversion. Earlier transformations for that target write are discarded and remaining target calculations are skipped. Side effects already performed by calculations are not rolled back.
+Use [timed `when` and `once when` blocks](Common%20Syntax%20and%20Functions.md#require-a-sustained-condition) to require a condition for a duration without waiting inside the calculation. Timing state persists between evaluations, but a deadline alone does not schedule another evaluation. Include any sensor-quality checks in the condition.
 
-An ARGUS warning identifies the failed calculation, source location, target, error, writer origin, and submitted fallback value. Native C++ can report a generic calculation failure when no host error text is available. The warning is also printed to the engine console; failure to record the warning does not prevent the fallback. Repeated failures update the same named warning; its firing state expires after five quiet seconds. If a dependency calculation produces no numeric result, it leaves its target unchanged; the input stays committed. Dependency evaluation errors are logged. Calculations are not CAESAR tasks and have no running, hold, or frequency controls.
-
-### Calculation arguments
+## Calculation arguments
 
 | Variable | Direct target write | Dependency invocation |
 | --- | --- | --- |
@@ -47,7 +47,7 @@ Read named input pipes when a formula needs particular signals; `value` does not
 
 See [Execution and Timing](../Engine/Execution%20and%20Timing.md) when the calculation participates in a control cycle.
 
-## Dependencies
+# Dependencies
 
 Both examples can use [Native C++](Native%20C%2B%2B%20Execution.md). Static value pipes use prepared bindings; the dynamic-name example resolves its channel through the host at runtime.
 
@@ -62,8 +62,21 @@ channel_calculation docs_demo_selected_pressure:
 
 Dynamic references are resolved at runtime and are not discovered as static inputs. List every channel that should cause reevaluation, including any selection channel. Entries in `depends_on` are channel keys, without pipe delimiters or metadata-field suffixes.
 
-## Errors and cycles
+# Errors and cycles
 
-Return a number for portable behavior. A failed, null, missing, or other nonnumeric target result uses the original submitted value and reports the warning described above in both backends. Native C++ treats `return null` or falling through as no result; Lua diagnoses it as a nonnumeric-result error. On dependency invocations, native null/fallthrough quietly skips target publication, while Lua logs its error. Lua also accepts numeric strings through its numeric conversion, which Native C++ rejects. Use numeric returns in shared scripts; an old displayed target does not prove the latest evaluation succeeded.
+| Invocation | If the calculation fails or returns no numeric result |
+| --- | --- |
+| A direct write to the target | Uses the original submitted value, subject to authority and normal numeric conversion. Earlier transformations are discarded and later target calculations are skipped. |
+| A dependency update | Leaves the target unchanged; the input remains committed. Evaluation errors are logged. |
 
-Keep dependencies one-way. If a chain would reenter a calculation already executing, DCode skips that evaluation and records a cycle error. It does not undo accepted writes earlier in the chain. Make one channel the source of truth, or use a [periodic task](Writing%20Periodic%20Tasks.md) when the intended behavior depends on previous iterations.
+Side effects already performed are not rolled back. A direct-write fallback produces an ARGUS warning identifying the calculation, source, target, error, writer, and fallback value. Native C++ may provide generic failure text. The console also reports it; warning-storage failure does not prevent the fallback. Repeated failures update the same warning, whose firing expires after five quiet seconds.
+
+Return a number for portable behavior. Lua logs null/fallthrough as a nonnumeric-result error and accepts numeric strings; Native C++ treats null/fallthrough as no result and rejects numeric strings. An old displayed target does not establish that the latest evaluation succeeded.
+
+Keep dependencies one-way. DCode skips an evaluation that would reenter an already executing calculation and records a cycle error. Earlier writes remain. Use a [periodic task](Tasks.md) when the logic depends on previous iterations. Calculations have no task running, hold, or frequency controls.
+
+# Reference
+
+- [Channel calculation](Reference/Runtime%20Blocks/runtime-channel_calculation.md) — Declaration, invocation, and result rules.
+- [Explicit dependencies](Reference/Runtime%20Sections/section-depends_on.md) — Adding inputs for reevaluation.
+- [Calculation body](Reference/Runtime%20Sections/section-calculation_body.md) — Available calculation arguments.

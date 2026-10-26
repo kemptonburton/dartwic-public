@@ -2,7 +2,7 @@
 title: Engine Plugin SDK Reference
 summary: Public C++ types and APIs for building DARTWIC engine plugins.
 created: 2026-08-03T15:41
-updated: 2026-10-22T02:44
+updated: 2026-10-25T12:52
 ---
 
 ## Categories
@@ -16,9 +16,9 @@ updated: 2026-10-22T02:44
 | [Interface UI and Notifications](Interface%20UI%20and%20Notifications/Overview.md) | 1 |
 | [Lifecycle](Lifecycle/Overview.md) | 2 |
 | [Logs](Logs/Overview.md) | 7 |
-| [Modules](Modules/Overview.md) | 6 |
+| [Modules](Modules/Overview.md) | 8 |
 | [Operations](Operations/Overview.md) | 9 |
 | [Storage](Storage/Overview.md) | 5 |
-| [Tasks and Loops](Tasks%20and%20Loops/Overview.md) | 10 |
+| [Tasks and Loops](Tasks%20and%20Loops/Overview.md) | 11 |
 | [TEMPEST](TEMPEST/Overview.md) | 2 |
 | [Workspace Assets](Workspace%20Assets/Overview.md) | 7 |

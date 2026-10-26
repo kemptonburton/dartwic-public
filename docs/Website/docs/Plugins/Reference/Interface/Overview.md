@@ -2,13 +2,14 @@
 title: Interface Plugin SDK Reference
 summary: Public TypeScript exports for extending the DARTWIC interface.
 created: 2026-08-03T15:41
-updated: 2026-10-22T03:13
+updated: 2026-10-25T20:52
 ---
 
 ## Categories
 
 | Category | Entries |
 | --- | --- |
+| [Config Map](Config%20Map/Overview.md) | 9 |
 | [DARTWIC UI Components](DARTWIC%20UI%20Components/Overview.md) | 43 |
 | [Hooks and Utilities](Hooks%20and%20Utilities/Overview.md) | 13 |
 | [Markdown](Markdown/Overview.md) | 13 |
@@ -22,5 +23,5 @@ updated: 2026-10-22T03:13
 | [Storage](Storage/Overview.md) | 11 |
 | [Styling](Styling/Overview.md) | 1 |
 | [Tasks](Tasks/Overview.md) | 10 |
-| [UI Components](UI%20Components/Overview.md) | 207 |
+| [UI Components](UI%20Components/Overview.md) | 208 |
 | [Workspace Assets](Workspace%20Assets/Overview.md) | 13 |

@@ -2,7 +2,7 @@
 title: dartwic/create-task
 summary: Creates task.
 created: 2026-08-03T16:00
-updated: 2026-10-20T18:59
+updated: 2026-10-25T12:50
 ---
 
 - **Category:** Tasks
@@ -15,6 +15,7 @@ updated: 2026-10-20T18:59
 | `task_type` | `string` | Required | Registered task-type ID. |
 | `metadata` | `object` | Optional | Task metadata; defaults to an empty object. |
 | `arguments` | `object` | Optional | Task arguments; defaults to an empty object. Plugin task types may accept `module_instance_name`. |
+| `expected_arguments` | `object` | Optional | Optional optimistic concurrency check against the current arguments; conflicts reject before reconfiguration. |
 
 ## Response payload
 

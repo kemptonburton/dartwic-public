@@ -2,10 +2,10 @@
 title: TEMPEST Telemetry
 summary: Built-in server publications and client telemetry bindings, with delivery and payload contracts.
 created: 2026-08-04T16:30
-updated: 2026-10-20T18:59
+updated: 2026-10-25T13:05
 ---
 
-Telemetry messages use the envelope described in [Using TEMPEST](../../../Using%20TEMPEST.md). Subscribe with an exact topic or a supported topic prefix, depending on the client transport.
+Telemetry messages use the envelope described in [Using TEMPEST](../../../Advanced/Using%20TEMPEST.md). Subscribe with an exact topic or a supported topic prefix, depending on the client transport.
 
 ## Categories
 

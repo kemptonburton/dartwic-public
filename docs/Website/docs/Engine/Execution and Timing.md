@@ -1,14 +1,14 @@
 ---
-summary: Understand inline calculations, scheduled tasks, and asynchronous delivery.
-updated: 2026-10-14T15:07
+summary: Understand inline reactions, scheduled releases, ordering, and completion.
 created: 2026-09-06T14:34
+updated: 2026-10-26T14:16
 ---
 
-A signal can cause work at several different times: when a driver writes it, on the next scheduled task iteration, or when an Interface receives telemetry. Choose the path that matches the behavior you need.
+Execution timing describes when work starts, what it waits for, and when its result becomes available. A pressure reading, a controller's next decision, and a graph update can happen at different times.
 
-For example, a pressure conversion can run during the measurement update, while a fill controller runs periodically and a graph refreshes later. [Deterministic Automation](Deterministic%20Automation.md) covers choosing and measuring a repeated control path.
+**Inline** work runs within the call that triggered it. **Scheduled** work runs when its next iteration is due. **Asynchronous** work is handed to a background service. These distinctions help you put a response in the right place and measure the delay that matters.
 
-## What runs when
+# What runs when
 
 | Work | Trigger | Timing boundary |
 | --- | --- | --- |
@@ -22,7 +22,7 @@ For example, a pressure conversion can run during the measurement update, while 
 | History recording | Accepted writes and recording policy | Queued and flushed asynchronously. |
 | TEMPEST peer delivery | TEMPEST peer publications, transport, and receive handling | Asynchronous across the link. |
 
-## A synchronous limit response
+# Inline event reactions
 
 A pressure sample committed locally can immediately evaluate a DCode event condition. When the condition becomes numeric `1`, DCode updates its firing channel before constructing and recording the event payload, so `on_firing:` can run on that local path. The operator board updates later.
 
@@ -32,23 +32,90 @@ Synchronous describes **call ordering**, not a fixed time limit. An inline handl
 
 Task control channels follow that same write path. Committing `_running` or `_hold` synchronously records a lightweight lifecycle request; the task's start, hold/resume, and end handlers run later on the task's own thread (or its task-group thread). A slow lifecycle handler therefore stalls that task execution thread, not the channel writer.
 
-## Scheduled logic
+# Scheduled tasks
 
-[CAESAR Tasks](Tasks.md) explains task creation, absolute release scheduling, task groups and failure diagnostics.
+CAESAR is the Engine component that schedules tasks and manages their execution. A callback is the function it invokes for a task step. A periodic task requests a rate, such as 10 Hz, and CAESAR schedules its iterations. [Modules and Tasks](Modules%20and%20Tasks.md) explains setup and lifecycle.
 
-Fixed-channel reads and writes in a CAESAR task occur at their executing lines. A later task failure does not roll back an accepted write. [Fixed and dynamic channels](Channels.md#fixed-and-dynamic-channels) explains fixed storage and retained native bindings. [DARTWIC Builder](DARTWIC%20Builder.md) prepares the known layout before the task starts.
+Fixed-channel reads and writes in a CAESAR task occur at their executing lines. A later task failure does not roll back an accepted write. [Fixed and dynamic channels](Channels%20and%20Control.md#fixed-and-dynamic-channels) explains fixed storage and retained native bindings. [DARTWIC Builder](Advanced/DARTWIC%20Builder.md) prepares the known layout before the task starts.
 
 At 10 Hz, a periodic task has a nominal 100 ms period. A value arriving just after an iteration may wait until a later iteration to be observed. Execution time, operating-system scheduling, holds, and missed releases can add delay. Increasing the target frequency does not establish a guaranteed deadline.
 
-Use task diagnostics such as actual frequency, execution time, missed cycles, callback failures, and independently sampled health to detect missed timing or failed execution. These observations do not identify the cause by themselves. DCode's `missed:` section can react to missed releases; it does not replay every missed sample. See [Periodic Tasks](../DCode/Writing%20Periodic%20Tasks.md).
+Use task diagnostics such as actual frequency, execution time, missed cycles, callback failures, and independently sampled health to detect missed timing or failed execution. These observations do not identify the cause by themselves. DCode's `missed:` section can react to missed releases; it does not replay every missed sample. See [Periodic Tasks](../DCode/Tasks.md).
 
-The independently sampled task-health report adds `active_overdue` for a callback that remains active beyond its completion deadline. It is an actionable observation, not an implicit hardware interlock. See [health and response](Deterministic%20Automation.md#2-health-and-response).
+The independently sampled task-health report adds `active_overdue` for a callback that remains active beyond its completion deadline. It is an actionable observation, not an implicit hardware interlock. See [Task health](Advanced/Deterministic%20Automation.md#task-health).
 
-## Current failure behavior
+# Task scheduling
+
+A **release** is the scheduled opportunity for one task iteration to start. A standalone periodic task runs on its own thread. CAESAR advances releases using a monotonic clock, which measures elapsed time independently of wall-clock corrections. It advances by the period rather than adding a fresh sleep after each callback, avoiding accumulated scheduling drift.
+
+The first release can run immediately after startup. A frequency is a target: a thread may wake late, and callbacks take time. CAESAR records those separately:
+
+| Measurement | Meaning |
+| --- | --- |
+| Release lateness | How late execution starts relative to the planned release. |
+| Callback duration | Time spent in the callback wrapper, including immediate channel operations and synchronous reactions for scheduled tasks. |
+| Missed cycles | Planned releases skipped because execution has fallen behind. A slightly late wakeup does not necessarily skip a release. |
+| Overruns | Callbacks whose measured duration reaches or exceeds their target period. |
+| Actual frequency | Observed iteration rate; an average can conceal individual late releases. |
+
+When overdue, CAESAR advances to a future release rather than replaying every skipped callback. DCode's `missed:` section, or a plugin's existing `on_missed` callback, receives the skipped count and lateness. Keep it short: it runs on the execution thread. Releases consumed by the missed handler are counted without recursively calling it again.
+
+A missed handler cannot run while its thread is blocked. Requested priority influences OS scheduling; it does not establish a deadline or interrupt a blocking callback.
+
+# Task groups
+
+A **task group** coordinates existing tasks that need an order, such as read the device, calculate a command, then send it. Members keep their identities and schedules:
+
+```dcode
+task_group device_cycle:
+    run: device_read
+    run: sample_control
+    run: device_write
+```
+
+Configure all three at 10 Hz when every release should run acquisition, calculation and output in that order. The group runs due members sequentially on a coordinator thread, using one shared monotonic epoch. The members retain their names, lifecycle and diagnostics.
+
+Members can have different frequencies. The group orders the members that are due together; it does not force slower members to run on every faster release. Its next wakeup comes from member schedules, and it uses the highest requested member priority. There is no additional group frequency or priority to configure.
+
+A blocking member delays later members. Ordering does not require earlier members to succeed; see [failure behavior](#task-failures) before using the group to command equipment.
+
+For declaration details and restrictions, use the [task-group reference](../DCode/Reference/Runtime%20Blocks/runtime-task_group.md).
+
+
+## Try a read-control-write cycle
+
+This complete demo copies a simulated measurement through three tasks. Save it as `docs_cycle.dcode`, activate it, and start all three tasks. Their group puts them in read, control, write order at 10 Hz.
+
+```dcode
+task_periodic docs_cycle_read 10:
+    task elapsed_seconds:
+        |docs_cycle_measurement| = elapsed_seconds
+
+task_periodic docs_cycle_control 10:
+    task:
+        |docs_cycle_command| = |docs_cycle_measurement| * 2
+
+task_periodic docs_cycle_write 10:
+    task:
+        |docs_cycle_feedback| = |docs_cycle_command|
+
+task_group docs_cycle:
+    run: docs_cycle_read
+    run: docs_cycle_control
+    run: docs_cycle_write
+```
+
+The feedback should follow twice the measurement. A live display can span adjacent updates, so compare recorded samples when investigating individual cycles. The last task only copies a value; it does not simulate a device's physical response.
+
+Stop `docs_cycle_read` while the others run. The old measurement remains and the later tasks can still execute. That demonstrates why a real controller needs acquisition validity and freshness checks in addition to task order. Stop all three tasks when finished.
+
+To try the prepared path, select Native C++ and activate the same file again. Its direct output declarations supply the fixed channels used by the other tasks. Check Builder and the editor's bindings, then repeat the observations. See [Native C++ Execution](../DCode/Native%20C%2B%2B%20Execution.md) for toolchain setup.
+
+# Task failures
 
 Task groups order members that are due. A callback exception is logged and counted in `_failed_cycles`; the member still reports a dispatched cycle to the group, and later due members can run. Stopped members are skipped. Neither case automatically inhibits downstream automation or output. Missed-release diagnostics also do not establish a fault response for the hardware.
 
-Inspect a group's `member_last_outcomes` rather than assuming a preceding ordered member supplied a fresh successful result. The [composition contract](Deterministic%20Automation.md#3-deterministic-composition) describes the available outcomes and the application decision they require.
+`dartwic/get-task-groups` reports `member_last_outcomes`: `completed`, `callback_failed`, `skipped_stopped`, or `not_dispatched`. Check them and input freshness before using an earlier member's result. [Task groups](Advanced/Deterministic%20Automation.md#task-groups) explains the application decision.
 
 Fixed reads observe the live value when their DCode line executes. A stale fixed read handle returns a numeric fallback; a stale write handle is rejected. Declare the known fixed inputs and explicitly validate measurement age and validity before using them for control. An unchanged numeric value alone cannot distinguish a steady measurement from failed acquisition.
 
@@ -56,9 +123,9 @@ Authority-denied value writes leave the live value unchanged and do not publish 
 
 Command ownership, a local channel commit, and a successful physical action are separate facts. Choose fault responses from the hardware's hazards and verify them with device feedback; a universal zero output is not a safe default for every device. The Modbus driver guide describes software and protocol behavior; verify the physical response on your own equipment.
 
-## From a software write to hardware
+# Hardware response
 
-An accepted channel write means RAPID accepted and committed the value. It does not establish when a relay, valve, motor, or external controller changed state. That requires the driver to deliver the command and, where available, report feedback.
+A channel commit is the software result: RAPID accepted the value. Physical response also includes driver dispatch, transport, and equipment motion. Measure through independent feedback when you need the full response time.
 
 For an end-to-end measurement, account for:
 
@@ -69,21 +136,6 @@ For an end-to-end measurement, account for:
 
 Keep the decision near the acquiring and actuating node when remote latency matters. A local calculation over a remote channel reacts to the **arrival of the remote update**, not the original physical measurement time.
 
-## Interpreting timing measurements
+# Timing measurements
 
-Native DCode and fixed records reduce work on the repeated execution path by reusing prepared bindings, fixed storage, and bounded recording and observation handoffs. Supported fixed numeric collections and typed prepared plugin calls can also reuse owned storage. Other language and host operations, plugin code, and inline calculations may allocate or block. Compiling to C++ does not certify a callback or its inline dependencies. The native benchmark records host C++ allocation/free counts between observations and scheduled-release-to-completion time through missed-release recovery. Generated modules and plugin DLLs need separate probes; zero host counts alone would not prove an allocation-free deployment.
-
-A short desktop benchmark is evidence for that workload and run, not a worst-case deadline bound. Windows scheduling and competing machine load can delay a release even when its callback performs no allocation; missed releases alone do not identify whether the delay came from the OS, callback logic, or core contention. Include driver execution, recording, contention, and reconfiguration in qualification. A callback-duration number by itself omits scheduling lateness and can omit recovery work.
-
-## Reliability diagnostics
-
-| Symptom | Inspect |
-| --- | --- |
-| Task falls behind | Actual frequency, execution time, missed cycles, held state. |
-| UI skips intermediate values | Subscription interval and telemetry publication diagnostics. |
-| History lags live data | Recording queue and persistence diagnostics. |
-| Remote data stops arriving | TEMPEST peer connection state, received snapshots, channel timestamp, stale timeout, and queue/drop counters. A steady numeric value can be valid. |
-| Output value does not change | Control policy, active controller, and command error. |
-| Output value changes but hardware does not | Driver status and independent device feedback. |
-
-[Channels](Channels.md), [Commanding and Control](Commanding%20and%20Control.md), and [Telemetry and History](Telemetry%20and%20History.md) explain the corresponding fields.
+A target rate and a short benchmark describe different things. Check release lateness, callback duration, failures, and feedback for the actual workload. [Deterministic Automation](Advanced/Deterministic%20Automation.md#timing-measurements) covers native allocation probes and deployment qualification.

@@ -2,12 +2,12 @@
 title: TEMPEST Operations
 summary: Official request and response operations available in a standard DARTWIC runtime.
 created: 2026-08-04T17:33
-updated: 2026-10-21T00:08
+updated: 2026-10-25T13:05
 ---
 
 Plugins can register additional operations while they are loaded. This reference covers the operations built into DARTWIC and TEMPEST.
 
-See [Using TEMPEST](../../../Using%20TEMPEST.md) for request and response envelopes, errors, timeouts, and detached jobs.
+See [Using TEMPEST](../../../Advanced/Using%20TEMPEST.md) for request and response envelopes, errors, timeouts, and detached jobs.
 
 ## Categories
 

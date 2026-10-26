@@ -2,7 +2,7 @@
 title: project/actions/create
 summary: Creates a reviewed project operation.
 created: 2026-10-04T18:31
-updated: 2026-10-20T16:11
+updated: 2026-10-24T21:02
 ---
 
 - **Category:** Projects and Files
@@ -11,11 +11,12 @@ updated: 2026-10-20T16:11
 
 | Field | Type | Requirement | Description |
 | --- | --- | --- | --- |
-| `kind` | `string` | Required | rename_channel, delete_channels, delete_task, delete_tasks, or delete_module. |
+| `kind` | `string` | Required | rename_channel, delete_channels, cleanup_channels, delete_task, delete_tasks, or delete_module. |
 | `channel_names` | `array<string>` | Optional | Selected local channels. |
 | `task_name` | `string` | Optional | Task to delete. |
 | `task_names` | `array<string>` | Optional | Tasks to delete together. |
-| `module_name` | `string` | Optional | Module to delete together with its linked tasks and owned channels. |
+| `module_name` | `string` | Optional | Module to delete together with its linked tasks and owned channels; optional when resource_path is supplied. |
+| `resource_path` | `string` | Optional | Exact project-relative module configuration path, including modules/. Deletion works without its plugin or valid JSON. |
 | `new_name` | `string` | Optional | Destination for a channel rename. |
 
 ## Response payload

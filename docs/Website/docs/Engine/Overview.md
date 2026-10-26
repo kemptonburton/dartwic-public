@@ -1,48 +1,41 @@
 ---
-summary: Run the system that owns channels, tasks, events, and hardware integrations.
-updated: 2026-10-22T02:21
+summary: Understand configuration, execution, recording, and connections in the Engine.
 created: 2026-08-03T15:41
+updated: 2026-10-26T14:16
 ---
 
-The engine runs independently of the interface. It loads a project, hosts hardware modules, executes automation, accepts or rejects commands, records data, and serves connected clients.
+The Engine is the part of DARTWIC that connects to devices, runs automation, and records what happens. It runs independently of the Interface, so closing a display does not stop the work running on it.
 
-## Runtime components
+A typical setup reads a sensor, uses that measurement to make a decision, and sends a command to equipment. Channels hold the signals passed between those steps; the Interface lets you inspect and operate them.
 
-| Component | Responsibility |
+```text
+Device → Module / task → Channels → Calculations and event reactions
+                            ├─ Commands → Driver → Equipment feedback
+                            ├─ Recording → History and saved runs
+                            └─ Telemetry → Interfaces, clients, and peers
+```
+
+# Find the explanation you need
+
+| Question | Guide |
 | --- | --- |
-| RAPID | Channel values, metadata, command authority, and history. |
-| CAESAR | Tasks and scheduled loops. |
-| ARGUS | Events, firing state, operator actions, and event history. |
-| TEMPEST | Operation requests and telemetry delivery. |
-| DCode | Scripted calculations, events, and automation. |
-| TEMPEST Peer | Channels and events exchanged with other nodes. |
+| What belongs to an installation, instance, workspace, or project? | [Configuration and Storage](Configuration%20and%20Storage.md) |
+| What does a value mean, and who can write it? | [Channels and Control](Channels%20and%20Control.md) |
+| What happens during configuration, start, stop, and reload? | [Modules and Tasks](Modules%20and%20Tasks.md) |
+| What runs inline, on a schedule, or later? | [Execution and Timing](Execution%20and%20Timing.md) |
+| What reaches history, and what can expire or be lost? | [Recording and Retention](Recording%20and%20Retention.md) |
+| How do conditions, operator actions, and text output differ? | [Events and Logs](Events%20and%20Logs.md) |
+| How do clients and other nodes exchange data? | [Networking and Peers](Networking%20and%20Peers.md) |
+| What should I check when something fails or falls behind? | [Diagnostics and Troubleshooting](Diagnostics%20and%20Troubleshooting.md) |
 
-## Configure and start
+# Advanced topics
 
-A Release engine launched in an interactive terminal shows a workspace selector before startup. Choose a numbered engine instance; each entry identifies its workspace and node. Separator lines frame the menu, and **Q** exits. Noninteractive Release launches default to `engine/instances/default/`. A Debug executable starts the source checkout's primary instance (`tests/engine/instances/primary/`) directly, including from an IDE or terminal. `DARTWIC_CONFIG_DIR` selects an explicit instance directory in either build mode and bypasses the selector. The startup log prints the resolved configuration directory so you can verify which instance you launched.
-
-The instance's `config.json` holds local launch settings such as workspace location, server address/base port, active project, credentials, and capacity. The node name belongs to the workspace's `workspace.json`; portable settings belong in workspace or project settings files. Engine plugins are shared under the installation's `plugins/` directory. Separate instances keep separate local configuration, recordings, and caches.
-
-Follow [First Session](../Getting%20Started/First%20Session.md) for a packaged launch and connection. Use [Modules](Modules.md) to add device instances and [DCode](../DCode/Getting%20Started.md) to activate scripts.
-
-## Design the data path
-
-A module publishes a measurement to [RAPID](Channels.md). Dependent calculations and event conditions can run inline during that update. Scheduled tasks execute separately, and telemetry, recording, and TEMPEST peer delivery are asynchronous.
-
-Read [Execution and Timing](Execution%20and%20Timing.md) before choosing where to put a limit response. Read [Commanding and Control](Commanding%20and%20Control.md) before exposing outputs to tasks or clients.
-
-## Guides
-
-| You need to… | Read… |
+| You need to… | Guide |
 | --- | --- |
-| Name signals and choose recording/freshness settings | [Channels](Channels.md). |
-| Start and diagnose automation | [Tasks](Tasks.md). |
-| Integrate a driver or native service | [Modules](Modules.md) and [Engine Plugin](../Plugins/Engine%20Plugin.md). |
-| Review recorded data | [Telemetry and History](Telemetry%20and%20History.md). |
-| Create or query events | [Events and ARGUS](Events%20and%20ARGUS.md). |
-| Call operations and receive telemetry | [Using TEMPEST](Using%20TEMPEST.md). |
-| Connect remote engines or custom nodes | [TEMPEST Peer](TEMPEST%20Peers.md). |
+| Follow native builds and fixed-channel preparation | [DARTWIC Builder](Advanced/DARTWIC%20Builder.md) |
+| Measure a control cycle and test its failure response | [Deterministic Automation](Advanced/Deterministic%20Automation.md) |
+| Understand recording queues, indexing, and delivery loss | [Recording and Delivery Tuning](Advanced/Recording%20and%20Delivery%20Tuning.md) |
+| Find Engine addresses before connecting | [Network Discovery](Advanced/Network%20Discovery.md) |
+| Implement a raw operation and telemetry connection | [Using TEMPEST](Advanced/Using%20TEMPEST.md) |
 
-The generated [TEMPEST reference](Reference/TEMPEST/Overview.md) lists operation and telemetry contracts. Engine implementation details are separate from the public [plugin SDK](../Plugins/Reference/Engine/Overview.md).
-
-An Engine update stops the selected instance, replaces its managed `bin/` and `assets/` files, then checks that it reconnects. Other Engines sharing the installation are not stopped automatically. If one still holds a file, the update rolls back and restarts the selected Engine with its previous files; the failure names the blocked path. Stop the other Engine before retrying. Plugin installation and loading have their own [separate status](../Interface/Plugins.md#installed-and-loaded-states).
+The [operation reference](Reference/TEMPEST/Overview.md) lists request and telemetry contracts. [DCode](../DCode/Overview.md), [Plugins](../Plugins/Overview.md), and [Clients](../Clients/Overview.md) own authoring APIs. Use [First Session](../Getting%20Started/First%20Session.md) for installation and first use.

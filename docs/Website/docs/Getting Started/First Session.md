@@ -1,79 +1,173 @@
 ---
 summary: Open a workspace, connect to its engine, and inspect your first signal.
-updated: 2026-10-23T01:58
+updated: 2026-10-25T12:35
 created: 2026-08-03T15:41
-status: coming-soon
 ---
 
-Start with an engine and a compatible Interface. If a teammate already runs the engine, ask for its address and connection details and skip to [Connect the interface](#connect-the-interface).
+This guide walks through installing DARTWIC, connecting a device, displaying its data, running an automation, and exporting the results.
 
-Public Engine/Interface downloads and license signup are still being prepared. The [Downloads page](/areas/dartwic/downloads) reports their availability. These steps apply when you have the matching packages or a development installation.
+# Intro
 
-## Open a workspace
+You can follow this session with an Engine on your computer or one already running on your team's network.
 
-The [example workspace](Example%20Workspace.md) is a useful first project because it supplies a simulated device and working scripts. Keep its repository folders together; the actual workspace is the nested `example-workspace/` folder.
+For how the Engine, Interface, workspaces, and projects fit together, read [Overview](Overview.md).
 
-1. In **Settings → Interface**, choose **Add** to download the packaged engine and workspace into a destination folder. Its `engine/` and `workspaces/` contents go directly into the folder you select. Both folder selections start blank in a fresh Interface installation and fill automatically after installation. They are read-only; use their folder buttons to select existing folders. **Add workspace** also offers **Download engine** when no engine is configured. The shared progress toast shows the current stage, a blue loading bar, and transfer size when available. Wait for installation to finish before adding another workspace. If configured folders are moved or deleted, Settings marks the affected paths as errors and the version popup offers Add again.
-2. The downloaded `workspaces/workspace/` starter appears on the landing page with an empty `default` project. Add it there, or choose **Add workspace** and select another workspace folder, not its `default/` project folder.
-3. Select the project and expand **Engine settings** if needed. The engine folder starts with your configured default; use its folder button to select another installation. If an existing engine instance matches this workspace, review the settings loaded from it. Enter a license key if needed for the project's capacity.
-4. Choose **Add node** to save the setup. Open its **Start** console, review dependencies, and prepare the workspace while stopped.
-5. Choose **Start engine**, then **Open workspace** when it is ready.
+# Installing an Interface
 
-The engine runs the tasks and owns the recordings. The Interface can close and reconnect without stopping them. [Tracking a Project in GitHub](Tracking%20a%20Project%20in%20GitHub.md) explains the installation, instance, and workspace folders.
+To start, you will need access to an interface. You have two options for interfaces, a personal desktop one, or a shared webserver interface. Some teams may setup the webserver interface on their local network to allow for a no-setup connection on any device that has a web browser. Some may prefer to download their own desktop interface and use that as well.
 
-Desktop preferences, saved connections and local workspace registrations stay with each Interface installation in its `.dartwic/` folder. Separate extracted copies have separate settings; keep that folder when moving or updating an installation. The first launch with installation-local storage starts fresh rather than importing the old shared settings. Hosted Interface preferences still belong to the browser origin; its local workspace registry is stored beside the web host.
+## Desktop Interface
 
-The desktop version popup shows **Local engine** on the login page. Without a configured installation, its **+ Add** button downloads the engine/workspace package using the same setup control as Interface settings. Once configured, select an Engine version there to update the local installation. Stop engines using that installation first; the updater uses preparation mode and leaves workspace engines stopped. When connected, the row becomes **Connected engine** and targets that connection instead. Connected Engine updates and webserver Interface updates require administrator access. The Desktop Interface can update itself without connecting to an Engine.
+Start by downloading the desktop interface from the [Downloads](https://kemptonburton.com/areas/dartwic/downloads) page.
 
-**Forget** removes a node's saved entry from this Interface. It leaves the engine running and preserves its instance configuration, workspace, recordings and installed files. A forgotten engine may still appear in network discovery, and its workspace can be added again later. Use **Stop engine** separately when you want to stop it.
+![](_attachments/Pasted%20image%2020261024155126.png)
 
-## Launch an engine directly
+Unzip the file contents into a folder. You can name it whatever you want, but the recommended files structure for a DARTWIC setup is shown below. Once the contents are unzipped, you can launch `DARTWIC Interface.exe`.
 
-You can also launch the executable from an extracted package's `engine/bin/` directory. Its default instance configuration is `engine/instances/default/config.json`. `DARTWIC_CONFIG_DIR` selects a different instance directory. Check the **Config directory** printed at startup before editing settings.
+```
+dartwic/
+    interface/ (the file you just downloaded)
+        DARTWIC Interface.exe   (the interface app)
+```
 
-While the engine is stopped, configure the workspace path, active project, server address, base port, and administrator password there. The node name belongs in the workspace's `workspace.json`. Keep credentials and license files local to the instance. [Compatibility, Licensing, and Tiers](Compatibility%2C%20Licensing%2C%20and%20Tiers.md) covers capacity and activation.
+You then should see the interface app launch.
 
-For another computer to connect, use a reachable bind address and network access. With base port 7000, native operations use 7000, native telemetry uses 7001, and web transport uses 7002. [Using TEMPEST](../Engine/Using%20TEMPEST.md) explains these endpoints.
+## Webserver Interface
 
-## Connect the interface
+Start by downloading the webserver interface from the [Downloads](https://kemptonburton.com/areas/dartwic/downloads) page.
 
-1. Launch the Desktop Interface or open your deployment's hosted Interface.
-2. Select a discovered engine, or choose **New Connection** and enter its address and base port.
-3. Enter the engine's administrator password and connect. If you have no saved username, enter one in the popup and choose **Continue**. For permitted read-only access, choose **Connect as viewer** instead.
-4. Confirm the connected node and active project in the top bar.
+![](_attachments/Pasted%20image%2020261024155126.png)
 
-A rejected password, unreachable engine, and incompatible version require different fixes. Read the connection error before changing settings. Viewer access must be enabled on the engine; a viewer cannot run the editing or command steps below.
+Unzip the file contents into a folder. Just like for the desktop interface, you can name it whatever you want, but the recommended files structure for a DARTWIC setup is shown below.
 
-Canceling the username dialog returns to the login page and keeps automatic reconnect from reopening it after a reload. Choose a connection manually when ready to enter a username, or set one in **User settings**. Cancel does not connect without a name.
+```
+dartwic/
+    interface/ (the file you just downloaded)
+        DARTWIC Webserver.exe   (the interface app as a webserver)
+        config.json   (webserver config)
+```
 
-## Find nearby engines
+Inside you will find the `DARTWIC Webserver.exe`, and a `config.json`. Inside the config you can configure the `ip` and `port` that the webserver is hosted on. The default config is shown below.
 
-With Interface network discovery enabled, the login page looks for running engines automatically while visible, refreshing about every 15 seconds. Discovered engines show their workspace name, node name and connection endpoint. A local engine matching a discovered workspace appears once as **Local workspace · Discovered**; selecting it opens the workspace setup/adoption flow. Other **Discovered** rows fill the connection address and port; then enter the engine password or choose viewer access. Discovery does not send a password or connect automatically.
+```json
+{
+    "ip": "127.0.0.1",
+    "port": 4000
+}
+```
 
-When enabled, TEMPEST answers a small UDP query on its configured discovery port (default **47600**), including when their normal connection port is customized. Discovery covers the Interface host's active IPv4 adapters and `127.0.0.1`; it does not scan address ranges or all ports. An engine bound only to localhost stays local. Multiple engines on the same computer can all appear.
+Start the webserver by launching `DARTWIC Webserver.exe`. To open the interface, paste the `address` into your browser (address is `ip`:`port`)
 
-Use **Settings > Interface > TEMPEST network discovery** to disable searches or choose discovery ports. Engine settings control whether an engine answers and which port it uses; changes there require an engine restart.
+For example, to open the default interface, you would paste `127.0.0.1:4000` into your browser.
 
-The desktop app runs discovery locally. A web deployment runs it on the web host, and its discovery endpoint requires a local browser connection to that host. IPv6-only engines, engines on routed networks, older engines without the responder, and networks that block multicast may need **New Connection** or a saved connection. Engine credentials and viewer restrictions still apply.
+## Configuring the Interface
 
-## Inspect a channel
+Once you are in the interface, the only configuration you might want to do is enter your `User` credentials in the `Settings` menu. These credentials are just for visualization purposes, you can enter a name, role, and profile picture that other operators can see once you are connected to an engine.
 
-Open **Channels**, search for a signal, and select its name. Engine diagnostics are available before installing a driver. In the example workspace, search for `rocket_sim` and check that `rocket_sim_sample_counter` advances.
+Open settings
 
-![Channel Search in an example workspace.](../_attachments/channel-search.jpg)
+![](_attachments/Pasted%20image%2020261024191820.png)
 
-Check the value, units, timestamp, and stale state. For an output, inspect its control policy and active controller too. A flat value can be a steady measurement; a disconnected source can also leave its last value visible.
+Click on the `User` tab, and configure your username, name, role, and profile icon, among other things. Your user profile is saved by each engine you connect to. If you already have a profile on an engine that does match your current one, you will be asked to either overwrite the one on the engine, or the one on your interface.
 
-Follow [DCode Getting Started](../DCode/Getting%20Started.md) to create a small clock task and calculation without hardware. Activate the file, start the task, inspect its outputs, then stop it. Saving a script or closing its tab does not stop active automation.
+![](_attachments/Pasted%20image%2020261024192032.png)
 
-## View and record a run
+You can also edit the appearance of the interface, configure TEMPEST network discovery (how your interface finds engines already running on your network), your local engine and workspace folder, and as well as your interface and local, or connected engine version.
 
-Open an existing schematic to see the signals in context. [Schematics](../Interface/Schematics.md) covers editing and binding displays or controls.
+# Starting a Local Engine
 
-Use [DataFrames](../Interface/DataFrames.md) to capture a named run, or [Recorded Data](../Interface/Recorded%20Data.md) to find history already on the engine. A frame selects data; recording policy determines which samples exist. [Telemetry Exporter](../Interface/Telemetry%20Exporter.md) compares a time range and exports CSV.
+This section explains how to auto download an engine and starter workspace, as well as start and connect to the locally running engine. If your team already has an engine running check out how to [Connect to an Existing Engine](#connecting-to-an-existing-engine).
 
-When finished, stop your demo tasks. Stop the engine through its local node controls if you also want the engine process to end.
+Since you will be starting an engine, you will require a license key. You can download a free one on the same downloads page above. Click the button on the downloads page, enter the optional information, and generate a key. 
 
-The login chooser checks whether saved endpoints answer without registering or sending the saved password. An online indicator means the endpoint answered; connecting still verifies credentials and compatibility. Local process controls also verify ownership of the Engine process.
+If you loose it, just generate another one. Keep it copied, when you configure your first local engine workspace you will need it.
 
-The chooser also refreshes runtime details separately from its online check. Successful reads show the Engine's current name, project and version and recover its local process identity after restart. Incorrect saved credentials pause those detail reads until the saved connection or process state changes; the unauthenticated online check continues. After a completed local Engine update, the version menu uses the installed or verified running version rather than an older saved connection label.
+![](_attachments/Pasted%20image%2020261024160310.png)
+
+
+Once open, you can then download a matching engine and workspace setup in a few clicks. The video below shows you how to do that.
+
+![](_attachments/engine-workspace-install.mp4)
+
+Once you auto install the engine and workspace, you should have this file structure: 
+
+```
+dartwic/
+    interface/ 
+    engine/
+    workspaces/
+        workspace/  (starter workspace)
+```
+
+
+In the interface settings you can see the binded engine and workspaces folder in your settings.
+
+![](_attachments/Pasted%20image%2020261024184159.png)
+
+The engine folder stores engine binaries, assets, and workspace setups (called instances) used to launch local workspaces on your machine.
+
+Unmanaged local workspaces in the `Workspaces Folder` will be automatically discovered and will have a button to auto create an engine instance so you can manage the workspace locally, start the engine, and connect to it.
+
+The video below shows how to setup that local workspace, bind it to an engine, input a license key (the one you got above), start the engine, and connect.
+
+![](_attachments/workspace-startup.mp4)
+
+Once the engine is started, you can shutdown or restart the engine in the connection screen, if its a locally managed engine.
+
+![](_attachments/Pasted%20image%2020261024194524.png)
+
+Or in the node tab while connected.
+
+![](_attachments/Pasted%20image%2020261024194610.png)
+
+# Configuring an Engine
+
+The engines config settings can be edited either manually, while disconnected from the engine, or while connected to the engine.
+
+The Engine config is in `engine/instances/<instance-name>/config.json`. The packaged starter workspace uses `instances/default/` whether you set it up in the Interface or launch the Engine executable directly. Other new workspaces usually use their folder name for the instance. Changes apply on restart.
+
+For example, if you wanted to edit the admin password, you can edit the `config.json` manually, and restart the engine.
+
+Additionally, anyone connected to the interface as an admin can edit the engine settings, which will apply after an engine restart, shown below.
+
+![](_attachments/Pasted%20image%2020261024193411.png)
+
+If your engine is a local engine and binded to the interface, you also can access an engine config tab in the edit popup on the engine connection button to change the config as well.
+
+![](_attachments/Pasted%20image%2020261024194313.png)
+
+# Connecting to an Existing Engine
+
+This section describes how to connect to an engine that is already running on your connected network, not on your local machine.
+
+It is quite easy. If you have TEMPEST Network Discovery on (which is on by default), and the engine is reachable from your current network, then the engine should show up in the interface automatically.
+
+![](_attachments/Pasted%20image%2020261024192639.png)
+
+If it is your fist time connecting, you will have to enter the `server authentication password`. Ask whoever started the engine for it. View [Configuring an Engine](#configuring-an-engine) to see how to find or edit engine config settings.
+
+Or you could connect as a `Viewer`, which limits the commands you can send to the engine.
+
+If your engine node is not showing up automatically, you can click the `Add a node` button and enter the `TEMPEST IP` and `TEMPEST Port` of the engine to connect.
+
+You can find the TEMPEST IP and port that the engine is running on by checking the engine config while connected (or manually in `config.json`), or by checking the logs. You can view engine logs by clicking the log button in the node bar on the bottom of the interface. The IP and port are printed on startup.
+
+![](_attachments/Pasted%20image%2020261024203349.png)
+
+
+
+# Installing a Plugin and Setting Up a Module
+
+
+
+# Creating a Schematic
+
+
+
+# Creating a DCode Automation
+
+
+# Exporting Channels, Events, and Logs
+
+
+

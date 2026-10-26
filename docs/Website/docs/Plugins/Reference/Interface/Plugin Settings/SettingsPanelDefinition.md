@@ -1,6 +1,8 @@
 ---
-title: "SettingsPanelDefinition"
-summary: "Registers a plugin settings panel."
+title: SettingsPanelDefinition
+summary: Registers a plugin settings panel.
+created: 2026-08-04T17:38
+updated: 2026-10-25T20:52
 ---
 
 ## Import
@@ -13,7 +15,11 @@ import type { SettingsPanelDefinition } from "@dartwic/interface-sdk";
 
 ```ts
 export interface SettingsPanelDefinition extends NamedContribution {
-    component: PluginSettingsDefinition["component"];
+    /** Optional shared document declaration. An explicit component can interleave custom UI and ConfigMap group views. */
+    configMap?: ConfigMapDefinition;
+    component?: PluginSettingsDefinition["component"];
+    /** Host normalization metadata; set by the registrar for an explicit component with configMap. */
+    customConfigMapLayout?: boolean;
 }
 ```
 
@@ -21,4 +27,6 @@ export interface SettingsPanelDefinition extends NamedContribution {
 
 | Name | Type | Requirement | Description |
 | --- | --- | --- | --- |
-| `component` | `PluginSettingsDefinition["component"]` | Required |  |
+| `configMap` | `ConfigMapDefinition` | Optional | Optional shared document declaration. An explicit component can interleave custom UI and ConfigMap group views. |
+| `component` | `PluginSettingsDefinition["component"]` | Optional |  |
+| `customConfigMapLayout` | `boolean` | Optional | Host normalization metadata; set by the registrar for an explicit component with configMap. |

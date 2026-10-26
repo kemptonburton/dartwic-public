@@ -1,18 +1,39 @@
 ---
 summary: Write readable automation with channels, scoped state, reusable logic, and YAML templates.
-updated: 2026-10-22T17:38
+updated: 2026-10-26T14:16
 created: 2026-08-03T15:41
 ---
 
-DCode is the language you use to connect live signals to decisions in DARTWIC. A script can turn a sensor reading into an engineering value, control a valve, raise a warning, or run a test sequence. You write `.dcode` files in your project's `scripts` folder and activate them from the Interface.
+DCode is DARTWIC's language for automation. A script can turn measurements into engineering values, control outputs, raise warnings, or run a test procedure. Save `.dcode` files in your project's `scripts` folder and activate them from the Interface.
 
-The useful pieces of a script are usually small: read the inputs, decide what should happen, and make the output and its cleanup clear.
+![](_attachments/Pasted%20image%2020261026000728.png)
 
-## A small controller
+# Parts of a DCode script
 
-This example requests filling when both pressure readings are below 20, stops filling when either exceeds 40, and keeps its previous decision between those limits. That gap prevents the request from switching repeatedly near one threshold.
+A script combines declarations that tell the Engine what work exists with code that performs that work. The names below follow the type labels in the editor's documentation popup. Links open the relevant reference lists.
 
-Try it in a test project: create `docs_demo_pressure_a` and `docs_demo_pressure_b`, both at 30. The output is a demonstration channel; it is not connected to hardware. Save this as `fill_demo.dcode`:
+| Part                                                           | Purpose and examples                                                                                                                                                                  |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Runtime blocks](Reference/Runtime%20Blocks/Overview.md)       | Declare Engine-managed work, such as `task_periodic`, `loop`, or `event`.                                                                                                             |
+| [Runtime sections](Reference/Runtime%20Sections/Overview.md)   | Organize a runtime block's handlers or configuration: `start:`, `task:`, `end:`, or `on_firing:`.                                                                                     |
+| [Blocks](Reference/Blocks/Overview.md)                         | Group, choose, or repeat ordinary code: `if`, `for`, `while`, and `once`.                                                                                                             |
+| [Statements](Reference/Statements/Overview.md)                 | Perform an action, such as `command`, `free`, or `transition`.                                                                                                                        |
+| [Functions](Reference/DCode%20Functions/Overview.md)           | Call reusable work, such as `clamp(...)` or `wait_until(...)`, or helpers you define yourself. Standard functions are also listed under [Lua Base](Reference/Lua%20Base/Overview.md). |
+| [Modules](Reference/Lua%20Base/Overview.md)                    | Group related functions and values, such as `math` and `string`. Each reference notes backend support.                                                                                |
+| [Keywords](Reference/Lua%20Base/Overview.md)                   | Words with language-defined meaning, such as `and`, `not`, and `return`.                                                                                                              |
+| [Syntax](Reference/Syntax/Overview.md)                         | Forms for expressions, channel pipes, comments, and indentation.                                                                                                                      |
+| Variables                                                      | Values you name in your code, such as `limits` and `filling`, including function arguments.                                                                                           |
+| [Context variables](Reference/Context%20Variables/Overview.md) | Values supplied by the Engine in particular handlers, such as `elapsed_seconds` or `current_state`.                                                                                   |
+| [Directives](Reference/Directives/Overview.md)                 | Import helper code, load YAML parameters, or expand a `template(...)`.                                                                                                                |
+| [Fields](Reference/Event%20Metadata/Overview.md)               | Named configuration entries, such as an event's `title:`, `type:`, and `channels:`. As of now only Events use fields.                                                                 |
+
+These roles overlap: a keyword can introduce a block or statement. In the example below, `task_periodic` declares a runtime block, `start:` is a runtime section, `if` is a conditional block, and `command` writes an output under automation control.
+
+# A small controller
+
+This controller requests filling below 20, stops above 40, and remembers its decision between those limits. That gap avoids repeated switching near a threshold.
+
+In a test project, create `docs_demo_pressure_a` and `docs_demo_pressure_b` at 30. The output is a demo channel with no hardware connection:
 
 ```dcode
 limits = {low: 20, high: 40}
@@ -42,50 +63,39 @@ task_periodic docs_demo_fill:
         free |docs_demo_fill_request|
 ```
 
-Activate the file, then start **docs_demo_fill** in Tasks. Set both inputs to 10: the request becomes 1. Return both to 30: it stays 1. Raise either input to 45: it becomes 0. Stop the task when finished; its `end:` section writes 0 and releases its claim. [Getting Started](Getting%20Started.md) walks through activation and task controls.
+Activate the file and start **docs_demo_fill**. Set both inputs to 10: the request becomes 1. Return them to 30: it stays 1. Raise either to 45: it becomes 0. Stopping writes 0 and releases the task's claim. Operator manual control still takes precedence; [Channels and Control](../Engine/Channels%20and%20Control.md) explains write authority.
 
-A few choices make this easy to follow:
+# Pick the right kind of block
 
-- **Channels are the connection to the engine.** `|docs_demo_pressure_a|` reads a channel; `command` writes an output while taking automatic control. Operator manual control still takes precedence. [Commanding and Control](../Engine/Commanding%20and%20Control.md) explains assignment, `command`, `override`, `set`, and `free`.
-- **Objects name related settings; arrays hold ordered values.** `limits.low` reads an object field, and `readings[0]` reads the first array element. Arrays start at zero. Both can contain nested data. [Values and Scope](Values%20and%20Scope.md) covers collection helpers, copying, and JSON.
-- **Keep state with the logic that owns it.** `limits` belongs to the file, so the task declares `global limits` before using it. `readings` and `pressure` belong to this task and are reassigned each iteration. `filling` remembers the decision between iterations and is initialized in `start:`. Task variables persist across lifecycle sections and iterations; an `if` or `for` does not create a new scope. Neither a `state.` prefix nor `local` is needed. See [Values and Scope](Values%20and%20Scope.md#variables-and-lifetime).
+DCode exposes its runtime actions in **Runtime Blocks**. These are statements in the script that create artifacts that the engine manages, such as a task or a channel calculation. Read more at [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md)
 
-## Reuse the logic, configure the differences
+Below are some pages to take a first look at depending on what you want to do:
 
-When several sensors or devices follow the same rules, a template lets you keep one definition and put their names and settings in YAML. For example, save this as `scaling.yaml` beside `scaling.dcode`:
+| You want to…                                      | Read                                                                  |
+| ------------------------------------------------- | --------------------------------------------------------------------- |
+| Derive a value when an input is written           | [Channel Calculations](Channel%20Calculations.md)                     |
+| Report a condition or react to a limit            | [Events](Events.md)                                                   |
+| Repeat work at a requested frequency              | [Tasks](Tasks.md#periodic-tasks)               |
+| Organize behavior into named stages               | [Tasks](Tasks.md#state-machine-tasks)             |
+| Run ordered steps and waits                       | [Tasks](Tasks.md#sequence-tasks) |
+| Schedule actions around T0                        | [Scheduling Timelines](Scheduling%20Timelines.md)                     |
+| Expose an action to a schematic or another caller | [Callbacks](Callbacks.md)                                             |
 
-```yaml
-sensors:
-  - name: pressure_a
-    input: docs_demo_pressure_a
-    gain: 2
-  - name: pressure_b
-    input: docs_demo_pressure_b
-    gain: 3
-```
+Activation installs the file's runtime definitions. Closing its editor does not stop them; reactivation replaces them and resets script state.
 
-Then put this in `scaling.dcode`:
+![](_attachments/Pasted%20image%2020261026135823.png)
 
-```dcode
-params = yaml "./scaling.yaml#sensors"
+Runtime blocks are marked by icons in the gutter, and their activation state is displayed in the menu bar, showing if they are loaded into memory or not. The icons will change color based on their state. Green indicates running, Grey indicates loaded but not running, and Yellow indicates stale/ not loaded.
 
-template(params) channel_calculation docs_scaled_{params.name}:
-    return |{params.input}| * {params.gain}
-```
+When edits are made, the script will have to be re executed to rewrite what the engine has loaded in memory.
 
-Activation expands the two YAML rows into two calculations. With both input channels at 10, `docs_scaled_pressure_a` becomes 20 and `docs_scaled_pressure_b` becomes 30. Change an input to see its calculated output update.
+![](_attachments/Pasted%20image%2020261026140141.png)
 
-Edit the YAML and reactivate the consuming script to apply new settings. [Templates and Configuration](Templates%20and%20Configuration.md) continues with valve controllers and warnings. Use [Modules and Native Functions](Modules%20and%20Native%20Functions.md) when you want to share helper functions between files.
+In the photo above, the YAML that drives the templated loops has been changed, which requires the script to be ran again.
+# Reuse the logic, configure the differences
 
-## Pick the right kind of block
+Use [Values and Scope](Values%20and%20Scope.md) for variables, collections, and shared state. [Templates and Configuration](Templates%20and%20Configuration.md) creates several controllers from one definition and a YAML list; [Modules and Native Functions](Modules%20and%20Native%20Functions.md) covers helper files and plugin calls.
 
-The controller above is a [periodic task](Writing%20Periodic%20Tasks.md): it reads pressure when its scheduled iteration runs. The template creates [channel calculations](Channel%20Calculations.md), which run in response to their input updates. Choose the block that matches the job:
+![](_attachments/Pasted%20image%2020261026000621.png)
 
-- [Events](Events.md) expose maintained conditions and one-shot reports as messages, warnings, errors, or abort events. Separate prompt functions wait for operator input.
-- [State machines](Building%20State%20Machines.md) give a process named stages, such as filling, venting, and complete.
-- [Sequences and timelines](Sequences%20and%20Task%20Lifecycle.md) organize ordered steps, waits, and actions at test times.
-- [Callbacks](Callbacks.md) expose actions that a schematic, client, or another script can call.
-
-Activating a file installs its runtime definitions; closing the editor does not stop them. Reactivating replaces them and resets their script state. Read [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) before changing an active procedure.
-
-Lua is the default backend. Start with it, then read [Native C++ Execution](Native%20C%2B%2B%20Execution.md) if you need compiled execution and prepared fixed-channel access. The [language reference](Reference/Overview.md) is the place to look up exact syntax and function arguments.
+Start with the default Lua backend. [Native C++ Execution](Native%20C%2B%2B%20Execution.md) explains compiled execution when you need it. Use the [language reference](Reference/Overview.md) to look up exact syntax and arguments.

@@ -2,7 +2,7 @@
 title: UI Components
 summary: Compose plugin interfaces from the general-purpose components exported by the SDK.
 created: 2026-08-04T17:38
-updated: 2026-10-11T21:42
+updated: 2026-10-25T12:50
 ---
 
 | Export | Import path | Description |
@@ -65,6 +65,7 @@ updated: 2026-10-11T21:42
 | [CommandList](CommandList.md) | `@dartwic/interface-sdk/ui` | Command List using the host's searchable commands and choices presentation. |
 | [CommandSeparator](CommandSeparator.md) | `@dartwic/interface-sdk/ui` | Command Separator using the host's searchable commands and choices presentation. |
 | [CommandShortcut](CommandShortcut.md) | `@dartwic/interface-sdk/ui` | Command Shortcut using the host's searchable commands and choices presentation. |
+| [ConfigMap](ConfigMap.md) | `@dartwic/interface-sdk/ui` | Config Map using the host's shared configuration editing presentation. |
 | [ContextMenu](ContextMenu.md) | `@dartwic/interface-sdk/ui` | Context Menu using the host's context actions presentation. |
 | [ContextMenuCheckboxItem](ContextMenuCheckboxItem.md) | `@dartwic/interface-sdk/ui` | Context Menu Checkbox Item using the host's context actions presentation. |
 | [ContextMenuContent](ContextMenuContent.md) | `@dartwic/interface-sdk/ui` | Context Menu Content using the host's context actions presentation. |

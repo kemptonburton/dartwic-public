@@ -1,14 +1,14 @@
 ---
 summary: Connect, query, write, and subscribe; then turn recorded channels into an analysis plot.
-updated: 2026-10-22T11:28
+updated: 2026-10-26T14:16
 created: 2026-08-03T15:41
 ---
 
-Use the Python client for analysis scripts, live monitors, and applications that write data into an engine. Calls are synchronous; telemetry callbacks run on a receiver thread.
+The Python client connects an analysis script or application to a running DARTWIC Engine. You can read current channels, receive live updates, write results, and query recorded samples for plotting.
 
-The [public client sources](https://github.com/kemptonburton/dartwic-public/tree/main/clients) can also be downloaded directly. Each client folder includes its transport and install/build metadata; follow its README. Third-party dependencies are still required.
+Calls wait for a response or error. Live updates arrive through callbacks, so your script must stay running while it listens.
 
-## Download and install locally
+# Download and install locally
 
 Download **Python Client** from [Downloads](/areas/dartwic/downloads) and extract it. The client is distributed as a release archive, not through PyPI. Use Python 3.10 or newer and create a virtual environment in your application directory:
 
@@ -28,9 +28,20 @@ On macOS/Linux:
 ./.venv/bin/python -m pip install ./dartwic-python-client-2.0.0
 ```
 
-These commands install a local package; `pip install dartwic-client` is not the installation method. Run your scripts with the same virtual environment's Python. The release bundles TEMPEST, and pip installs `pyzmq`. Platforms without a compatible pyzmq wheel need its native build dependencies.
+The package is installed from that directory, rather than by name from PyPI. Run your scripts with the same virtual environment's Python. The release bundles TEMPEST, and pip installs `pyzmq`. Platforms without a compatible pyzmq wheel need its native build dependencies.
 
-## Connect
+# Connection settings
+
+Start an Engine as described in [First Session](../Getting%20Started/First%20Session.md). The examples use these settings:
+
+| Setting | What to supply |
+| --- | --- |
+| Host | `127.0.0.1` for an Engine on this computer, or the Engine computer's address. |
+| Port | The Engine's base port, shown as `7000`; telemetry uses base port + 1. |
+| Password | Your Engine password, read here from `DARTWIC_PASSWORD`. |
+| Channels | Replace `tank_pressure` and other example names with your channels. |
+
+# Connect
 
 Set `DARTWIC_PASSWORD` to your engine password. Put the examples below inside this connected scope, replacing the example channel names with yours:
 
@@ -43,9 +54,11 @@ with DartwicClient() as client:
     # Query, write, or subscribe here.
 ```
 
-The base port carries operations; base port + 1 carries telemetry. `connect` registers the client and checks engine compatibility. The context manager disconnects even if your script raises an exception.
+`connect` registers the client and checks engine compatibility. The context manager disconnects even if your script raises an exception.
 
-By default, liveness uses TEMPEST's dedicated authenticated heartbeat, separate from ordinary operation work. A successful heartbeat establishes protocol/session responsiveness; use operation timing and source timestamps to assess engine work and data freshness.
+# Choose what your script does
+
+The examples below show common uses. See the [Python API reference](Reference/Python/Overview.md) for the full current API, arguments, and return values. Choose the parts your script needs.
 
 ## Query channels
 
@@ -64,6 +77,8 @@ A single read raises `KeyError` for a missing channel or field. Batch reads expo
 
 ## Search channels
 
+Find channel names before deciding which values to read or display:
+
 ```python
 matches = client.get_channel_keys(query="tank", limit=25)["channels"]
 print(matches)
@@ -73,7 +88,9 @@ if matches:
 
 Search discovers live channel names. Use `list_dataframes()` to discover saved views and query their channels by ID.
 
-## Upsert channels
+## Write channels
+
+Use `upsert_channel` to create or update a channel field. For example, publish an analysis result and its units:
 
 ```python
 client.upsert_channel("analysis_result", 42.0)
@@ -88,7 +105,7 @@ for channel, value in readings.items():
     client.upsert_channel(channel, value)
 ```
 
-Each call is an independent acknowledged write, not an atomic bulk transaction. If a later call fails, earlier writes remain applied. These writes obey [engine authority](../Engine/Commanding%20and%20Control.md) and do not take operator manual override. For a remote driver that owns its channels, publishes timestamped batches, and receives commands, use [TEMPEST Peer](../Engine/TEMPEST%20Peers.md).
+Each call is an independent acknowledged write, not an atomic bulk transaction. If a later call fails, earlier writes remain applied. These writes obey [engine authority](../Engine/Channels%20and%20Control.md) and do not take operator manual override. For a remote driver that owns its channels, publishes timestamped batches, and receives commands, use [TEMPEST Peer](../Engine/Networking%20and%20Peers.md).
 
 ## Subscribe and receive telemetry
 
@@ -110,7 +127,9 @@ finally:
 
 The initial callback runs on the subscribing thread; updates arrive on the telemetry thread and may overlap setup. Protect shared application state and keep callbacks short. Multiple listeners share one server reference; the returned stop function is idempotent. Update callback errors are isolated; an initial callback error fails setup.
 
-For a raw topic handler, bind before enabling the channels you need:
+## Inspect raw telemetry
+
+Use a raw handler when you need the message envelope instead of a managed channel snapshot. Bind it before enabling the channels you need:
 
 ```python
 def receive(message, suffix):
@@ -127,9 +146,9 @@ finally:
 
 A raw binding alone does not ask the engine to stream a channel.
 
-## Example: find recorded channels and plot their history
+## Query and plot recorded history
 
-Install `matplotlib` in the same environment as the client. Find a saved view by name, page its recorded channel catalog, and query pressure samples within its range:
+A dataframe is a saved time range over recorded data. Install `matplotlib` in the same environment as the client. Find a saved view by name, page its recorded channel catalog, and query pressure samples within its range:
 
 ```python
 import matplotlib.pyplot as plt
@@ -147,8 +166,13 @@ if not selected:
 
 history = client.query_channel_range(selected,
     from_timestamp=frame["from_ns"], to_timestamp=frame.get("to_ns") or time.time_ns())
-start = min(channel["timestamps"][0] for channel in history["channels"].values() if channel["timestamps"])
+nonempty = [channel for channel in history["channels"].values() if channel["timestamps"]]
+if not nonempty:
+    raise RuntimeError("No samples in this range")
+start = min(channel["timestamps"][0] for channel in nonempty)
 for name, channel in history["channels"].items():
+    if not channel["timestamps"]:
+        continue
     seconds = [(timestamp - start) / 1_000_000_000 for timestamp in channel["timestamps"]]
     plt.plot(seconds, channel["values"], label=name)
 plt.xlabel("Seconds since the earliest selected sample")
@@ -163,6 +187,8 @@ The result is keyed by channel reference under `history["channels"]`, with `poin
 
 ## Call other operations
 
+Use `operation` for Engine or plugin operations without a convenience helper. This one reads the connected Engine's version:
+
 ```python
 response = client.operation("dartwic/get-runtime-metadata")
 response.raise_for_error()
@@ -171,10 +197,27 @@ print(response.payload["engineVersion"])
 
 Helpers raise on errors themselves. Raw operations return a `TempestResponse`; check it before using its payload.
 
-## Connection loss and analysis details
+# Connection lifecycle
+
+The client uses an authenticated heartbeat to detect session loss. A heartbeat shows that the session responds; it does not establish task timing or data freshness.
 
 `is_connected()` reports local state. A registered heartbeat probe detects connection or session loss; detection is not instantaneous. This client does not reconnect automatically. Call `disconnect()`, connect again, then recreate managed channel subscriptions. Serialize lifecycle calls and disconnect outside telemetry callbacks. Parallel operation calls are supported; each uses an independent socket so a late reply cannot satisfy a later request.
 
 A timeout does not cancel work on the engine, and writes are never replayed automatically. Query resulting state before retrying a write.
 
-See the generated [DartwicClient reference](Reference/Python/DartwicClient.md) for all signatures and [Telemetry and History](../Engine/Telemetry%20and%20History.md) for recording behavior.
+# Run and inspect
+
+Save the connection example as `analysis.py`, place the task snippets you need inside its `with` block, and run it with the virtual environment's Python:
+
+```powershell
+./.venv/Scripts/python.exe analysis.py
+```
+
+On macOS/Linux, use `./.venv/bin/python analysis.py`.
+
+Begin with a read of a known channel, then check that a subscription follows its changes. For the plot, recording must already contain samples in the selected dataframe's range. [Recording and Retention](../Engine/Recording%20and%20Retention.md) explains how those samples are collected. Stop subscriptions before disconnecting.
+
+# Reference
+
+- [Python API reference](Reference/Python/DartwicClient.md) — Connection, channel, subscription, and history methods.
+- [Engine operations](../Engine/Reference/TEMPEST/Operations/Overview.md) — Endpoints available through `operation`.
