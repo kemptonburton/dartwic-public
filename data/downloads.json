@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-27T01:25:36.079Z",
+  "generatedAt": "2026-10-27T01:25:51.131Z",
   "repositories": {
     "kemptonburton/dartwic-ethercat-plugin": [
       {
@@ -38,6 +38,46 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.0/SHA256SUMS.txt",
+            "size": 252,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "v2.0.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.0.1",
+        "prerelease": false,
+        "published_at": "2026-10-27T01:25:47Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/zipball/v2.0.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/tarball/v2.0.1",
+        "assets": [
+          {
+            "name": "plugin-linux-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.1/plugin-linux-x64.zip",
+            "size": 2145341,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.1/plugin-win32-x64.zip",
+            "size": 3713776,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.1/plugin.json",
+            "size": 548,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-ethercat-plugin-2.0.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.1/release-manifest-ethercat-plugin-2.0.1.json",
+            "size": 1471,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.1/SHA256SUMS.txt",
             "size": 252,
             "state": "uploaded"
           }
