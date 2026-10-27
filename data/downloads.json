@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-24T21:34:04.845Z",
+  "generatedAt": "2026-10-27T01:25:09.645Z",
   "repositories": {
     "kemptonburton/dartwic-ethercat-plugin": [
       {
@@ -84,6 +84,86 @@
             "state": "uploaded"
           }
         ]
+      },
+      {
+        "tag_name": "v2.0.4",
+        "html_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/tag/v2.0.4",
+        "prerelease": false,
+        "published_at": "2026-10-25T02:02:07Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-plugin/zipball/v2.0.4",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-plugin/tarball/v2.0.4",
+        "assets": [
+          {
+            "name": "plugin-linux-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.4/plugin-linux-x64.zip",
+            "size": 7124560,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.4/plugin-win32-x64.zip",
+            "size": 2842062,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.4/plugin.json",
+            "size": 339,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-example-plugin-2.0.4.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.4/release-manifest-example-plugin-2.0.4.json",
+            "size": 601,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.4/SHA256SUMS.txt",
+            "size": 255,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "v2.0.5",
+        "html_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/tag/v2.0.5",
+        "prerelease": false,
+        "published_at": "2026-10-27T01:25:06Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-plugin/zipball/v2.0.5",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-plugin/tarball/v2.0.5",
+        "assets": [
+          {
+            "name": "plugin-linux-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.5/plugin-linux-x64.zip",
+            "size": 7290618,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.5/plugin-win32-x64.zip",
+            "size": 2980655,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.5/plugin.json",
+            "size": 340,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-example-plugin-2.0.5.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.5/release-manifest-example-plugin-2.0.5.json",
+            "size": 1717,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-example-plugin/releases/download/v2.0.5/SHA256SUMS.txt",
+            "size": 252,
+            "state": "uploaded"
+          }
+        ]
       }
     ],
     "kemptonburton/dartwic-example-workspace": [
@@ -94,6 +174,15 @@
         "published_at": "2026-10-22T20:57:15Z",
         "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/zipball/v2.0.4",
         "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/tarball/v2.0.4",
+        "assets": []
+      },
+      {
+        "tag_name": "v2.0.5",
+        "html_url": "https://github.com/kemptonburton/dartwic-example-workspace/releases/tag/v2.0.5",
+        "prerelease": false,
+        "published_at": "2026-10-25T02:02:14Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/zipball/v2.0.5",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/tarball/v2.0.5",
         "assets": []
       }
     ],
