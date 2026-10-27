@@ -1,6 +1,6 @@
 ---
 summary: Follow the Engine plugin entry point, registration flow, and SDK services.
-updated: 2026-10-27T00:40
+updated: 2026-10-27T15:01
 created: 2026-09-06T14:32
 ---
 
@@ -75,7 +75,8 @@ Registration describes capabilities available while your plugin is loaded. The E
 | Plugin loop | Background plugin work, such as discovery or connection monitoring. | [`registerLoop`](Reference/Engine/Tasks%20and%20Loops/SDK_API-registerLoop.md) |
 | Operation | A request/response handler that clients or scripts can call. | [`registerOperation`](Reference/Engine/Operations/SDK_API-registerOperation.md) |
 | Telemetry topic | Custom updates published to subscribed clients and peers. | [`registerTelemetry`](Reference/Engine/Operations/SDK_API-registerTelemetry.md) |
-| Peer type | A connection using a custom transport and supported protocol. | [`registerPeer`](Reference/Engine/TEMPEST/SDK_API-registerPeer.md) |
+| Device peer | Translate a device protocol using the Engine-supplied Peer and EngineProtocol. | [`registerPeer`](Reference/Engine/TEMPEST/SDK_API-registerPeer.md) |
+| DARTWIC transport | Carry standard DARTWIC peer messages over a custom link. | [`registerPeerTransport`](Reference/Engine/TEMPEST/SDK_API-registerPeerTransport.md) |
 
 Local registration IDs are qualified with your plugin ID. For example, registering `echo` in the starter produces `example_device_plugin.echo`.
 
@@ -214,14 +215,14 @@ Clients handle the qualified topic `example_device_plugin.status`. Delivery is b
 
 ## Peer types
 
-A peer registration adds a selectable transport and protocol for another node. This uses the starter's `ExampleTransport`, whose implementation supplies the actual connection, message delivery, and diagnostics:
+A transport registration adds a link option for the standard DARTWIC peer. This uses the starter's `ExampleTransport`, whose implementation supplies the actual connection, message delivery, and diagnostics:
 
 ```cpp
 #include "example_transport.h"
 #include <dartwic/EngineProtocol.h>
 
 // Inside onPluginLoaded():
-dartwic->registerPeer({
+dartwic->registerPeerTransport({
     .id = "example_flight_link", .name = "Example Flight Link",
     .default_config = {
         {"node_name", "external-program"},
@@ -237,7 +238,7 @@ dartwic->registerPeer({
 });
 ```
 
-Keep includes at file scope. Registration makes the peer type available; [Network Map](../Interface/Network%20Map.md) configures a connection using it. [Building a Custom Peer](Building%20a%20Custom%20Peer.md) explains custom transports and protocol bridges. Use the [peer registration reference](Reference/Engine/TEMPEST/SDK_API-registerPeer.md) for the full definition.
+Keep includes at file scope. Registration makes the connection type available; [Network Map](../Interface/Network%20Map.md) configures a connection using it. [Building a Custom Peer](Building%20a%20Custom%20Peer.md) explains custom transports and protocol bridges. Use the [transport registration reference](Reference/Engine/TEMPEST/SDK_API-registerPeerTransport.md) for the full definition.
 
 # Engine APIs
 

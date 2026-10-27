@@ -2,12 +2,11 @@
 title: Channel Authority
 summary: Acquire, command, update, and release write authority for engine channels.
 created: 2026-08-04T17:38
-updated: 2026-10-26T19:04
+updated: 2026-10-27T14:08
 ---
 
 | Declaration | Description |
 | --- | --- |
-| [SDK_API::claimChannel](SDK_API-claimChannel.md) | Compatibility alias for value-free commandChannel; new code should use commandChannel. |
 | [SDK_API::commandChannel](SDK_API-commandChannel.md) | Acquires automatic ownership and writes atomically for an eligible local runtime. |
 | [SDK_API::commandChannelAuthorityOnly](SDK_API-commandChannelAuthorityOnly.md) | Acquire automatic ownership without writing. |
 | [SDK_API::commandChannelFixed](SDK_API-commandChannelFixed.md) | Apply command authority to a retained local fixed channel, optionally writing a value. |

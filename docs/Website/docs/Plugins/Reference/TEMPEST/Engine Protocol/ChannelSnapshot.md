@@ -1,11 +1,11 @@
 ---
 title: "ChannelSnapshot"
-summary: "One channel returned by a query, with its data and owner/session/revision lineage."
+summary: "Complete shared selection; an empty selection clears the receiver's mirror."
 ---
 
 ## API
 
-One channel returned by a query, with its data and owner/session/revision lineage.
+Complete shared selection; an empty selection clears the receiver's mirror.
 
 Namespace: `DARTWIC`.
 
@@ -17,10 +17,7 @@ Namespace: `DARTWIC`.
 
 ```cpp
 struct ChannelSnapshot {
+    ChannelUpdates channels;
     std::string owner_node;
-    std::string channel;
-    Value::Object channel_data;
-    uint64_t revision = 0;
-    std::string source_session_id;
 };
 ```

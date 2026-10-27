@@ -2,7 +2,7 @@
 title: once
 summary: Run this block on its first visit during the containing runtime-section execution. Nested ordinary blocks do not reset it. Not allowed in functions, callbacks, calculations or events.
 created: 2026-08-04T17:38
-updated: 2026-10-26T22:01
+updated: 2026-10-27T16:09
 ---
 
 ## Syntax

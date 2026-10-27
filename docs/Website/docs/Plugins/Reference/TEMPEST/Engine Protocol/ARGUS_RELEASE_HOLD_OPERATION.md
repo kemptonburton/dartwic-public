@@ -1,8 +1,8 @@
 ---
 title: ARGUS_RELEASE_HOLD_OPERATION
 summary: Engine operation name for owner-directed ARGUS actions.
-created: 2026-09-26T01:43
-updated: 2026-09-29T17:19
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
@@ -18,5 +18,6 @@ Namespace: `DARTWIC`.
 ## Declaration
 
 ```cpp
-inline constexpr const char* ARGUS_RELEASE_HOLD_OPERATION = "tempest-peer/argus/release-hold";
+inline constexpr const char *ARGUS_RELEASE_HOLD_OPERATION =
+    "tempest-peer/argus/release-hold";
 ```

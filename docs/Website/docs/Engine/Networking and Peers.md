@@ -1,7 +1,7 @@
 ---
 summary: Understand client sessions, permissions, remote data ownership, and recovery.
 created: 2026-09-06T14:36
-updated: 2026-10-26T21:52
+updated: 2026-10-27T15:44
 ---
 
 TEMPEST is the communication layer used by the Engine, Interfaces, clients, and connected nodes. An **operation** asks the Engine to do something and returns a response. **Telemetry** carries updates, such as channel values, to applications watching them.
@@ -22,9 +22,29 @@ A **heartbeat** is a small operation that keeps a session active. After expiry o
 
 Discovery finds a running Engine's address and port before connecting. It uses local UDP queries and can be blocked across networks, so retain a manual address option. Registration and authentication still follow. Use [Clients](../Clients/Overview.md) for libraries, [Using TEMPEST](Advanced/Using%20TEMPEST.md) for raw transports, or [Network Discovery](Advanced/Network%20Discovery.md) for discovery packets.
 
+# Peer architecture
+
+The Engine and C++ applications use the same three components: **Transport** moves messages over a link, **Peer** manages node identity, registration and request/reply dispatch, and **EngineProtocol** provides channels, events, logs and their handlers. `PeerClient` assembles those components for a C++ application; the Engine assembles them for registered connections.
+
+A DARTWIC link decodes incoming bytes into messages and calls `Transport.receive`; physical availability is reported through `setConnected`. A device integration instead decodes its own protocol, such as CCSDS, and publishes data through the Engine-supplied EngineProtocol. Protocol handlers translate commands in the opposite direction.
+
+# Connection types
+
+Choose one valid connection type in Network Map. Peer identity and transport selection remain separate internally:
+
+| Connection type | Peer and protocol | Link |
+| --- | --- | --- |
+| DARTWIC — ZeroMQ | Standard DARTWIC peer and EngineProtocol | Built-in ZeroMQ. |
+| DARTWIC — Radio Link | The same DARTWIC peer and EngineProtocol | Plugin-registered transport. |
+| F Prime — CCSDS | Registered device representative and EngineProtocol | Dictionary-driven vehicle translation and CCSDS link. |
+
+An Engine and a C++ PeerClient use the same DARTWIC connection type. A plugin registers a reusable DARTWIC link with `registerPeerTransport`, or a device integration with `registerPeer`. Both appear in the same selector, with their own settings. The Engine creates the Peer and protocol; plugin authors do not assemble callback connections.
+
+See [Building a Custom Peer](../Plugins/Building%20a%20Custom%20Peer.md) for transport/device integration and [C++ TEMPEST Peer](../Clients/C%2B%2B%20TEMPEST%20Peer.md) for applications.
+
 # Peer connections
 
-TEMPEST peers exchange supported channel snapshots, ARGUS events, and commands between named nodes. The built-in `tempest.engine` peer connects two DARTWIC engines. Plugins can register other peer types with `registerPeer`; the [example workspace walkthroughs](../Getting%20Started/Example%20Workspace.md) show engine-to-engine, native C++ flight, and custom transport connections.
+TEMPEST peers exchange supported channel snapshots, ARGUS events, and commands between named nodes. The built-in `tempest.engine` peer connects two DARTWIC engines. Plugins can register other peer types with `registerPeer`; the [example workspace walkthroughs](https://github.com/kemptonburton/dartwic-example-workspace/tree/main/walkthroughs) show engine-to-engine, native C++ flight, and custom transport connections.
 
 Give connected workspaces distinct node names, such as `GROUND` and `TEST_STAND`, and separate endpoints when running on one machine. A `tempest.engine` connection targets the remote Engine's base port and configured credentials. Use [Network Map](../Interface/Network%20Map.md#connect-and-reconnect) to configure it.
 

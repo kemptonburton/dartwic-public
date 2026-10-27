@@ -1,19 +1,17 @@
 ---
-summary: Preview custom transports and bridges using the simplified shared DARTWIC protocol API.
+summary: Build custom transports and bridges with the shared DARTWIC protocol API.
 created: 2026-10-27
-updated: 2026-10-27T05:50
+updated: 2026-10-27T16:08
 ---
 
 A custom peer plugin adds a connection type to Network Map. It implements the link to your application or device and uses the shared DARTWIC protocol for channels, events, logs, and commands.
-
-> **Design preview:** This page describes the proposed APIs and bridge binding for review, alongside [C++ TEMPEST Peer](../Clients/C%2B%2B%20TEMPEST%20Peer.md). They are not implemented yet; linked SDK references and source examples describe the existing implementation.
 
 | Approach         | What your transport does                                                                   | Example                                   |
 | ---------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------- |
 | Custom transport | Carries DARTWIC messages between TEMPEST peers using your framing and link.                | Two DARTWIC Engines, or an Engine and a C++ program, over a radio link.     |
 | Protocol bridge  | Translates device packets into DARTWIC telemetry and DARTWIC commands into device packets. | F Prime CCSDS telemetry and telecommands. |
 
-Both implement `TEMPEST::Transport`. The C++ client, bridge, and Engine use the same domain APIs. A bridge adds device-specific decoding and encoding; the device needs no DARTWIC library.
+Both use `TEMPEST::Transport`, `TEMPEST::Peer`, and `DARTWIC::EngineProtocol`. Register a device integration with `registerPeer`; register a DARTWIC link with `registerPeerTransport`. The Engine constructs and connects Peer and EngineProtocol in both cases.
 
 # Transport, Peer, and Engine Protocol
 
@@ -40,7 +38,7 @@ Engine data ↔ EngineProtocol ↔ Peer ↔ Transport ↔ physical link
 
 | Peer API | What it does | When used |
 | --- | --- | --- |
-| `Peer(config, transport)` | Construct a peer with its node/protocol identity and communication path. | The Engine and C++ client use a network transport; the bridge uses a callback transport connected locally to the Engine. |
+| `Peer(config, transport)` | Construct a peer with its node/protocol identity and communication path. | The Engine and C++ client use a network transport; the Engine connects the bridge representative locally. |
 | `start()` | Start the supplied transport and peer registration. | After constructing the peer and registering handlers, in all setups. |
 | `waitUntilReady()` / `ready()` | Wait for registration, or check readiness without waiting. The wait can fail or time out. | Before application requests/publications; readiness does not establish fresh device data. |
 | `stop()` | Stop communication and join workers. | Before destroying handler state. |
@@ -53,46 +51,25 @@ Engine data ↔ EngineProtocol ↔ Peer ↔ Transport ↔ physical link
 
 | Required method | Your implementation |
 | --- | --- |
-| `start(callbacks)` | Save the supplied callbacks, open the link, and start receiving. |
-| `send(message)` | Encode and queue an outgoing message promptly; the I/O worker transmits it. |
+| `start()` | Open the link and begin receiving. |
+| `send(message)` | For a DARTWIC link, encode and queue an outgoing message. A device bridge sends through protocol handlers and does not override this method. |
 | `stop()` | Stop I/O and callbacks, join workers, and release the link. |
 
-`TransportCallbacks` is supplied automatically when `Peer.start()` calls your transport's `start`. Save it as `callbacks_`, then use its two functions:
-
-- `callbacks_.on_message(message)` delivers a decoded incoming message back into the owning Peer.
-- `callbacks_.on_state(state, detail)` reports the underlying link state; Peer determines protocol readiness.
-
-Optional `diagnostics()` exposes transport health. Application handlers belong to EngineProtocol; these transport callbacks only connect the link back to Peer.
-
-Inside the bridge, the SDK's `CallbackTransport` implements this same Transport interface for the local Engine connection. It provides three wiring methods used by the plugin; these belong to the transport, not Peer:
-
-| CallbackTransport method | Use in the bridge |
-| --- | --- |
-| `bind(callbacks)` | Save callbacks supplied by the Engine's Peer before starting the bridge's Peer. |
-| `deliverToPeer(message)` | Queue an Engine message for the bridge's Peer, which dispatches it through EngineProtocol. |
-| `setConnectionState(state)` | Report vehicle availability to both local sides of the connection. |
-
-Peer still calls this adapter's ordinary `start`, `send`, and `stop`. It forwards outgoing messages to the Engine callback, without opening another physical link.
+Peer connects your transport internally. Use `receive(message)` for decoded DARTWIC messages and `setConnected(connected, reason)` for physical link availability. Peer handles registration and dispatch; EngineProtocol handles application data.
 
 ## Custom Transport Objects
 
-**For a custom Engine transport, you implement `Transport` and register its factory. The Engine creates `Peer` and `EngineProtocol` for you.**
+**Implement `Transport` and register its factory with `registerPeerTransport`. The Engine creates `Peer` and `EngineProtocol`.**
 
-Register the factory with `dartwic->registerPeer(...)` in the plugin's `onPluginLoaded()`. When an operator connects through Network Map, the Engine calls that factory, attaches a Peer to the returned transport, and attaches EngineProtocol with its RAPID/ARGUS handlers.
+Register the factory with `dartwic->registerPeerTransport(...)` in the plugin's `onPluginLoaded()`. When an operator connects through Network Map, the Engine calls that factory, attaches a Peer to the returned transport, and attaches EngineProtocol with its RAPID/ARGUS handlers.
 
 Your transport only moves DARTWIC messages. The remote Engine has the same three objects. For a remote C++ program, `PeerClient` creates Peer and EngineProtocol around your supplied transport, with your application handlers instead of RAPID/ARGUS. You do not create another Peer inside the transport class.
 
 ## Protocol Bridge Objects
 
-**For a protocol bridge, you implement `Transport` and register its factory, plus create a local `Peer` and `EngineProtocol` to represent the device. The Engine still creates its own Peer and EngineProtocol on its side.**
+**Register the device with `registerPeer`. The Engine supplies its representative `Peer` and `EngineProtocol` to your transport factory.**
 
-The external device speaks another protocol, so the plugin supplies the missing DARTWIC side:
-
-- **Your Transport** owns device I/O. Its `send(message)` passes outgoing Engine messages to the bridge's local Peer.
-- **The bridge's Peer** handles registration, dispatch, and replies for the represented device, returning messages through the callbacks supplied by the Engine's Peer.
-- **The bridge's EngineProtocol** connects typed command handlers to device writes and publishes decoded device measurements as telemetry.
-
-Register this transport factory through the same `registerPeer(...)` entry point. The bridge uses a CallbackTransport to connect these local objects; an ordinary radio transport only needs its own I/O implementation. The device itself stays unchanged.
+Your transport owns device I/O and translation. Its decoder publishes measurements through the supplied protocol; protocol handlers encode commands for the device. Use the supplied Peer for custom operations. The Engine manages registration, heartbeats, message routing, and shutdown. The device needs no DARTWIC library.
 
 # Project Setup
 
@@ -106,7 +83,7 @@ Both examples assume your `plugin.json` sets the plugin ID to `my_plugin`.
 
 This example adds a **Radio Link** connection type so two Engines can exchange DARTWIC messages over paired radios. We will implement `RadioTransport`, register it as `my_plugin.radio_link`, and configure both Engines in Network Map. The final example reuses the transport in a C++ program.
 
-## Peer Registration
+## Transport Registration
 
 Start in your plugin's entry-point source, `engine/src/my_plugin.cpp`. `MyPlugin` is your starter's `BasePlugin` subclass; keep its header, constructor, and library exports as described in [Engine Plugin](Engine%20Plugin.md#plugin-lifecycle). This is its registration method:
 
@@ -118,7 +95,7 @@ Start in your plugin's entry-point source, `engine/src/my_plugin.cpp`. `MyPlugin
 
 void MyPlugin::onPluginLoaded() {
     // Register a connection TYPE. No radio is opened at plugin load time.
-    dartwic->registerPeer({
+    dartwic->registerPeerTransport({
         .id = "radio_link",
         .name = "Radio Link",
         .default_config = {
@@ -136,7 +113,7 @@ void MyPlugin::onPluginLoaded() {
 }
 ```
 
-With plugin ID `my_plugin`, this creates the **Radio Link** type `my_plugin.radio_link` in Network Map. The Engine calls `create(config)` later for each configured connection, then supplies Peer and EngineProtocol and starts your transport.
+With plugin ID `my_plugin`, this creates the **Radio Link** type `my_plugin.radio_link` in Network Map. The Engine calls `create(config)` later for each configured connection, then constructs Peer and EngineProtocol internally and starts your transport.
 
 | File you build | Purpose |
 | --- | --- |
@@ -165,23 +142,22 @@ public:
     explicit RadioTransport(const nlohmann::json& config) : radio_(config) {}
 
     // Called by our local Peer when it starts the connection.
-    void start(TEMPEST::TransportCallbacks callbacks) override {
-        callbacks_ = std::move(callbacks); // Save the route back into that Peer.
+    void start() override {
         try {
             radio_.start(
                 [this](const std::string& payload) {
                     // RECEIVE: the radio worker has assembled and checked a frame.
                     // Decode its bytes into a Message, without interpreting its meaning.
                     auto message = decodeMessage(payload);
-                    if (message && callbacks_.on_message) {
+                    if (message) {
                         // Deliver to our local Peer. It handles control/replies or
                         // dispatches application messages through EngineProtocol.
-                        callbacks_.on_message(std::move(*message));
+                        receive(std::move(*message));
                     }
                 },
                 [this](TEMPEST::ConnectionState state, const std::string& detail) {
                     // Report physical link changes; Peer determines protocol readiness.
-                    if (callbacks_.on_state) callbacks_.on_state(state, detail);
+                    setConnected(state == TEMPEST::ConnectionState::Connected, detail);
                 });
         } catch (...) {
             stop();
@@ -205,14 +181,12 @@ public:
 
     void stop() override {
         radio_.stop();       // Cancel I/O, join worker, discard queued frames.
-        callbacks_ = {};     // No radio callbacks can run after stop returns.
     }
 
     ~RadioTransport() override { stop(); }
 
 private:
     RadioLink radio_;
-    TEMPEST::TransportCallbacks callbacks_;
 };
 ```
 
@@ -259,7 +233,6 @@ auto transport = std::make_shared<RadioTransport>(nlohmann::json{
 });
 DARTWIC::PeerClient peer({
     .node_name = "FLIGHT_COMPUTER",
-    .peer_id = "my_plugin.radio_link"
 }, transport);
 
 // Register application handlers before starting.
@@ -306,19 +279,20 @@ void MyPlugin::onPluginLoaded() {
         .protocol_id = "tempest.engine",
         .protocol_version = DARTWIC::EngineContract::version,
         .engine_protocol = true,
-        .create = [](const nlohmann::json& config) {
-            return std::make_shared<DeviceTransport>(config);
+        .create = [](const nlohmann::json& config,
+                     TEMPEST::Peer& peer, DARTWIC::EngineProtocol& protocol) {
+            return std::make_shared<DeviceTransport>(config, peer, protocol);
         }
     });
 }
 ```
 
-Selecting `my_plugin.device_link` in Network Map calls this factory with the saved settings. The Engine creates its own Peer and EngineProtocol; the bridge creates the vehicle's counterparts. Registration alone does not open hardware.
+Selecting `my_plugin.device_link` in Network Map calls this factory with the saved settings. The Engine creates the connection and the vehicle's representative Peer and EngineProtocol. Your factory receives those objects. Registration alone does not open hardware.
 
 | File you build | Purpose |
 | --- | --- |
 | `engine/src/my_plugin.cpp` | Register the connection type, as above. |
-| `engine/include/DeviceTransport.h` and its source | Connect Peer/EngineProtocol and register the mappings below. |
+| `engine/include/DeviceTransport.h` and its source | Use the supplied Peer/EngineProtocol and register the mappings below. |
 | Your `VehicleLink` and packet definitions | Device I/O, framing, decoding, command encoding, and reply correlation. |
 
 Replace the serial settings with those your link needs, such as a TCP address and deployment dictionary.
@@ -334,48 +308,38 @@ Replace the serial settings with those your link needs, such as a TCP address an
 | Vehicle command → Engine | Decoder callback → `protocol_` command → reply to vehicle. |
 | Engine command → vehicle | Protocol command handler → vehicle encoder/write → result to Engine. |
 
-`CallbackTransport` connects the bridge's Peer to the Engine locally. `VehicleLink` handles the physical link.
+The Engine connects Peer and EngineProtocol internally. `VehicleLink` handles your physical link.
+
+`start()` opens your link. Report physical availability with `setConnected`; publish decoded data through EngineProtocol. Your TCP, serial, or radio receiver inside `VehicleLink` supplies the vehicle bytes:
+
+```text
+Vehicle bytes -> your decoder -> VehicleChannelPacket
+              -> onChannelTelemetry handler -> protocol_.channels().publishChannelTelemetry(...)
+              -> representative Peer -> Engine Peer
+```
 
 ```cpp
 class DeviceTransport : public TEMPEST::Transport {
 public:
-    explicit DeviceTransport(const nlohmann::json& config)
-        : vehicle_(config),
-          engineLink_(std::make_shared<TEMPEST::CallbackTransport>()),
-          peer_({
-              .node_name = config.at("node_name").get<std::string>(),
-              .peer_id = "my_plugin.device_link",
-              .protocol_id = "tempest.engine",
-              .protocol_version = DARTWIC::EngineContract::version
-          }, engineLink_),
-          protocol_(peer_) {
+    DeviceTransport(const nlohmann::json& config,
+                    TEMPEST::Peer& peer, DARTWIC::EngineProtocol& protocol)
+        : vehicle_(config), peer_(peer), protocol_(protocol) {
         registerChannels(); // Bodies are shown under Channels, Events, and Logs.
         registerEvents();
         registerLogs();
         registerOperations();
     }
 
-    void start(TEMPEST::TransportCallbacks callbacks) override {
-        engineLink_->bind(std::move(callbacks)); // Route replies/data into Engine's Peer.
-        try {
-            peer_.start();                     // The same startup API as every Peer.
-            vehicle_.start([this](TEMPEST::ConnectionState state) {
-                engineLink_->setConnectionState(state);
-            });
-        } catch (...) { stop(); throw; }
-    }
-
-    void send(TEMPEST::Message message) override {
-        // Engine -> bridge's Peer -> EngineProtocol -> a registered handler.
-        engineLink_->deliverToPeer(std::move(message));
+    void start() override {
+        vehicle_.start([this](TEMPEST::ConnectionState state) {
+            setConnected(state == TEMPEST::ConnectionState::Connected);
+        });
     }
 
     void stop() override {
-        vehicle_.cancelPending(); // Stop new input; fail pending vehicle waits.
-        peer_.stop();             // Cancel Engine waits; stop callback transport.
-        vehicle_.stop();          // Join vehicle workers and release I/O.
+        vehicle_.cancelPending();
+        vehicle_.stop(); // Join device I/O and decoder callbacks.
     }
-
     ~DeviceTransport() override { stop(); }
 
 private:
@@ -397,15 +361,34 @@ private:
     }
 
     VehicleLink vehicle_;
-    std::shared_ptr<TEMPEST::CallbackTransport> engineLink_;
-    TEMPEST::Peer peer_;
-    DARTWIC::EngineProtocol protocol_;
+    TEMPEST::Peer& peer_;
+    DARTWIC::EngineProtocol& protocol_;
 };
 ```
 
-Include the Peer, EngineProtocol, CallbackTransport, and your vehicle headers. The wiring methods are described in the tables above.
+Include the Peer, EngineProtocol, and your vehicle headers. The Engine owns the supplied Peer and protocol for this connection; they remain alive until your transport has stopped and its handlers have finished.
 
 `VehicleLink` and `Vehicle...` packet types are your code. Its `on...` methods register decoder callbacks. Run commands on a separate bounded worker so waiting for the Engine leaves I/O and telemetry running.
+
+For example, this excerpt shows where bytes enter your `VehicleLink`. `driver_` is your TCP/serial/radio driver; `decoder_` buffers partial CCSDS frames and emits decoded packets. Neither is a TEMPEST object:
+
+```cpp
+void VehicleLink::start(StateHandler onState) {
+    driver_.start(
+        [this](Bytes bytes) {
+            decoder_.accept(bytes, [this](VehicleChannelPacket packet) {
+                if (channelTelemetryHandler_) channelTelemetryHandler_(packet);
+            });
+        },
+        std::move(onState));
+}
+
+void VehicleLink::onChannelTelemetry(ChannelHandler handler) {
+    channelTelemetryHandler_ = std::move(handler);
+}
+```
+
+The channel section below supplies `ChannelHandler`. Register equivalent handlers for decoded events, logs, and requests as needed. Raw vehicle bytes stay in your driver/decoder. `receive(message)` is for DARTWIC links; a device bridge publishes decoded measurements through EngineProtocol.
 
 Replies keep the original request ID and connection session. Discard stale replies; report failed delivery locally without throwing or replaying. `cancelPending()` stops intake and fails device waits; `stop()` joins workers. Both must tolerate partial startup and repeated calls.
 
@@ -804,6 +787,6 @@ Run Engine peer regressions, custom transport tests, and F Prime bridge tests to
 # Reference
 
 - [C++ TEMPEST Peer](../Clients/C%2B%2B%20TEMPEST%20Peer.md) — The same domain APIs and handlers in an application.
-- [Peer registration](Reference/Engine/TEMPEST/SDK_API-registerPeer.md) and [peer definition](Reference/Engine/TEMPEST/PeerDefinition.md).
+- [Device registration](Reference/Engine/TEMPEST/SDK_API-registerPeer.md) and [transport registration](Reference/Engine/TEMPEST/SDK_API-registerPeerTransport.md).
 - [Transport interface](Reference/TEMPEST/Messaging/Transport.md).
 - [Engine Protocol reference](Reference/TEMPEST/Engine%20Protocol/Overview.md).

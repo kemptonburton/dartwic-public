@@ -1,11 +1,11 @@
 ---
 title: "Value"
-summary: "Application value type shared with TEMPEST; no wire codec is implied."
+summary: "Application values shared with TEMPEST, independent of wire encoding."
 ---
 
 ## API
 
-Application value type shared with TEMPEST; no wire codec is implied.
+Application values shared with TEMPEST, independent of wire encoding.
 
 Namespace: `DARTWIC`.
 

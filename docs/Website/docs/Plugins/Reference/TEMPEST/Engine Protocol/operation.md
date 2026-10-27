@@ -1,6 +1,8 @@
 ---
-title: "operation"
-summary: "Map a typed request to its TEMPEST operation name."
+title: operation
+summary: Map a typed request to its TEMPEST operation name.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
@@ -16,5 +18,5 @@ Namespace: `DARTWIC::EngineContract`.
 ## Declaration
 
 ```cpp
-std::string operation(const EngineRequest& request);
+std::string operation(const EngineRequest &request);
 ```

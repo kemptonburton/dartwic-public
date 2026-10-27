@@ -1,11 +1,13 @@
 ---
-title: "EngineTelemetry"
-summary: "Telemetry supported by the DARTWIC application contract."
+title: EngineTelemetry
+summary: Typed best-effort observations and complete snapshots.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
 
-Telemetry supported by the DARTWIC application contract.
+Typed best-effort observations and complete snapshots.
 
 Namespace: `DARTWIC`.
 
@@ -16,6 +18,6 @@ Namespace: `DARTWIC`.
 ## Declaration
 
 ```cpp
-using EngineTelemetry = std::variant<ChannelTelemetry, ChannelSnapshotTelemetry,
-    FixedGenerationTelemetry, ArgusEventTelemetry>;
+using EngineTelemetry = std::variant<ChannelUpdates, ChannelSnapshot,
+                                     ArgusEvent, ArgusBoardSnapshot>;
 ```

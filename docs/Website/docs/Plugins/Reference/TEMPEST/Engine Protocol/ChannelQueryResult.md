@@ -1,11 +1,11 @@
 ---
 title: "ChannelQueryResult"
-summary: "Channel snapshots returned by a peer query handler."
+summary: "Matching current channel records returned by a synchronous query."
 ---
 
 ## API
 
-Channel snapshots returned by a peer query handler.
+Matching current channel records returned by a synchronous query.
 
 Namespace: `DARTWIC`.
 
@@ -17,6 +17,6 @@ Namespace: `DARTWIC`.
 
 ```cpp
 struct ChannelQueryResult {
-    std::vector<ChannelSnapshot> channels;
+    ChannelUpdates channels;
 };
 ```

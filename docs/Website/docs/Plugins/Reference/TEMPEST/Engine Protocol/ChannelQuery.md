@@ -1,11 +1,11 @@
 ---
 title: "ChannelQuery"
-summary: "Channel keys and requested fields for a synchronous peer snapshot query."
+summary: "Current channel names and optional field selection; empty selections mean all."
 ---
 
 ## API
 
-Channel keys and requested fields for a synchronous peer snapshot query.
+Current channel names and optional field selection; empty selections mean all.
 
 Namespace: `DARTWIC`.
 

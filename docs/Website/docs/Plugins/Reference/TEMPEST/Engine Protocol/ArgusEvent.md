@@ -18,7 +18,7 @@ Namespace: `DARTWIC`.
 ```cpp
 struct ArgusEvent {
     std::string event_id;
-    std::string type = "message";
+    EventType type = EventType::Message;
     std::string title;
     std::string description;
     std::string status = "new";

@@ -1,11 +1,13 @@
 ---
-title: "EngineRequest"
-summary: "Requests supported by the DARTWIC application contract."
+title: EngineRequest
+summary: Typed synchronous requests carried by the shared Engine contract.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
 
-Requests supported by the DARTWIC application contract.
+Typed synchronous requests carried by the shared Engine contract.
 
 Namespace: `DARTWIC`.
 
@@ -16,5 +18,6 @@ Namespace: `DARTWIC`.
 ## Declaration
 
 ```cpp
-using EngineRequest = std::variant<ChannelUpsert, ChannelRemove, ChannelBulkUpsert, ChannelQuery, ArgusQuery, ArgusAction>;
+using EngineRequest = std::variant<ChannelUpsertRequest, ChannelRemoveRequest,
+                                   ChannelQuery, ArgusQuery, ArgusAction>;
 ```

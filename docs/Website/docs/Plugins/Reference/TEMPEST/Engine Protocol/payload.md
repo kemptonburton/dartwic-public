@@ -1,6 +1,8 @@
 ---
-title: "payload"
-summary: "Map typed telemetry to its application object."
+title: payload
+summary: Map typed telemetry to its application object.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
@@ -16,5 +18,5 @@ Namespace: `DARTWIC::EngineContract`.
 ## Declaration
 
 ```cpp
-Value::Object payload(const EngineTelemetry& telemetry);
+Value::Object payload(const EngineTelemetry &telemetry);
 ```

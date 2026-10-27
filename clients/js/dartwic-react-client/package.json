@@ -1,6 +1,6 @@
 {
   "name": "@dartwic/dartwic.react-client",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "type": "module",
   "main": "src/index.js",
   "exports": {
@@ -16,6 +16,6 @@
     "react": ">=18"
   },
   "dartwic": {
-    "minEngineVersion": "2.0.0"
+    "minEngineVersion": "2.1.0"
   }
 }

@@ -2,14 +2,14 @@
 title: Engine Plugin SDK Reference
 summary: Public C++ types and APIs for building DARTWIC engine plugins.
 created: 2026-08-03T15:41
-updated: 2026-10-26T18:30
+updated: 2026-10-27T14:08
 ---
 
 ## Categories
 
 | Category | Entries |
 | --- | --- |
-| [Channel Authority](Channel%20Authority/Overview.md) | 13 |
+| [Channel Authority](Channel%20Authority/Overview.md) | 12 |
 | [Channels](Channels/Overview.md) | 12 |
 | [DCode](DCode/Overview.md) | 4 |
 | [Events](Events/Overview.md) | 2 |
@@ -20,5 +20,5 @@ updated: 2026-10-26T18:30
 | [Operations](Operations/Overview.md) | 9 |
 | [Storage](Storage/Overview.md) | 5 |
 | [Tasks and Loops](Tasks%20and%20Loops/Overview.md) | 11 |
-| [TEMPEST](TEMPEST/Overview.md) | 2 |
+| [TEMPEST](TEMPEST/Overview.md) | 4 |
 | [Workspace Assets](Workspace%20Assets/Overview.md) | 7 |

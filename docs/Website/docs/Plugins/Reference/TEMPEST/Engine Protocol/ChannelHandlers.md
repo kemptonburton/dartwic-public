@@ -1,11 +1,13 @@
 ---
-title: "ChannelHandlers"
-summary: "Application handlers for incoming channel commands, queries, and telemetry."
+title: ChannelHandlers
+summary: Install before Peer.start.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
 
-Application handlers for incoming channel commands, queries, and telemetry. Install before Peer.start so initial synchronization can be served.
+Install before Peer.start. Commands run on the request worker; telemetry uses the callback worker.
 
 Namespace: `DARTWIC`.
 
@@ -17,12 +19,10 @@ Namespace: `DARTWIC`.
 
 ```cpp
 struct ChannelHandlers {
-    std::function<void(const ChannelUpsert&)> upsert;
-    std::function<void(const ChannelRemove&)> remove;
-    std::function<void(const ChannelBulkUpsert&)> bulk_upsert;
-    std::function<ChannelQueryResult(const ChannelQuery&)> query;
-    std::function<void(const ChannelTelemetry&)> telemetry;
-    std::function<void(const ChannelSnapshotTelemetry&)> snapshot;
-    std::function<void(const FixedGenerationTelemetry&)> fixed_generation;
+    std::function<void(const ChannelUpsertRequest &)> upsertCommand;
+    std::function<ChannelQueryResult(const ChannelQuery &)> queryCommand;
+    std::function<void(const ChannelRemoveRequest &)> removeCommand;
+    std::function<void(const ChannelUpdates &)> channelTelemetry;
+    std::function<void(const ChannelSnapshot &)> snapshotTelemetry;
 };
 ```

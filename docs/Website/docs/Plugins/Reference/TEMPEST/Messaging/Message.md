@@ -1,6 +1,8 @@
 ---
-title: "Message"
-summary: "Operations, replies and telemetry share this in-memory envelope."
+title: Message
+summary: Operations, replies and telemetry share this in-memory envelope.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
@@ -24,6 +26,7 @@ struct Message {
     Value::Object payload;
     bool error = false;
     std::string error_code;
-    std::chrono::steady_clock::time_point deadline = std::chrono::steady_clock::time_point::max();
+    std::chrono::steady_clock::time_point deadline =
+          std::chrono::steady_clock::time_point::max();
 };
 ```

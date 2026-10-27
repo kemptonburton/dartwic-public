@@ -1,8 +1,8 @@
 ---
 title: Transport
 summary: Implement start, send and stop for custom framing and I/O.
-created: 2026-09-26T01:43
-updated: 2026-09-26T14:51
+created: 2026-10-04T18:31
+updated: 2026-10-27T16:09
 ---
 
 ## API
@@ -21,13 +21,19 @@ Namespace: `TEMPEST`.
 class Transport {
 public:
     virtual ~Transport() = default;
-    // Install callbacks and begin delivery. Report underlying link availability with on_state.
-    virtual void start(TransportCallbacks callbacks) = 0;
+    // Begin link I/O; report incoming messages through receive and physical availability through setConnected.
+    virtual void start() = 0;
     // Nonblocking bounded enqueue; throw on failed operation enqueue. Best-effort telemetry may be dropped. Honor the original local deadline for unsent messages.
-    virtual void send(Message message) = 0;
-    // Release callbacks and stop delivery before returning.
+    virtual void send(Message message);
+    // Stop link delivery and join I/O before returning.
     virtual void stop() = 0;
     // Return an observational snapshot; unknown fields remain unset.
     virtual std::vector<TransportPath> diagnostics() const;
+    protected:
+    // Deliver a decoded DARTWIC message into the owning Peer. No application handler runs inline.
+    void receive(Message message);
+    protected:
+    // Report physical link availability; protocol registration establishes readiness separately.
+    void setConnected(bool connected, std::string reason = {});
 };
 ```

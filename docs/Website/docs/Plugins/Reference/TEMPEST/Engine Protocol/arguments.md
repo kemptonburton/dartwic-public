@@ -1,6 +1,8 @@
 ---
-title: "arguments"
-summary: "Map a typed request to its argument object."
+title: arguments
+summary: Map a typed request to its argument object.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
@@ -16,5 +18,5 @@ Namespace: `DARTWIC::EngineContract`.
 ## Declaration
 
 ```cpp
-Value::Object arguments(const EngineRequest& request);
+Value::Object arguments(const EngineRequest &request);
 ```

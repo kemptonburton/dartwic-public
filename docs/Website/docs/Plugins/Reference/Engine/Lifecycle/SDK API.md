@@ -2,7 +2,7 @@
 title: SDK_API
 summary: Host API available to engine plugins and their module instances.
 created: 2026-09-04T17:13
-updated: 2026-10-26T19:26
+updated: 2026-10-27T14:08
 ---
 
 Registration functions qualify local identifiers as `<plugin-id>.<local-id>`. Channel authority calls require an active task or plugin loop controller.
@@ -34,6 +34,15 @@ class SDK_API {
         virtual bool removeChannel(const std::string& channel) = 0;
         virtual std::string registerModuleType(ModuleTypeDefinition definition) = 0;
         virtual std::string registerPeer(PeerDefinition definition) = 0;
+        virtual std::string registerPeerTransport(PeerTransportDefinition definition) {
+            PeerDefinition peer;
+            peer.id=std::move(definition.id);peer.name=std::move(definition.name);
+            peer.version=definition.version;peer.default_config=std::move(definition.default_config);
+            peer.protocol_id=std::move(definition.protocol_id);peer.protocol_version=definition.protocol_version;
+            peer.engine_protocol=definition.engine_protocol;peer.create_transport=std::move(definition.create);
+            peer.configure=std::move(definition.configure);
+            return registerPeer(std::move(peer));
+        }
         virtual std::string registerTaskType(std::string local_id, std::string name, TaskTypeDefinition definition) = 0;
         virtual std::string registerOperation(OperationDefinition definition) = 0;
         // Convenience for operations without argument metadata. Delegates to the
@@ -78,7 +87,6 @@ class SDK_API {
         virtual nlohmann::json callDCodeFunction(const std::string& function_name, const nlohmann::json& payload) = 0;
         virtual void commandChannel(const std::string& channel, ChannelValue value) = 0;
         virtual void setChannel(const std::string& channel, std::optional<ChannelValue> value = std::nullopt) = 0;
-        virtual void claimChannel(const std::string& channel) = 0;
         virtual void freeChannel(const std::string& channel) = 0;
         virtual nlohmann::json recordEvent(nlohmann::json event) { return nlohmann::json::object(); }
         virtual bool updateEventStatus(const std::string& event_id, const std::string& status) {
@@ -193,17 +201,10 @@ class SDK_API {
         void freeChannel(const FixedChannelHandle& channel, std::optional<ChannelValue> value = std::nullopt) {
             applyAuthorityByHandle(3, channel, std::move(value));
         }
-
-        // Unique virtual names are essential on the Microsoft ABI: adding a
-        // virtual overload would regroup and move existing overload slots.
         virtual void applyAuthorityByName(uint32_t operation, const std::string& channel,
-            std::optional<ChannelValue> value) {
-            throw std::runtime_error("Authority operation requires Engine 2.0.7 or newer.");
-        }
+            std::optional<ChannelValue> value) = 0;
         virtual void applyAuthorityByHandle(uint32_t operation, const FixedChannelHandle& channel,
-            std::optional<ChannelValue> value) {
-            throw std::runtime_error("Fixed-channel authority requires Engine 2.0.7 or newer.");
-        }
+            std::optional<ChannelValue> value) = 0;
 
     };
 ```

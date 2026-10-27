@@ -1,8 +1,8 @@
 # C++ TEMPEST peer client
 
-Run a TEMPEST node with operations and telemetry using `TEMPEST::Peer`. This folder includes its messaging library and ZeroMQ transport; no private DARTWIC checkout or SDK download is needed to build it.
+`DARTWIC::PeerClient` connects your application as a named node. It assembles the same Transport, Peer and EngineProtocol used by the Engine. Register the handlers you need; application storage is optional and application-owned.
 
-Install CMake 3.20+, a C++20 compiler, and the `cppzmq` and `nlohmann_json` CMake packages, for example through vcpkg. Configure with your dependency toolchain or `CMAKE_PREFIX_PATH`, then build and install from this folder:
+Use CMake 3.20+, C++20, cppzmq and nlohmann_json. Build from this directory with your dependency toolchain:
 
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -11,8 +11,8 @@ cmake --build build --config Release --target TEMPESTPeer_Example
 cmake --install build --config Release --prefix ./install
 ```
 
-Consumers use `find_package(TEMPESTPeer CONFIG REQUIRED)` and link `TEMPEST::Peer`. Point `CMAKE_PREFIX_PATH` at the install prefix and third-party dependencies. On Windows, use matching architectures and runtime configurations.
+Installed consumers use `find_package(DARTWICPeerClient CONFIG REQUIRED)` and link `DARTWIC::PeerClient`. Source consumers add this directory with `add_subdirectory` and link the same target. Set `CMAKE_PREFIX_PATH` to your installed package and dependencies.
 
-`examples/peer.cpp` shows registration, an echo operation and a telemetry handler. Registration and network work run asynchronously; `waitUntilReady` waits for connection readiness. Keep the peer alive while handlers run and call `stop` before destroying application state used by callbacks. A timeout does not prove a remote operation was canceled.
+`examples/peer.cpp` shows a command handler and channel telemetry. Call `start()`, then `waitUntilReady()` before requests/publications. Call `stop()` before destroying handler state. A request timeout leaves remote completion unknown; commands are never automatically replayed.
 
-For engine-specific channels, events and logs, add the separate [Engine Protocol SDK](https://github.com/kemptonburton/dartwic-public/tree/main/sdk/dartwic-engine-protocol). For an application that only queries an engine, use the ordinary C++ DARTWIC client instead.
+For a custom link, pass a `shared_ptr<TEMPEST::Transport>` as the constructor's second argument and register the matching Engine transport through a plugin. See the [C++ TEMPEST Peer guide](../../../docs/Website/docs/Clients/C%2B%2B%20TEMPEST%20Peer.md) for channels, events, logs and complete setup examples. Lower-level `TEMPEST::Peer` and `DARTWIC::EngineProtocol` remain available separately.

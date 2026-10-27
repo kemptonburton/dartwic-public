@@ -21,21 +21,20 @@ public:
     std::weak_ptr<MemoryTransport> remote;
     std::atomic<bool> drop_telemetry{false};
     ~MemoryTransport() override { stop(); }
-    void start(TEMPEST::TransportCallbacks value) override {
-        { std::lock_guard lock(mutex); callbacks = std::move(value); running = true; }
+    void start() override {
+        { std::lock_guard lock(mutex); running = true; }
         worker = std::thread([this] {
             std::unique_lock lock(mutex);
             while (running) {
                 cv.wait(lock, [&] { return !running || !queue.empty(); });
                 if (!running) break;
                 auto message = std::move(queue.front()); queue.pop_front();
-                auto callback = callbacks.on_message;
                 lock.unlock();
-                try { callback(std::move(message)); } catch (...) {}
+                try { receive(std::move(message)); } catch (...) {}
                 lock.lock();
             }
         });
-        callbacks.on_state(TEMPEST::ConnectionState::Connected, {});
+        setConnected(true);
     }
     void send(TEMPEST::Message message) override {
         if (drop_telemetry && message.kind == TEMPEST::Message::Kind::Telemetry) return;
@@ -46,18 +45,18 @@ public:
           target->queue.push_back(std::move(message)); }
         target->cv.notify_one();
     }
+    void signal(bool connected) { setConnected(connected); }
     void stop() override {
         { std::lock_guard lock(mutex); running = false; queue.clear(); }
         cv.notify_all();
         if (worker.joinable()) worker.join();
-        std::lock_guard lock(mutex); callbacks = {};
+        std::lock_guard lock(mutex);
     }
 private:
     std::mutex mutex;
     std::condition_variable cv;
     bool running = false;
     std::deque<TEMPEST::Message> queue;
-    TEMPEST::TransportCallbacks callbacks;
     std::thread worker;
 };
 }
@@ -132,6 +131,27 @@ int main() {
         auto second = std::async(std::launch::async, [&] { return a.call("echo", {{"index", 2}}); });
         require(first.get().at("index") == TEMPEST::Value(1), "first concurrent result");
         require(second.get().at("index") == TEMPEST::Value(2), "second concurrent result");
+        // Queued telemetry from a retired link must not run after registration
+        // recovers, even when an application callback temporarily blocks dispatch.
+        right->drop_telemetry = false;
+        std::promise<void> entered, resume, delivered;
+        auto resume_future = resume.get_future().share();
+        std::atomic<int> epoch_samples{0};
+        a.onTelemetry("blocked", [&](const auto&) { entered.set_value(); resume_future.wait(); });
+        a.onTelemetry("epoch", [&](const auto&) { if (++epoch_samples == 1) delivered.set_value(); });
+        b.publish("blocked", {});
+        require(entered.get_future().wait_for(2s) == std::future_status::ready, "blocking callback entered");
+        b.publish("epoch", {{"old",true}});
+        b.call("reverse", {}); // Transport FIFO: the old sample has reached Peer.
+        left->signal(false); right->signal(false);
+        left->signal(true); right->signal(true);
+        resume.set_value();
+        a.waitUntilReady(2s); b.waitUntilReady(2s);
+        require(epoch_samples == 0, "retired telemetry callback was discarded");
+        b.publish("epoch", {{"old",false}});
+        require(delivered.get_future().wait_for(2s) == std::future_status::ready && epoch_samples == 1,
+            "fresh telemetry resumes after registration");
+
         auto pending = std::async(std::launch::async, [&] {
             try { a.call("slow", {}, 5s); return false; }
             catch (const TEMPEST::DisconnectedError&) { return true; }

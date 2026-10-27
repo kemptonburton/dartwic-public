@@ -1,6 +1,8 @@
 ---
-title: "ConnectionState"
-summary: "Peer lifecycle state; Connected means registration completed."
+title: ConnectionState
+summary: Peer lifecycle state; Connected means registration completed.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
@@ -16,5 +18,11 @@ Namespace: `TEMPEST`.
 ## Declaration
 
 ```cpp
-enum class ConnectionState { Disconnected, Connecting, Connected, Reconnecting, Stopping };
+enum class ConnectionState {
+  Disconnected,
+  Connecting,
+  Connected,
+  Reconnecting,
+  Stopping
+};
 ```

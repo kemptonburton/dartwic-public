@@ -1,7 +1,7 @@
 ---
 summary: Inspect clients, remote nodes, and the connections between them.
 created: 2026-08-03T15:41
-updated: 2026-10-26T21:52
+updated: 2026-10-27T13:52
 ---
 
 Open **Network Map** from the left navigation to see the engine serving your interface, its connected clients, and remote nodes linked through [TEMPEST Peer](../Engine/Networking%20and%20Peers.md).
@@ -26,7 +26,7 @@ Connection and traffic readings update periodically. Check received snapshots an
 
 # Connect and reconnect
 
-Choose the peer transport and the remote endpoint in the connection controls. Built-in TEMPEST uses the remote engine's base port and password. Plugin transports expose their own configuration fields. The [TEMPEST peer guide](../Engine/Networking%20and%20Peers.md) explains telemetry, commands, and recovery.
+Choose a **Connection type**, then its settings. **DARTWIC — ZeroMQ** uses the remote Engine or C++ peer endpoint. A registered link adds an option such as **DARTWIC — Radio Link**; device integrations add their own option, such as **F Prime — CCSDS**. Each option shows only its relevant connection fields. The [TEMPEST peer guide](../Engine/Networking%20and%20Peers.md) explains telemetry, commands, and recovery.
 
 A remembered node is a saved target, not proof of a live connection. **Disconnect** stops the current link; **forget** also removes the saved target. Reconnect remembered targets when the peer becomes available again.
 

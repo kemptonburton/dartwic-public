@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(DARTWICClient VERSION 2.0.0 LANGUAGES CXX)
+project(DARTWICClient VERSION 3.0.0 LANGUAGES CXX)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 find_package(cppzmq CONFIG REQUIRED)

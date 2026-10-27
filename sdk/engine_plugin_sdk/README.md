@@ -1,6 +1,6 @@
 # Engine Plugin SDK
 
-Custom TEMPEST peers use `registerPeer(PeerDefinition)` from `sdk_api.h`. The definition creates a `TEMPEST::Transport` and can configure a `TEMPEST::Peer`; the engine owns RAPID and ARGUS integration.
+Custom links use `registerPeerTransport` from `sdk_api.h`: supply a Transport factory and the Engine supplies the standard DARTWIC Peer and EngineProtocol. Device integrations use `registerPeer`: the factory receives an Engine-owned representative Peer and EngineProtocol for mapping device commands and telemetry. Both appear as connection types in Network Map.
 
 Public engine plugin files live in `include/`.
 

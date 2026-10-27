@@ -1,6 +1,8 @@
 ---
-title: "topic"
-summary: "Map typed telemetry to its TEMPEST topic."
+title: topic
+summary: Map typed telemetry to its TEMPEST topic.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
@@ -16,5 +18,5 @@ Namespace: `DARTWIC::EngineContract`.
 ## Declaration
 
 ```cpp
-std::string topic(const EngineTelemetry& telemetry);
+std::string topic(const EngineTelemetry &telemetry);
 ```

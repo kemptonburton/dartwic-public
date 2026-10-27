@@ -1,8 +1,8 @@
 ---
 title: Messaging Reference
 summary: Codec-independent values, messages, transport and peer lifecycle.
-created: 2026-09-26T01:43
-updated: 2026-10-04T04:52
+created: 2026-10-04T18:31
+updated: 2026-10-27T13:57
 ---
 
 C++20 target: `TEMPEST::Messaging`.
@@ -12,7 +12,6 @@ C++20 target: `TEMPEST::Messaging`.
 | [Value](Value.md) | Application values independent of encoding: null, bool, exact signed/unsigned 64-bit integers, double, string, array, or object. |
 | [ConnectionState](ConnectionState.md) | Peer lifecycle state; Connected means registration completed. |
 | [Message](Message.md) | Operations, replies and telemetry share this in-memory envelope. |
-| [TransportCallbacks](TransportCallbacks.md) | Delivery callbacks supplied by Peer. |
 | [TransportPath](TransportPath.md) | One observed transport path. |
 | [Transport](Transport.md) | Implement start, send and stop for custom framing and I/O. |
 | [TransportPtr](TransportPtr.md) | Shared ownership of an application transport. |

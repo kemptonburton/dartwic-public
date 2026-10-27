@@ -1,6 +1,8 @@
 ---
-title: "SerializedTelemetryTransport"
-summary: "Optional adapter optimization for complete, replaceable telemetry snapshots."
+title: SerializedTelemetryTransport
+summary: Optional adapter optimization for complete, replaceable telemetry snapshots.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
@@ -19,7 +21,8 @@ Namespace: `TEMPEST`.
 class SerializedTelemetryTransport {
 public:
     virtual ~SerializedTelemetryTransport() = default;
-    virtual bool sendSerializedTelemetry(std::string topic, std::string encoding,
-            std::shared_ptr<const std::string> payload) = 0;
+    virtual bool
+      sendSerializedTelemetry(std::string topic, std::string encoding,
+                              std::shared_ptr<const std::string> payload) = 0;
 };
 ```

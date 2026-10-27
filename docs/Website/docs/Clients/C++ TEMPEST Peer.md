@@ -1,12 +1,10 @@
 ---
-summary: Preview the simplified C++ peer API for channels, events, logs, and custom operations.
-updated: 2026-10-27T03:53
+summary: Use the C++ peer API for channels, events, logs, and custom operations.
+updated: 2026-10-27T14:45
 created: 2026-09-06T14:49
 ---
 
 Connect your C++ application as a named node to publish measurements, handle commands, and exchange events and logs. Your application owns its data; the client handles communication.
-
-> **Proposed API preview:** The client, package, handlers, and record layouts below are proposed, not implemented. Examples do not compile against the current SDK. Generated references still describe the existing API; this guide changes no runtime behavior.
 
 Use the ordinary [C++ client](C%2B%2B%20Client.md) if your program only accesses Engine data and does not expose its own channels or handlers.
 
@@ -28,7 +26,7 @@ The default transport needs only connection settings. A custom link needs matchi
 
 # Project Setup
 
-The proposed **C++ Peer Client** package includes the DARTWIC protocol and default ZeroMQ transport. Extract it into your project's `vendor/dartwic-peer/` directory and link one target:
+The **C++ Peer Client** package includes the DARTWIC protocol and default ZeroMQ transport. Extract it into your project's `vendor/dartwic-peer/` directory and link one target:
 
 ```cmake
 cmake_minimum_required(VERSION 3.20)
@@ -39,11 +37,11 @@ add_executable(peer_demo main.cpp)
 target_link_libraries(peer_demo PRIVATE DARTWIC::PeerClient)
 ```
 
-Use a C++20 compiler and provide ZeroMQ dependencies through your CMake toolchain. Current downloads still contain the existing libraries.
+Use a C++20 compiler and provide ZeroMQ dependencies through your CMake toolchain. Use package version 3.0.0 with Engine 2.1.0 or newer.
 
 # Transport Setup
 
-The default link needs no custom plugin. A custom link needs both an application transport and an Engine plugin registering the matching peer type.
+The default link needs no custom plugin. A custom link needs both an application transport and an Engine plugin registering the matching transport.
 
 ## Application Transport
 
@@ -54,7 +52,7 @@ Implement `TEMPEST::Transport` in your application. These declarations show the 
 
 class MyTransport : public TEMPEST::Transport {
 public:
-    void start(TEMPEST::TransportCallbacks callbacks) override;
+    void start() override;
     void send(TEMPEST::Message message) override;
     void stop() override;
 };
@@ -62,11 +60,11 @@ public:
 
 | Method | Your implementation supplies |
 | --- | --- |
-| `start` | Open the configured link, retain callbacks, and start I/O. Report physical link state through `callbacks.on_state`; deliver validated decoded messages through `callbacks.on_message`. Registration still determines peer readiness. |
+| `start` | Open the configured link and start I/O. Report physical availability through `setConnected(...)`; deliver decoded DARTWIC messages through `receive(message)`. Registration still determines peer readiness. |
 | `send` | Queue a message promptly in a bounded queue; encode and transmit on your I/O worker. Preserve message kind, request ID, name, payload, and errors. Honor local deadlines without transmitting monotonic-clock values or replaying accepted commands. |
 | `stop` | Stop delivery, join I/O, and release callbacks before returning. The transport destructor should stop it too. |
 
-Then supply an instance to the proposed client, using the peer ID registered by your Engine plugin:
+Then supply an instance to the client, using the standard DARTWIC peer identity:
 
 ```cpp
 #include <dartwic/PeerClient.h>
@@ -74,8 +72,7 @@ Then supply an instance to the proposed client, using the peer ID registered by 
 
 auto transport = std::make_shared<MyTransport>();
 DARTWIC::PeerClient peer({
-    .node_name = "LAB_APP",
-    .peer_id = "my_plugin.my_link"
+    .node_name = "LAB_APP"
 }, transport);
 
 // Register channel/event/log handlers before starting; see the sections below.
@@ -83,19 +80,19 @@ peer.start();
 peer.waitUntilReady();
 ```
 
-Your class owns endpoint settings and framing. `PeerClient` supplies the DARTWIC protocol/version; `peer_id` must match the plugin registration. Domain APIs stay unchanged. Follow the [transport implementation workflow](../Plugins/Building%20a%20Custom%20Peer.md#transport-interface) for queue, encoder, and decoder details.
+Your class owns endpoint settings and framing. `PeerClient` supplies the DARTWIC protocol/version. The Engine selects the registered `transport_id`; the application keeps the standard DARTWIC peer identity. Domain APIs stay unchanged. Follow the [transport implementation workflow](../Plugins/Building%20a%20Custom%20Peer.md#transport-interface) for queue, encoder, and decoder details.
 
 ## Engine Transport or Protocol Bridge
 
-On the Engine side, follow [Building a Custom Peer — Custom Transport](../Plugins/Building%20a%20Custom%20Peer.md#custom-transport). Register the peer type with `registerPeer`, provide its transport factory, select `tempest.engine` and the shared version, and set `engine_protocol: true`. Install the plugin and select its peer type in Network Map with the matching node and endpoints. The Engine constructs its peer and binds RAPID/ARGUS handlers; the plugin supplies the link.
+On the Engine side, follow [Building a Custom Peer — Custom Transport](../Plugins/Building%20a%20Custom%20Peer.md#custom-transport). Register the link with `registerPeerTransport` and provide its transport factory. The Engine uses the standard DARTWIC peer and protocol automatically. Install the plugin and select its connection type in Network Map with the matching node and endpoints. The Engine constructs its peer and binds RAPID/ARGUS handlers; the plugin supplies the link.
 
-If the external device speaks its own protocol, follow [Protocol Bridge](../Plugins/Building%20a%20Custom%20Peer.md#protocol-bridge) instead. The Engine plugin translates external packets, commands, and supported queries; that device does not need this C++ client. F Prime CCSDS is the example. The linked guide previews the same simplified protocol APIs and the proposed bridge binding.
+If the external device speaks its own protocol, follow [Protocol Bridge](../Plugins/Building%20a%20Custom%20Peer.md#protocol-bridge) instead. Register that device with `registerPeer`. The Engine supplies Peer and EngineProtocol to its transport factory, which translates external packets, commands, and supported queries. The device does not need this C++ client. F Prime CCSDS is the example. The linked guide uses the same channel, event, and log APIs.
 
 # Peer Setup
 
 Construct the client with your node name and Engine connection settings. Register handlers before `start()`, then wait for registration before making requests.
 
-The following proposed `main.cpp` is a small publisher. It takes a simulated temperature reading every 200 ms and sends its complete shared channel selection for ten seconds:
+The following `main.cpp` is a small publisher. It takes a simulated temperature reading every 200 ms and sends its complete shared channel selection for ten seconds:
 
 ```cpp
 #include <dartwic/PeerClient.h>
@@ -397,7 +394,7 @@ peer.logs().setHandlers({
 | `timestamp_ns` | Original entry time in Unix nanoseconds. |
 | `owner_node`, `session`, `sequence` | Source node, process session, and increasing sequence within that stream/session. |
 
-For new local entries, the proposed client supplies source/sequence bookkeeping. If your logger retains entries for queries, it must share those identifiers rather than generate a second sequence. Publishing does not retain history or confirm remote persistence.
+For new local entries, the client supplies source/sequence bookkeeping. If your logger retains entries for queries, it must share those identifiers rather than generate a second sequence. Publishing does not retain history or confirm remote persistence.
 
 ## Log History
 
@@ -453,7 +450,7 @@ That node must register `lab/echo`; registering it locally only lets the other n
 
 # Building and Running
 
-Once the proposed package is implemented, build the publisher with your dependency toolchain:
+Build the publisher with your dependency toolchain:
 
 ```sh
 cmake -S . -B build
@@ -466,7 +463,7 @@ The [flight-computer example](https://github.com/kemptonburton/dartwic-example-w
 
 # Reference
 
-The following references describe the currently implemented API, not the proposed names on this page:
+API declarations and record types:
 
 - [TEMPEST peer reference](Reference/TEMPEST/Overview.md) — Peer lifecycle, operations, telemetry, and transport.
 - [Engine Protocol reference](../Plugins/Reference/TEMPEST/Engine%20Protocol/Overview.md) — Current channel, event, and log types.

@@ -1,11 +1,13 @@
 ---
-title: "LogHandlers"
-summary: "Callbacks through which an EngineProtocol peer serves log history and receives live logs."
+title: LogHandlers
+summary: Supported log-history commands and incoming batches of entries.
+created: 2026-10-04T18:31
+updated: 2026-10-27T14:24
 ---
 
 ## API
 
-Callbacks through which an EngineProtocol peer serves log history and receives live logs.
+Supported log-history commands and incoming batches of entries.
 
 Namespace: `DARTWIC`.
 
@@ -17,8 +19,8 @@ Namespace: `DARTWIC`.
 
 ```cpp
 struct LogHandlers {
-    std::function<std::vector<LogEntry>(const LogQuery&)> query;
-    std::function<void(const LogEntry&)> telemetry;
-    std::function<std::vector<LogStream>()> list;
+    std::function<std::vector<LogEntry>(const LogQuery &)> queryCommand;
+    std::function<void(const std::vector<LogEntry> &)> logTelemetry;
+    std::function<std::vector<LogStream>()> listCommand;
 };
 ```
