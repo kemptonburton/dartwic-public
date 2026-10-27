@@ -1,8 +1,8 @@
 ---
 title: SDK_API::setChannel
-summary: Establishes observe-only authority for the active task or loop, optionally writing its value.
+summary: Establishes observe-only authority for an eligible local runtime, optionally writing atomically. Remote targets or callers without runtime authority upsert a supplied value or do nothing without one.
 created: 2026-08-04T17:38
-updated: 2026-09-07T18:59
+updated: 2026-10-26T19:04
 ---
 
 ## Declaration

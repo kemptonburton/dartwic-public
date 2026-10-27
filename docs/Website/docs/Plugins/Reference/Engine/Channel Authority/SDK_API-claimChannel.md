@@ -1,6 +1,8 @@
 ---
-title: "SDK_API::claimChannel"
-summary: "Claims channel authority for the active task or loop controller."
+title: SDK_API::claimChannel
+summary: Compatibility alias for value-free commandChannel; new code should use commandChannel.
+created: 2026-08-04T17:38
+updated: 2026-10-26T19:04
 ---
 
 ## Declaration

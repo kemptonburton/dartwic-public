@@ -1,9 +1,11 @@
 ---
 title: ConfigMapDefinition
-summary: A single declaration shared by resource editors and Module Map, without another persistent configuration store. load returns the existing full document; the host edits declared paths and preserves other fields. apply must resolve only after existing persistence and the resource's application policy complete, or reject with an actionable error. Return the accepted document, or omit the result to accept next. Context supplies operation and the resource identity (module, task, or plugin). No restart behavior is implied.
+summary: A single declaration shared by resource editors and Module Map, without another persistent configuration store.
 created: 2026-10-25T12:50
-updated: 2026-10-25T20:28
+updated: 2026-10-26T19:16
 ---
+
+load returns the existing full document; the host edits declared paths and preserves other fields. apply must resolve only after existing persistence and the resource's application policy complete, or reject with an actionable error. Return the accepted document, or omit the result to accept next. Context supplies operation and the resource identity (module, task, or plugin). No restart behavior is implied.
 
 ## Import
 

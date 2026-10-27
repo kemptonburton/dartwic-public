@@ -1,7 +1,11 @@
 ---
-title: "TaskModuleBindings"
-summary: "Plugin-owned, configuration-only task/module association helper. bind wraps existing configure/cleanup callbacks without changing SDK ABI. Limits count configured tasks, including stopped ones. Claims commit after successful preparation and release on task destruction; ordinary cycles never enter it. Device access remains synchronized by the module."
+title: TaskModuleBindings
+summary: Plugin-owned, configuration-only task/module association helper.
+created: 2026-10-25T12:52
+updated: 2026-10-26T19:16
 ---
+
+bind wraps existing configure/cleanup callbacks without changing SDK ABI. Limits count configured tasks, including stopped ones. Claims commit after successful preparation and release on task destruction; ordinary cycles never enter it. Device access remains synchronized by the module.
 
 ## Declaration
 

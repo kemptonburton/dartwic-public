@@ -1,7 +1,7 @@
 ---
 summary: Understand RAPID channels, fields, storage, authority, and native or DCode publishing.
 created: 2026-09-04T17:13
-updated: 2026-10-26T17:52
+updated: 2026-10-26T19:42
 document_kind: walkthrough
 ---
 
@@ -159,9 +159,11 @@ These rules apply to CAESAR tasks, sequences, state machines, timelines, workers
 | Stop requested | Begin stopping; work may still be executing.                                          | Retain authority until active work and end handling finish.                                 |
 | Stop completed | Finish the run and its cleanup.                                                       | Remove that artifact's claims.                                                              |
 
+## Start
+
 Starting does not grant authority by itself. Acquire it in the start callback or later where needed. Configuration does not repeat on restart, so each run must reacquire its claims.
 
-A rejected authority operation during start prevents the body from running and releases that failed run's claims. Earlier accepted values are not rolled back.
+A rejected authority operation raises the normal ARGUS warning and leaves that channel unchanged. Start continues into the task body; the rejection does not automatically fail or stop the task. Earlier successful claims and writes remain in place. If your code acquires authority only at start, resolve the conflict and restart the task to try again.
 
 ## Hold and resume
 

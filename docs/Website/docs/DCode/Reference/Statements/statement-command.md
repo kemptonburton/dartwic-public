@@ -1,20 +1,20 @@
 ---
 title: command channel
-summary: Claim automatic authority and write as the current task or loop.
+summary: Acquire or retain automatic ownership, optionally writing a value. Without an eligible local owner, or for a remote channel, a supplied value is an ordinary upsert and an omitted value does nothing. Local transition/write rejection changes neither authority nor value.
 created: 2026-08-04T17:38
-updated: 2026-10-22T17:41
+updated: 2026-10-26T18:30
 ---
 
 ## Syntax
 
 ```dcode
-command |channel| = <value>
+command |channel| [= <value>]
 ```
 
 ## Available in
 
-- CAESAR task and loop bodies
-- Shared helper functions
+- File scope
+- Executable DCode bodies
 
 ## Example
 

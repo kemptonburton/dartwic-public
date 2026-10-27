@@ -1,6 +1,8 @@
 ---
-title: "SDK_API::commandChannel"
-summary: "Commands a channel while using the active task or loop as controller."
+title: SDK_API::commandChannel
+summary: Acquires automatic ownership and writes atomically for an eligible local runtime. Remote targets or callers without runtime authority use an ordinary upsert. Rejection preserves authority and value; remote submission only confirms queueing.
+created: 2026-08-04T17:38
+updated: 2026-10-26T19:04
 ---
 
 ## Declaration

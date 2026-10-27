@@ -1,8 +1,8 @@
 ---
 title: claim channel
-summary: Claim automatic authority without writing a value.
+summary: Legacy alias for value-free command. Prefer command |channel|.
 created: 2026-08-04T17:38
-updated: 2026-10-22T17:41
+updated: 2026-10-26T18:30
 ---
 
 ## Syntax
@@ -13,8 +13,8 @@ claim |channel|
 
 ## Available in
 
-- CAESAR task and loop bodies
-- Shared helper functions
+- File scope
+- Executable DCode bodies
 
 ## Example
 

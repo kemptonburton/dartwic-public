@@ -2,7 +2,7 @@
 title: SDK_API
 summary: Host API available to engine plugins and their module instances.
 created: 2026-09-04T17:13
-updated: 2026-10-22T02:44
+updated: 2026-10-26T19:26
 ---
 
 Registration functions qualify local identifiers as `<plugin-id>.<local-id>`. Channel authority calls require an active task or plugin loop controller.
@@ -176,6 +176,33 @@ class SDK_API {
         virtual void writeStorageJson(const std::string& scope, const std::string& path,
             const nlohmann::json& value, const std::string& project = "") {
             throw std::runtime_error("JSON storage helpers are unavailable in this host.");
+        }
+        void commandChannel(const std::string& channel) { applyAuthorityByName(0, channel, std::nullopt); }
+        void overrideChannel(const std::string& channel) { applyAuthorityByName(2, channel, std::nullopt); }
+        void overrideChannel(const std::string& channel, ChannelValue value) { applyAuthorityByName(2, channel, std::move(value)); }
+        void freeChannel(const std::string& channel, ChannelValue value) { applyAuthorityByName(3, channel, std::move(value)); }
+        void commandChannel(const FixedChannelHandle& channel, std::optional<ChannelValue> value = std::nullopt) {
+            applyAuthorityByHandle(0, channel, std::move(value));
+        }
+        void setChannel(const FixedChannelHandle& channel, std::optional<ChannelValue> value = std::nullopt) {
+            applyAuthorityByHandle(1, channel, std::move(value));
+        }
+        void overrideChannel(const FixedChannelHandle& channel, std::optional<ChannelValue> value = std::nullopt) {
+            applyAuthorityByHandle(2, channel, std::move(value));
+        }
+        void freeChannel(const FixedChannelHandle& channel, std::optional<ChannelValue> value = std::nullopt) {
+            applyAuthorityByHandle(3, channel, std::move(value));
+        }
+
+        // Unique virtual names are essential on the Microsoft ABI: adding a
+        // virtual overload would regroup and move existing overload slots.
+        virtual void applyAuthorityByName(uint32_t operation, const std::string& channel,
+            std::optional<ChannelValue> value) {
+            throw std::runtime_error("Authority operation requires Engine 2.0.7 or newer.");
+        }
+        virtual void applyAuthorityByHandle(uint32_t operation, const FixedChannelHandle& channel,
+            std::optional<ChannelValue> value) {
+            throw std::runtime_error("Fixed-channel authority requires Engine 2.0.7 or newer.");
         }
 
     };
