@@ -2,7 +2,7 @@
 title: DCode Reference
 summary: Shared language reference for DCode with Lua and Native C++ execution.
 created: 2026-08-04T17:38
-updated: 2026-10-22T17:40
+updated: 2026-10-26T22:01
 ---
 
 Use the [DCode guides](../Overview.md) for tutorials and examples, or choose a category below when you already know what you need.
@@ -12,12 +12,13 @@ Lua and Native C++ use this single feature catalog. [Values and Scope](../Values
 | Category | Description | Entries |
 |---|---|---|
 | [Runtime Blocks](Runtime%20Blocks/Overview.md) | Top-level declarations for tasks, loops, calculations, events, task groups, and callbacks. Scheduled blocks retain runtime state; callbacks use a separate function scope per invocation. | 9 |
-| [Runtime Sections](Runtime%20Sections/Overview.md) | Named sections that configure handlers or data inside a compatible runtime block. | 14 |
-| [Blocks](Blocks/Overview.md) | Ordinary indentation-based control-flow, iteration, and definition constructs used inside executable DCode bodies. | 12 |
-| [Statements](Statements/Overview.md) | Executable forms for authority, transitions, timing, no-op behavior, and channel writes. | 10 |
+| [Runtime Sections](Runtime%20Sections/Overview.md) | Task execution sections, state handlers, implicit loop/sequence bodies, and scheduled timeline buckets. | 12 |
+| [Handlers](Handlers/Overview.md) | Executable entries inside timeline buckets and events. | 8 |
+| [Fields](Fields/Overview.md) | Named configuration values inside their owning runtime block or bucket. | 15 |
+| [Blocks](Blocks/Overview.md) | Ordinary indentation-based control-flow, iteration, and definition constructs used inside executable DCode bodies. | 11 |
+| [Statements](Statements/Overview.md) | Executable forms for authority, transitions, timing, no-op behavior, and channel writes. | 14 |
 | [Directives](Directives/Overview.md) | Compile-time and module-level forms that import code, define parameters, or expand templates. | 3 |
-| [Syntax](Syntax/Overview.md) | DCode values, expressions, scope, channel paths, comments, and indentation. | 10 |
+| [Syntax](Syntax/Overview.md) | DCode values, expressions, scope, channel paths, comments, and indentation. | 9 |
 | [Context Variables](Context%20Variables/Overview.md) | Values supplied by the engine only in the runtime blocks and handlers where they are meaningful. | 10 |
 | [DCode Functions](DCode%20Functions/Overview.md) | Functions supplied by DARTWIC for channels, prompting, logging, timing, and other runtime behavior. | 37 |
-| [Lua Base](Lua%20Base/Overview.md) | Lua keywords, literals, base functions, and standard libraries available to DCode scripts. | 45 |
-| [Event Metadata](Event%20Metadata/Overview.md) | DCode event metadata reference. | 8 |
+| [Lua Base](Lua%20Base/Overview.md) | Lua keywords, literals, base functions, and standard libraries available to DCode scripts. | 42 |

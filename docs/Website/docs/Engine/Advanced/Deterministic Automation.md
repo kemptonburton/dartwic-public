@@ -1,7 +1,7 @@
 ---
 summary: Prepare a repeated control path and qualify its timing and failure response.
 created: 2026-09-09
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:52
 ---
 
 Deterministic automation aims to make a repeated control cycle predictable: which inputs it uses, what order it runs in, when it finishes, and how it responds to failure. This matters when a late or stale result could produce the wrong equipment command.
@@ -14,7 +14,7 @@ Start with Lua for ordinary procedures, state machines, prompts, and changing ch
 
 Use fixed channels and Native C++—the compiled DCode backend—when a known repeated numeric path needs less recurring storage and interpreter work. **Prepared** means its storage, channel bindings, and reusable buffers are set up before execution. Choose this from measured cost and required response time, rather than frequency alone.
 
-A desktop benchmark cannot establish a hard physical deadline. A deployment with that requirement also needs a suitable operating system, driver behavior, hardware timing, and testing under its expected load.
+For example, a 10 Hz controller requests a 100 ms period, but its required equipment response may be a different interval. State both before choosing a backend. A hard physical deadline also needs suitable operating-system behavior, drivers, hardware timing, and testing under expected load.
 
 # Fixed channels and bindings
 
@@ -36,7 +36,7 @@ Check release lateness, callback duration, actual frequency, and missed/failed c
 
 # Task groups
 
-A **task group** coordinates existing tasks that need an order. For a read → control → write cycle, it runs members due together in declaration order:
+For a read → control → write cycle, first configure tasks named `device_read`, `control`, and `device_write`. Give them the same frequency when every cycle should run all three. This excerpt then groups their due work in declaration order:
 
 ```dcode
 task_group device_cycle:
@@ -45,11 +45,11 @@ task_group device_cycle:
     run: device_write
 ```
 
-This fragment assumes those three tasks already exist. Give them the same frequency when every cycle should run all three. A slower member runs only when its own schedule is due.
+The group orders callbacks; it does not supply the device implementations. A slower member runs only when its own schedule is due.
 
-Ordering does not require an earlier member to succeed. Check acquisition validity, sample age, and member outcomes before using the result. The [read-control-write example](../Execution%20and%20Timing.md#try-a-read-control-write-cycle) demonstrates the ordering and failure behavior without hardware.
+Ordering does not require an earlier member to succeed. Check acquisition validity, sample age, and member outcomes before using the result. The [read-control-write example](../Execution%20and%20Timing.md#read-control-write-example) demonstrates the ordering and failure behavior without hardware.
 
-# Test timing and failure handling
+# Timing and failure tests
 
 **Qualification** means testing the complete setup against its timing and failure requirements on the intended machine, devices, and workload.
 
@@ -59,7 +59,7 @@ Ordering does not require an earlier member to succeed. Check acquisition validi
 4. Measure the full acquisition → control → output path under representative load. Include device feedback, rather than stopping at the accepted command value.
 5. Exercise lost input, disconnect/reconnect, command rejection, slow work, and recording or telemetry pressure. Check the response you intended actually occurs.
 
-Keep the results specific to the machine, build, driver, and workload tested. [Execution and Timing](../Execution%20and%20Timing.md) explains the boundaries, and [Native C++ Execution](../../DCode/Native%20C%2B%2B%20Execution.md) covers compiler setup.
+Record the required period, observed worst delay, missed/failed work, and actual equipment response for each trial. Keep the results specific to the machine, build, driver, and workload tested. [Execution and Timing](../Execution%20and%20Timing.md) explains the boundaries, and [Native C++ Execution](../../DCode/Native%20C%2B%2B%20Execution.md) covers compiler setup.
 
 # Timing measurements
 

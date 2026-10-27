@@ -1,7 +1,7 @@
 ---
 summary: Configure device connections, operate automation, and check the result.
 created: 2026-08-03T15:41
-updated: 2026-10-24
+updated: 2026-10-26T21:52
 ---
 
 A **module** provides a device connection or shared service. A **task** does work, such as reading that device or running an automation. Several tasks can use one module.
@@ -14,7 +14,7 @@ Save and reload the module, then inspect its connection and any reported errors.
 
 Plugin task types select their module and arguments in the task editor. Activating a DCode script registers its declared tasks; use [DCode Editor](DCode%20Editor.md) to edit that logic.
 
-# Find running work
+# Runtime status
 
 Open **Tasks**. Its tabs separate tasks, timelines, loops, calculations, and callbacks. Callbacks list registered declarations, rather than individual running calls.
 
@@ -37,11 +37,11 @@ Stopping waits for executing work to return. It releases applicable automatic ch
 
 For startup behavior, configure startup value `1` on the task's `<task_name>_running` channel. The Engine defers that start until configuration is ready. See [Engine lifecycle](../Engine/Modules%20and%20Tasks.md#startup-and-stop).
 
-# Work with timelines
+# Timeline controls
 
 Timeline controls expose mission time and target T0. A time change opens a preview of crossed buckets and their proposed actions. Applying the change leaves a running timeline held until you resume it. Check the preview before applying; editing a clock is different from restarting a run.
 
-# Change or remove work
+# Configuration updates and deletion
 
 Module configuration changes use save/reload. DCode changes use script activation. These configure behavior; live Start, Hold, and frequency controls operate the current run.
 

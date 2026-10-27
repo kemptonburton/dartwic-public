@@ -2,7 +2,7 @@
 title: task_state_machine
 summary: Define a named-state CAESAR task in DCode.
 created: 2026-08-04T17:38
-updated: 2026-10-22T17:46
+updated: 2026-10-26T22:01
 ---
 
 ## Syntax
@@ -33,7 +33,6 @@ DARTWIC tracks changes to the block and its template dependencies when loading t
 
 ## Runtime sections
 
-- `states`
 - `start`
 - `state`
 - `missed`

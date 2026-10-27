@@ -1,7 +1,7 @@
 ---
 summary: Understand client sessions, permissions, remote data ownership, and recovery.
 created: 2026-09-06T14:36
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:52
 ---
 
 TEMPEST is the communication layer used by the Engine, Interfaces, clients, and connected nodes. An **operation** asks the Engine to do something and returns a response. **Telemetry** carries updates, such as channel values, to applications watching them.
@@ -30,6 +30,14 @@ Give connected workspaces distinct node names, such as `GROUND` and `TEST_STAND`
 
 A remote channel appears as `TEST_STAND:tank_pressure`, keeping it distinct from a local `tank_pressure`. Use that qualified name in searches, schematic bindings, DCode references, and client requests. Writes are routed to the owning node and still obey its channel authority.
 
+With `TEST_STAND` connected and publishing an existing pressure channel, a DCode body on `GROUND` can read the qualified name:
+
+```dcode
+remote_pressure = |TEST_STAND:tank_pressure|
+```
+
+This reads the latest locally cached observation. Check its source timestamp and peer availability before using it for control; it does not request a fresh device measurement.
+
 The same connection can be configured through [`tempest/peers/connect`](Reference/TEMPEST/Operations/tempest/peers/connect.md). Its `rapid.publish_all` setting controls which local channels are sent; when false, list channel keys in `rapid.channels`. Enable ARGUS separately. A remembered connection is retried on later starts; its credentials belong to the local instance settings, not the portable workspace.
 
 # Telemetry delivery
@@ -42,13 +50,19 @@ Several source writes can occur between snapshots. Use recorded samples to inves
 
 A slow WebSocket receiver can fill its bounded delivery queue and lose new observations. Check transport drops and retained bytes in [Diagnostics](Diagnostics%20and%20Troubleshooting.md). The [delivery limits](Advanced/Recording%20and%20Delivery%20Tuning.md#websocket-delivery) do not change recording admission or HTTP command results.
 
-# Check what is arriving
+# Remote channel freshness
 
-A remote channel is a local copy of data supplied by its owner. Full peer snapshots update those copies and remove channels the owner deleted. Check received snapshots and source timestamps before depending on a reading.
+A remote channel is a local copy of data supplied by its owner. Full peer snapshots update those copies and remove channels the owner deleted. Follow the same signal through its connection state:
+
+| Observation | Interpretation |
+| --- | --- |
+| Snapshots arrive and the source timestamp advances | New source observations are reaching this Engine. |
+| Snapshots arrive with the same source timestamp | Link activity continues; the sample itself may be old. |
+| The peer is unavailable but a value remains | Cached data remains for inspection; it is not a current measurement. |
 
 Built-in engine peers send complete owned-channel and ARGUS board snapshots at 5 Hz, including unchanged records. This is link delivery, not the source's acquisition or task rate. Plugin transports define which streams they support. The runnable flight peer exchanges channels, commands, ARGUS events, and logs in both native and custom modes.
 
-# Disconnect and reconnect
+# Disconnection and recovery
 
 When a peer goes offline, its last known channels stay in RAPID and survive an Engine restart through the channel snapshot. Channels shows them as **Not Found**, and commands fail until reconnection. The retained numbers describe earlier observations.
 

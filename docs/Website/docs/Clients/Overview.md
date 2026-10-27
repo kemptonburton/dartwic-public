@@ -1,6 +1,6 @@
 ---
 summary: Choose a client for analysis, dashboards, or external C++ nodes.
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:44
 created: 2026-09-06T14:47
 ---
 
@@ -36,6 +36,6 @@ Clients obey the same [channel authority](../Engine/Channels%20and%20Control.md)
 
 The client guides show connection settings, small examples, and cleanup for each language. [Using TEMPEST](../Engine/Advanced/Using%20TEMPEST.md) owns the raw protocol details; [Networking and Peers](../Engine/Networking%20and%20Peers.md) covers peer connections, including application-supplied transports.
 
-## Compatibility
+# Compatibility
 
 Use a client release that supports your Engine version. Clients also carry a bundled TEMPEST compatibility value; registration fails with `tempest_version_mismatch` if its communication format differs from the Engine's. Install a matching client release rather than changing that value yourself. Custom peer protocols can have an additional application-owned protocol version.

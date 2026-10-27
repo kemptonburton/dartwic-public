@@ -1,6 +1,6 @@
 ---
 summary: Connect a React dashboard and subscribe to channel state.
-updated: 2026-10-26T14:16
+updated: 2026-10-27T00:19
 created: 2026-08-03T15:41
 ---
 
@@ -90,7 +90,7 @@ export default function App() {
 }
 ```
 
-# Choose what your dashboard does
+# Dashboard operations
 
 The examples below show common uses. The [React API reference](Reference/React/Overview.md) lists the full set of hooks, and the [provider reference](Reference/React/DartwicProvider.md) describes its connection and operation methods. Use the parts your dashboard needs.
 
@@ -227,7 +227,7 @@ If the engine explicitly rejects an operation because the client session expired
 
 Telemetry and React rendering are asynchronous. A successful write reports the operation result; inspect equipment feedback to confirm physical action. If a request times out, check the resulting state before offering a retry.
 
-# Build and inspect
+# Dashboard verification
 
 Add the connection component to your application's entry point and run your React project's development command. Connect to the Engine, then mount `TankMonitor` after connection succeeds.
 

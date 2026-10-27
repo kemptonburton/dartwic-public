@@ -1,7 +1,7 @@
 ---
 summary: Understand device services, runtime work, and configuration/start/stop boundaries.
 created: 2026-09-04T17:13
-updated: 2026-10-26T16:28
+updated: 2026-10-26T20:11
 ---
 
 A **module** gives the Engine a device connection or shared service. A **task** does work, such as reading that device, calculating a command, or running a procedure.
@@ -22,7 +22,7 @@ Configuration describes what to create and how it should behave. Registration ma
 
 A driver may also acquire data through a loop or its own background worker. Its implementation determines sampling and device behavior; inspect connection and transaction results after configuration.
 
-This module configuration selects one Modbus TCP endpoint and a 200 ms transaction timeout:
+For a Modbus example, install and load the Modbus TCP plugin, then use a simulator or device with a known register map. This is a project module resource, such as `modules/bench_io.json`; it selects the connection and a 200 ms transaction timeout:
 
 ```json
 {
@@ -39,7 +39,7 @@ This module configuration selects one Modbus TCP endpoint and a 200 ms transacti
 }
 ```
 
-These fields belong to that plugin. Its read/write mappings belong to task arguments; this implementation supports at most one read task and one write task per module. [Building a Hardware Driver](../Plugins/Building%20a%20Hardware%20Driver.md) explains those mappings. [Its discovery section](../Plugins/Building%20a%20Hardware%20Driver.md#discovery-loop) covers reviewed setup offered by drivers.
+After configuring it, check the module's connection status. The file creates the connection configuration; acquisition begins through the linked task. These fields belong to the Modbus plugin, and its register/channel mappings belong to task arguments. This implementation supports at most one read task and one write task per module. [Building a Hardware Driver](../Plugins/Building%20a%20Hardware%20Driver.md) explains those mappings. [Its discovery section](../Plugins/Building%20a%20Hardware%20Driver.md#discovery-loop) covers reviewed setup offered by drivers.
 
 # Task structures and lifecycle
 
@@ -61,15 +61,27 @@ Task controls use channels such as `<task>_running`, `<task>_hold`, and `<task>_
 
 A startup value of `1` on `_running` requests startup execution. The Engine defers those callbacks until task and fixed-channel configuration is complete. Runtime control writes record lightweight requests synchronously; lifecycle handlers execute later on the task or group thread.
 
-Holding preserves state and authority. Stop ends the run, clears hold, waits for executing work to return, and runs the implementation's cleanup. It cannot forcibly terminate a blocked callback.
+Follow one task through its run:
 
-> **Authority revision under review:** Completed stop removes that artifact's underlying, active and suspended claims. Observe-only channels keep their protection without the stopped publisher; automatic ownership returns to free when no override remains. Other controllers and active operator control remain intact, but manual release must not revive stopped automation. Diagnostics follow the actual publishing artifact's lifetime. These revised rules still require implementation and verification; [Channels and Control](Channels%20and%20Control.md#caesar-lifecycle) owns the proposed walkthrough.
+| Action | What happens | What to check |
+| --- | --- | --- |
+| Start | The start handler runs, then execution begins. | Running state, current measurements, and any start error. |
+| Hold | Supported execution pauses with state and authority retained. | Held state; an in-flight callback may still be finishing. |
+| Resume | The same run continues without repeating start. | Work and measurements advance again. |
+| Request stop | The task begins stopping and clears hold. | Acknowledging the request is not completed cleanup. |
+| Complete stop | Active work and end handling finish; the artifact releases its claims. | The task has finished stopping. Last channel values remain. |
 
-Cleanup retains the last accepted value. Final equipment commands belong in a DCode `end:` handler or driver shutdown path; verify physical feedback. [Channels and Control](Channels%20and%20Control.md#stop-and-cleanup) owns authority details.
+A blocked callback must return before its stop can finish; the Engine cannot forcibly terminate it.
+
+Completed stop removes the artifact's underlying, active, and suspended claims. Observe-only channels retain their protection without the stopped publisher; unrelated controllers and operator overrides remain. [Channels and Control](Channels%20and%20Control.md#caesar-lifecycle) explains the authority results.
+
+Cleanup retains the last accepted value. Final equipment commands belong in a DCode `end:` handler or driver shutdown path; verify physical feedback. [Channels and Control](Channels%20and%20Control.md#stop) explains completed-stop cleanup.
 
 # Reload and deletion
 
-Reload applies changed configuration to the running setup. A binding is a saved connection between code and a channel; mapping changes can require [Builder](Advanced/DARTWIC%20Builder.md) to prepare those bindings again. Deletion removes the selected resources through these steps:
+Reload applies changed configuration to the running setup. A binding connects code to a channel; mapping changes can require [Builder](Advanced/DARTWIC%20Builder.md) to prepare those bindings again.
+
+Deletion is a separate workflow. Review its affected resources in Project Actions; the Engine then carries out these steps:
 
 | Deletion step | Consequence |
 | --- | --- |

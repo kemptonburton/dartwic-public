@@ -1,6 +1,6 @@
 ---
 summary: Open a workspace, connect to its engine, and inspect your first signal.
-updated: 2026-10-25T12:35
+updated: 2026-10-26T23:24
 created: 2026-08-03T15:41
 ---
 
@@ -155,14 +155,79 @@ You can find the TEMPEST IP and port that the engine is running on by checking t
 ![](_attachments/Pasted%20image%2020261024203349.png)
 
 
-
 # Installing a Plugin and Setting Up a Module
 
+Once connected, we can install a plugin to communicate with a device. In this guide, we will use the simulated device in the Example Plugin.
 
+It mimics how actual device drivers are written, such as those for ModBus, LabJack, and Ethercat devices, which are all available plugins for DARTWIC.
+
+## Plugin Browser
+
+The interface can automatically install engine and interface plugins. Open **Settings → Plugins → Browse Plugins**.
+
+![](_attachments/Pasted%20image%2020261026225149.png)
+
+Search Example Device Plugin, select it from the browser, and then hit the Install button.
+
+![](_attachments/Pasted%20image%2020261026225330.png)
+
+The interface and engine plugins will be installed, and then a prompt to restart the engine will popup. Because the plugin has a engine component, the engine needs to restart. Select Yes.
+
+![](_attachments/Pasted%20image%2020261026225431.png)
+
+While the engine is restarting, the Interface will be disconnected, and you will see this screen. 
+
+![](_attachments/Pasted%20image%2020261026225459.png)
+
+Depending on the size of the DARTWIC workspace, startup can take quite a bit. Once startup completes, the interface will automatically reconnect.
+
+You should now be able to see the plugin in the settings Plugins list, and see that it has the Engine Installed and Loaded, and Interface Installed and Loaded badges.
+
+![](_attachments/Pasted%20image%2020261026225922.png)
+
+## Setup a Module
+
+Upon downloading the plugin and restarting the engine, you will see a popup in the bottom right for the mock example device discovery
+
+![](_attachments/Pasted%20image%2020261026230635.png)
+
+You can check notifications by clicking the notification button on the top right. Local interface notifications will pop up here such as interface specific warnings, like clock time-zone errors, and global engine notifications that show for all operators, such as device discovery notifications.
+
+Depending on how the plugin is written, you can mute the notification, which be muted engine wide. This is useful if you would like to ignore a device discovery suggestion. On unmute, the popup will show itself again. 
+
+Once the device has been set up, its notification should not popup again. The ModBus, LabJack, and Ethercat plugins also have automatic device discovery set up.
+
+![](_attachments/Pasted%20image%2020261026230734.png)
+
+![](_attachments/Pasted%20image%2020261026230941.png)
+
+![](_attachments/Pasted%20image%2020261026231002.png)
+
+Select the module you want to setup, configure any tasks or channels it suggests, and then review and create. 3 clicks creates a module, channels, and its respective tasks.
+
+You can then open the module in the Modules tab, and start the tasks by clicking the start buttons.
+
+You can also open the task in the Tasks resource by clicking the task icon button in to the left of the task controls. In the Tasks resource you can configure the task bindings such as which device address writes to which RAPID channel. For example, which ModBus analog input register reads to which RAPID channel in a read task.
+
+![](_attachments/Pasted%20image%2020261026231551.png)
+
+Lastly, if you are ever curious on what your channels data is coming from, what task or module is writing it, and what hardware configuration it is using, you can use the Channels searcher. Read more here: [Channels](../Interface/Channels.md).
 
 # Creating a Schematic
 
+One of the main features of DARTWIC is visualization; You can create a Schematic, which is a canvas that you can use to visualize fluid systems, graphs, engines, valves, etc.
 
+Select the schematics tab, right click in the file explorer, and click Create Resource, and give it a name, then open it by clicking it.
+
+![](_attachments/Pasted%20image%2020261026232104.png)
+
+You can then drag and drop any channel from the linked task view in your module, and add it to a node.
+
+The video below shows taking the `fuel_open_coil` channel and dropping it onto the schematic to create a valve.
+
+
+
+Because the `fuel_open_coil` has a matching `fuel_open_coil_state` channel, its `_state` channel will automatically be used as the state channel for that valve, and the `fuel_open_coil` will be used as the command channel for that valve.
 
 # Creating a DCode Automation
 

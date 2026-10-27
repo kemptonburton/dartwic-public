@@ -1,8 +1,10 @@
 ---
 summary: Build a driver that reads device values into observe-only channels and writes channel commands back to the device.
-updated: 2026-10-26T14:17
+updated: 2026-10-27T00:16
 created: 2026-10-04T18:31
 ---
+
+A hardware driver plugin connects your equipment to DARTWIC so you can monitor measurements, send commands, and use the device in your projects. You might build one to support a new device or add features specific to your setup. The plugin handles communication with the hardware while DARTWIC provides the channels, task scheduling, and operator tools around it.
 
 This guide describes how to build a full hardware driver plugin with:
 
@@ -29,7 +31,7 @@ A hardware driver moves values in two directions:
 
 A module owns the device connection. Both tasks use that same module. A connection loop keeps its status current, and discovery can offer unconfigured devices for setup. The Interface edits the configuration that connects these pieces.
 
-Start from the [plugin starter](Overview.md#start-from-the-example). The examples below use a fictional `bench_driver` with device fields named `pressure` and `valve`; no particular communication protocol is assumed. `DeviceConnection` and `DeviceFinder` stand for **code you implement using your device library**, not additional SDK APIs. Use the starter for the surrounding includes, build setup, plugin manifest, and exported entry points.
+Start from the [plugin starter](Overview.md#example-plugin). The examples below use a fictional `bench_driver` with device fields named `pressure` and `valve`; no particular communication protocol is assumed. `DeviceConnection` and `DeviceFinder` stand for **code you implement using your device library**, not additional SDK APIs. Use the starter for the surrounding includes, build setup, plugin manifest, and exported entry points.
 
 For a complete implementation, the [example plugin](https://github.com/kemptonburton/dartwic-example-plugin) uses a local simulated device. The [Modbus TCP plugin](https://github.com/kemptonburton/dartwic-modbus-tcp-client) uses the same structure with a network protocol; its register-specific details are not required to follow this guide.
 
@@ -800,7 +802,7 @@ export function ReadEditor() {
 }
 ```
 
-Both visible maps share one registered document, validation, draft session, and Apply. The explicit editor controls the layout. Use a field's `render` callback for a device-specific control that edits that same document. Completely custom `panel`, `editor`, and settings `component` contributions remain supported without Config Map. See [Interface Plugin](Interface%20Plugin.md#share-configuration-with-config-map).
+Both visible maps share one registered document, validation, draft session, and Apply. The explicit editor controls the layout. Use a field's `render` callback for a device-specific control that edits that same document. Completely custom `panel`, `editor`, and settings `component` contributions remain supported without Config Map. See [Interface Plugin](Interface%20Plugin.md#config-map-editors).
 
 ## Registration
 

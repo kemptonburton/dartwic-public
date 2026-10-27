@@ -1,7 +1,7 @@
 ---
 summary: Understand DARTWIC versioning, Engine licensing, and what each tier provides.
 created: 2026-08-03T15:41
-updated: 2026-10-25T14:01
+updated: 2026-10-26T21:52
 ---
 
 DARTWIC's components have their own versions and compatibility requirements. Engine licenses determine the available tier and resource limits. This guide introduces how those pieces fit together, including license activation and offline use.
@@ -89,7 +89,7 @@ Keys are generated randomly. **No email, account, or payment is required.** Opti
 
 Save your key with your configuration. There is no email-based recovery; if you lose it, generate another while signup is open. A replacement does not disable the previous key. Retrying an interrupted request in the same popup retrieves that request's key instead of issuing another.
 
-## Put the key in your engine configuration
+## Engine license configuration
 
 Stop the engine before editing its configuration. The packaged starter uses **`engine/instances/default/config.json`**. If you select another instance at launch or open a different workspace through the Interface, use that instance's `config.json` under `engine/instances/<instance-id>/`. Set the existing top-level `license_key` property to the key copied from the website:
 

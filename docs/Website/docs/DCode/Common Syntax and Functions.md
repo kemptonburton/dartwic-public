@@ -1,21 +1,70 @@
 ---
-summary: Use if statements, for and while loops, once, waits, and common functions in DCode.
+summary: Common DCode syntax, control-flow blocks, and functions, with practical examples.
 created: 2026-10-26
-updated: 2026-10-26T14:23
+updated: 2026-10-27T02:13
 ---
 
-This page explains common DCode statements, loops, and functions, with examples you can use inside a task, loop, callback, or function.
+Common DCode syntax, blocks, and functions, grouped by the type labels in the [overview](Overview.md#parts-of-a-dcode-script). Keywords such as `return` and `break` are explained beside the code they affect.
 
-The examples are independent. To try a body snippet in a test project, replace the body of this sequence, keep its indentation, activate the file, and start the task:
+# Syntax
+
+Syntax describes how code is written: indentation, comments, expressions, and channel references. See the [Syntax reference](Reference/Syntax/Overview.md) for all forms.
+
+## Indentation and comments
+
+End a block header with `:` and indent its body by four spaces or one tab level. Unindent to leave the block. `#` and `--` start line comments; `--[[ ... ]]` encloses a block comment.
 
 ```dcode
+# A complete task definition
 task_sequence docs_demo_syntax:
-    print("Syntax demo")
+    sample = 42  # This line belongs to the task
+    print(sample)
 ```
 
-Examples that declare a whole task, loop, or function belong at file scope. [Values and Scope](Values%20and%20Scope.md) explains variable ownership; [Tasks](Tasks.md) explains activation and task controls.
+To try the independent body snippets below, replace this task's body, activate the file, and start the task. Complete task, loop, and function definitions belong at file scope. [Tasks](Tasks.md) covers activation and controls.
 
-# If statements
+## Expressions and operators
+
+An expression produces a value. Use `=` to assign it and `==` to compare values:
+
+```dcode
+pressure = 20 + 5
+within_limits = pressure >= 20 and pressure <= 40
+```
+
+Here, `pressure` is 25 and `within_limits` is true. Comparisons include `==`, `!=`, `<`, `<=`, `>`, and `>=`; combine conditions with `and`, `or`, and `not`. Parentheses group expressions. [Values and Scope](Values%20and%20Scope.md#conditions-and-operators) covers truthiness and the remaining operators.
+
+## Channel pipes
+
+A name between pipes reads a RAPID channel. Add `:field` to read its metadata. With a test channel `docs_demo_pressure` created at 42:
+
+```dcode
+pressure = |docs_demo_pressure|
+units = |docs_demo_pressure|:units
+```
+
+`pressure` receives 42; `units` receives the channel's configured units. [Channels and Control](../Engine/Channels%20and%20Control.md) covers writes, fields, and authority; the [dynamic reference syntax](Reference/Syntax/syntax-dynamic_pipe.md) covers names built from expressions.
+
+## Dynamic Channel Names
+
+`{expression}` inside a pipe reference builds a name at runtime:
+
+```dcode
+task_periodic tasks_state_copy:
+    task elapsed_seconds:
+        for name in ["alpha", "beta", "gamma"]:
+            |demo_{name}_state| = |demo_{name}_command|
+```
+
+With `name` equal to `alpha`, the target is `demo_alpha_state`. Dynamic names work in calculations too, but require explicit trigger dependencies there. See [Channel Calculations](Channel%20Calculations.md).
+
+This syntax works in both backends. [Native C++](Native%20C%2B%2B%20Execution.md) resolves interpolated names through the host at runtime, so these accesses are outside the prepared fixed-binding path.
+
+# Blocks
+
+Blocks group indented code to choose actions, repeat work, or define a function. See the [Blocks reference](Reference/Blocks/Overview.md) for the complete list.
+
+## If statements
 
 Use `if`, `elif`, and `else` to run different code depending on a condition:
 
@@ -29,11 +78,9 @@ else:
     print("Within the normal band")
 ```
 
-This prints **High**. Change `pressure` to try the other conditions. End each `if`, `elif`, and `else` line with a colon and indent the code underneath it.
+This prints **High**. Change `pressure` to try the other conditions.
 
-Compare with `==`, `!=`, `<`, `<=`, `>`, and `>=`; combine conditions with `and`, `or`, and `not`. Numeric zero is false in both backends. For example, `pressure >= 20 and pressure <= 40` tests the normal band.
-
-# For loops
+## For loops
 
 Use `for ... in ...` to visit each array value:
 
@@ -52,11 +99,11 @@ for index = 1, 3:
     print(index)
 ```
 
-Here, 1 is the starting value and 3 is the ending value. The loop counts by 1, so it prints 1, then 2, then 3, each on its own line.
+The range includes both endpoints, so this prints 1, 2, and 3 on separate lines.
 
-Array indexing still starts at zero. Keep a collection's length unchanged during native iteration; collection mutation rules belong in [Values and Scope](Values%20and%20Scope.md#use-arrays-and-objects).
+Array indexing still starts at zero. Keep a collection's length unchanged during native iteration; collection mutation rules belong in [Values and Scope](Values%20and%20Scope.md#arrays-and-objects).
 
-# While loops
+## While loops
 
 A `while` loop repeats while its condition is true. `break` exits the nearest loop:
 
@@ -69,34 +116,50 @@ while attempt < 5:
 print(attempt)
 ```
 
-This prints 3. Make sure the body can reach an exit. A `while` does not pause between iterations; use `wait_until` when a procedure needs to wait for equipment. Keep long iterations out of calculations and fixed-rate control callbacks because they delay the calling execution path.
+This prints 3. A `while` does not pause between iterations, so make sure it can reach an exit. Use `wait_until` to wait for equipment; long iterations delay the calling task or calculation.
 
-# Once and when blocks
+## When blocks
 
-| Code | When it runs |
-| --- | --- |
-| `when condition:` | Each time execution reaches it and the condition is true, like `if`. |
-| `once when condition:` | The first time the condition is true for that runtime instance. |
-| `when(condition, time=0.5):` | Every evaluation after the condition qualifies for half a second; false resets timing. |
-| `once when(condition, time=0.5):` | The first qualifying evaluation for that runtime instance. |
-| `once:` | Once whenever its containing state is entered. Valid inside state handlers. |
+Use `when(condition, time=seconds):` to require a condition for a duration before running its body. Use `if condition:` for an immediate check. `when` can appear wherever executable code is allowed and does not pause execution.
 
-This complete loop prints 1 and 2, then logs one message when the count reaches 3:
+For example, create a test channel `pressure` at 0, then activate this calculation:
+
+```dcode
+channel_calculation pressure_high_confirmed:
+    when(|pressure| > 500, time=0.5):
+        return 1
+    return 0
+```
+
+The first true check starts the timer; a false check resets it. After half a second of qualifying checks, the next evaluation returns 1. Further qualifying evaluations also return 1; a false check returns 0. This calculation still needs another input or target write to evaluate; the timer does not schedule a check.
+
+`time` is required and must be a finite, positive number of seconds. Missing or zero duration is invalid; use `if` for an untimed condition. Elapsed time includes holds and skipped enclosing blocks. For blocking operations, see [managed waits](#wait-and-wait_until).
+
+## Once blocks
+
+`once:` runs its body the first time it is reached during the current **Runtime Section** execution. It is allowed in runtime sections and ordinary blocks nested inside them. The containing section, such as a loop body, `task:`, or `state idle:`, owns its memory.
+
+A section execution can span many iterations; `once` stays done across those iterations. Functions, callbacks, calculations, and event handlers do not provide a runtime section and cannot contain `once`. Use an explicit flag with `if` when those contexts need one-time behavior.
+
+Starting the task again, switching away from a state section and back, or reactivating a loop starts a new section execution. Entering an ordinary `if`, `for`, or `while` block does not reset the one-time blocks.
+
+This loop initializes its counter once, prints 1 and 2, then logs once when the count reaches 3:
 
 ```dcode
 loop docs_demo_once 2:
-    once when true:
+    once:
         count = 0
     count = count + 1
-    when count < 3:
+    if count < 3:
         print(count)
-    once when count >= 3:
-        log("Docs demo", "Count reached three")
+    if count >= 3:
+        once:
+            log("Docs demo", "Count reached three")
 ```
 
-Making the condition false and true again does not reset `once when`. It remembers that it has already run. Reactivating this loop resets that memory; for a task, starting a new run resets its working state.
+The loop is the Runtime Block; its body is the Runtime Section. `if` checks the condition each iteration; its nested `once` logs only on the first true check. Activating the file again creates a fresh loop and resets both `once` blocks.
 
-Plain `once:` is useful for state-entry actions:
+The same rule applies to state sections:
 
 ```dcode
 task_state_machine docs_demo_entry:
@@ -107,67 +170,21 @@ task_state_machine docs_demo_entry:
             print("Entered idle")
 ```
 
-The idle handler repeats while current, but its message runs only on entry. Entering that state again runs the entry action again. These task and loop examples check their conditions each time they run. Use a channel calculation or event for a reaction driven by an input write.
+`state idle:` repeats while the task remains in `idle`. Its message prints once per entry into that runtime section. Switching away and back would print it again. In a `start:` section, `once:` would be allowed but usually unnecessary because startup already runs once per task execution.
 
-## Require a sustained condition
-
-Use a timed block to filter brief spikes without pausing a task or loop. For example, with a `pressure_abort` event declared elsewhere:
+The same nesting works with [timed conditions](#when-blocks). Inside a runtime section, this logs once after the pressure qualifies for half a second:
 
 ```dcode
-task_periodic docs_demo_pressure_monitor 100:
-    task:
-        once when(|pressure| > 500, time=0.5):
-            trigger pressure_abort
+when(|pressure| > 500, time=0.5):
+    once:
+        log("Pressure", "High pressure")
 ```
 
-The first reading above 500 starts the timer. An evaluation at 500 or below resets it. The first evaluation at least half a second later fires the event, provided every intervening evaluation was true. The remaining task statements continue running while the condition qualifies. The event's shutdown actions must be configured explicitly.
+A false condition resets the pending timer. After the nested `once` runs, making the condition false and true again does not reset it; only a new execution of the containing runtime section does. A timeline bucket owns its handlers' `once` memory through waits and repeated hold/resume calls. Replaying the bucket resets it. The latch is set before the body begins, so an error or early return does not retry the block.
 
-A loop uses the same syntax. Use `when` for work that should repeat on each qualifying evaluation:
+## Functions and return
 
-```dcode
-loop docs_demo_pressure_filter 100:
-    local confirmed = 0
-    when(|pressure| > 500, time=0.5):
-        confirmed = 1
-    |pressure_high| = confirmed
-```
-
-In a channel calculation, a numeric return supplies the filtered output:
-
-```dcode
-channel_calculation pressure_high_confirmed:
-    when(|pressure| > 500, time=0.5):
-        return 1
-    return 0
-```
-
-The calculation evaluates on accepted input writes, including equal-valued writes, and direct writes to its target. It does not wake itself when the duration expires: the next evaluation can qualify it. No new writes means no output update. See [Channel Calculations](Channel%20Calculations.md).
-
-`time` is finite, nonnegative seconds. A positional duration, such as `when(condition, 0.5):`, is also accepted. Omitting it or using zero is immediate; the original `when condition:` and `once when condition:` forms still work. 
-
-Timing uses monotonic elapsed time. Gaps between evaluations count, including task holds and skipped enclosing branches. Task starts reset its working state; loop and calculation state resets on replacement.
-
-# Wait and wait_until
-
-Use waits in a sequence when later steps must pause. Create a demo channel `docs_demo_ready` at 0, then try this body:
-
-```dcode
-wait(1)
-wait_until(|docs_demo_ready| == 1, time=0.5, timeout=10)
-print("Ready")
-```
-
-The first call waits one second. The second requires ready to stay at 1 for half a second; false resets that interval. Set it to 1 before the ten-second timeout to continue. A positive timeout raises an execution error; zero disables expiry.
-
-A task hold pauses wait duration and timeout accounting. Stop cancels a managed wait before later statements run. In a timeline bucket, supported waits suspend that bucket while mission time and other buckets continue; use a clock checkpoint when later times must wait too. See [Scheduling Timelines](Scheduling%20Timelines.md).
-
-These calls can block their execution path, including in Native C++. Keep them outside calculations and repeated control callbacks. A wait returning does not establish a hardware timing guarantee.
-
-For a nonblocking sustained-condition check, use the [timed when blocks](#require-a-sustained-condition) above. Unlike managed waits, their elapsed interval includes holds.
-
-# Functions and return
-
-Use a helper when several places need the same calculation. `return` ends the call and sends its result back:
+A `function ...:` definition is a Block in the editor. It groups reusable code that you can call by name. Use a helper when several places need the same calculation; `return` ends the call and sends its result back:
 
 ```dcode
 function percentage(sample, capacity):
@@ -184,21 +201,29 @@ This prints 25. The zero-capacity return is an explicit fallback for this demo; 
 
 [Modules and Native Functions](Modules%20and%20Native%20Functions.md) covers sharing helpers between files. Use a [callback](Callbacks.md) when a schematic or external caller needs to invoke the function.
 
-# Common functions
+# Functions
 
-| Helper | Example and purpose |
-| --- | --- |
-| `clamp` | `clamp(120, 0, 100)` returns 100; constrain a number to a range. |
-| `len` | `len([10, 20, 30])` returns 3. |
-| `has` | `has({gain: 2}, "gain")` tests whether an object key exists. |
-| `lookup` | `lookup({gain: 2}, "offset", 0)` returns the fallback 0 for a missing key. |
-| `copy` | `copy(settings)` creates an independent deep copy of a collection. |
-| `tostring` | `tostring(42)` produces text for a message. |
-| `json.parse`, `json.stringify` | Convert between JSON text and DCode values. |
+Call a function with parentheses, such as `clamp(120, 0, 100)`. Functions can return values or perform work such as waiting and logging. The [DCode Functions reference](Reference/DCode%20Functions/Overview.md) lists host functions; [Lua Base](Reference/Lua%20Base/Overview.md) covers standard helpers and their backend support.
 
-Use [Values and Scope](Values%20and%20Scope.md) for arrays, objects, copying, and shared state. The function reference gives exact inputs and backend limits.
+## Wait and wait_until
 
-# Print, log, and assert
+`wait(seconds)` delays subsequent statements for a duration; `wait_until(condition, ...)` waits for a condition. These shared functions are available wherever executable DCode is allowed, in either backend. Create `docs_demo_ready` at 0 in a test project, then try this body:
+
+```dcode
+wait(1)
+wait_until(|docs_demo_ready| == 1, time=0.5, timeout=10)
+print("Ready")
+```
+
+The first call waits one second. The second requires ready to stay at 1 for half a second; false resets that interval. Set it to 1 before the ten-second timeout to continue. A positive timeout raises an execution error; zero disables expiry.
+
+A task hold pauses wait duration and timeout accounting. Stop cancels a managed wait before later statements run. [Timelines](Timelines.md) explains bucket waits and clock checkpoints.
+
+Outside a timeline bucket, waits block their invoking execution path. Inside a bucket's `execute:`, they suspend only that bucket so other due buckets can progress. Avoid waits in calculations or repeated control callbacks when that work needs to keep running.
+
+For a nonblocking sustained-condition check, use the [timed when blocks](#when-blocks). Unlike managed waits, their elapsed interval includes holds.
+
+## Print, log, and assert
 
 ```dcode
 sample = 42
@@ -213,8 +238,5 @@ log("Docs demo", "Sample: " + tostring(sample))
 
 # Reference
 
-- [Control-flow blocks](Reference/Blocks/Overview.md) — Conditions, iteration, functions, and one-time work.
-- [DCode functions](Reference/DCode%20Functions/Overview.md) — Waits, helpers, logging, and host calls.
-- [Expressions](Reference/Syntax/syntax-lua_expressions.md) — Values, operators, and truthiness.
 - [Lua base constructs](Reference/Lua%20Base/Overview.md) — `break`, `return`, `assert`, and backend notes.
 - [Channel statements](Reference/Statements/Overview.md) — Channel writes, authority, transitions, and event triggers.

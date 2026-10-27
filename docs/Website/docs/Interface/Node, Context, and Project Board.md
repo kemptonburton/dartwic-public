@@ -1,12 +1,12 @@
 ---
 summary: Inspect node output, selection details, references, and project changes.
 created: 2026-09-06T14:39
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:52
 ---
 
 These panels keep supporting information beside your work. Open the **Node Board** for node output, **Context** for the current selection, and **Project** for references and project actions.
 
-# Choose a panel
+# Node, Context, and Project panels
 
 | Panel | Use it for |
 | --- | --- |
@@ -16,7 +16,7 @@ These panels keep supporting information beside your work. Open the **Node Board
 
 The context panel follows your selection. Selecting a resource in Project shows its runtime state and available source alongside it. A runtime identity and its authored file can be opened independently.
 
-# Follow node activity
+# Node activity
 
 Use the Node Board to monitor output without replacing your main resource tab. Open an event for its description and actions, or choose the node's log stream.
 

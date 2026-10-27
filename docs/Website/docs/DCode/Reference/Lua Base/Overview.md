@@ -1,6 +1,8 @@
 ---
-title: "Lua Base"
-summary: "Lua keywords, literals, base functions, and standard libraries available to DCode scripts."
+title: Lua Base
+summary: Lua keywords, literals, base functions, and standard libraries available to DCode scripts.
+created: 2026-08-04T17:39
+updated: 2026-10-26T22:01
 ---
 
 | Feature | Family | Syntax | Available in |
@@ -9,7 +11,6 @@ summary: "Lua keywords, literals, base functions, and standard libraries availab
 | [_VERSION](lua-version.md) | Global | `_VERSION` | File scope, Executable DCode bodies |
 | [and](lua-keyword-and.md) | Keyword | `left and right` | Executable DCode bodies |
 | [assert](lua-assert.md) | Function | `assert(condition, message)` | File scope, Executable DCode bodies |
-| [break](lua-keyword-break.md) | Keyword | `break` | Executable DCode bodies |
 | [collectgarbage](lua-collectgarbage.md) | Function | `collectgarbage(option)` | File scope, Executable DCode bodies |
 | [coroutine](lua-coroutine.md) | Library | `coroutine.<member>` | File scope, Executable DCode bodies |
 | [debug](lua-debug.md) | Library | `debug.<member>` | File scope, Executable DCode bodies |
@@ -22,7 +23,6 @@ summary: "Lua keywords, literals, base functions, and standard libraries availab
 | [ipairs](lua-ipairs.md) | Function | `ipairs(table_value)` | File scope, Executable DCode bodies |
 | [load](lua-load.md) | Function | `load(chunk)` | File scope, Executable DCode bodies |
 | [loadfile](lua-loadfile.md) | Function | `loadfile(filename)` | File scope, Executable DCode bodies |
-| [local](lua-keyword-local.md) | Keyword | `local <name> [= <value>]` | File scope, Executable DCode bodies |
 | [math](lua-math.md) | Library | `math.<member>` | File scope, Executable DCode bodies |
 | [next](lua-next.md) | Function | `next(table_value, index)` | File scope, Executable DCode bodies |
 | [nil](lua-literal-nil.md) | Literal | `nil` | File scope, Executable DCode bodies |
@@ -38,7 +38,6 @@ summary: "Lua keywords, literals, base functions, and standard libraries availab
 | [rawset](lua-rawset.md) | Function | `rawset(table_value, key, value)` | File scope, Executable DCode bodies |
 | [repeat](lua-keyword-repeat.md) | Keyword | `repeat ... until <condition>` | Executable DCode bodies |
 | [require](lua-require.md) | Function | `require(module_name)` | File scope, Executable DCode bodies |
-| [return](lua-keyword-return.md) | Keyword | `return [values]` | Executable DCode bodies |
 | [select](lua-select.md) | Function | `select(index, ...)` | File scope, Executable DCode bodies |
 | [setmetatable](lua-setmetatable.md) | Function | `setmetatable(value, metatable)` | File scope, Executable DCode bodies |
 | [string](lua-string.md) | Library | `string.<member>` | File scope, Executable DCode bodies |

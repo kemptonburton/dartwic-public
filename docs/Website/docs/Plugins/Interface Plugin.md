@@ -1,15 +1,15 @@
 ---
 summary: Follow Interface plugin registration, contributions, host APIs, and delivery.
-updated: 2026-10-26T14:16
+updated: 2026-10-26T23:59
 created: 2026-10-04T18:31
 ---
 
 
 An Interface plugin adds operator tools inside DARTWIC: pages, task and module editors, schematic nodes, settings, or shared presentation helpers. It uses the host's React runtime and Engine connection. It can ship on its own or alongside an [Engine plugin](Engine%20Plugin.md).
 
-Start from the [example plugin](Overview.md#start-from-the-example). The source paths below belong to **your plugin repository**, not DARTWIC's internal source. Enable the Interface side in `plugin.json` and keep its ID consistent with the definition. The [manifest guide](Packaging%20and%20Installation.md#manifest) explains enabled sides and minimum host versions.
+Start from the [example plugin](Overview.md#example-plugin). The source paths below belong to **your plugin repository**, not DARTWIC's internal source. Enable the Interface side in `plugin.json` and keep its ID consistent with the definition. The [manifest guide](Packaging%20and%20Installation.md#manifest) explains enabled sides and minimum host versions.
 
-# Configure the plugin
+# Plugin Config
 
 The root **`plugin.json`** is shared by the Engine and Interface sides. Keep its `id` equal to the ID passed to `definePlugin`. These examples enable both sides because the UI calls the Engine plugin's `echo` operation:
 
@@ -31,7 +31,7 @@ For an Interface-only plugin, set `contains_engine_plugin: false` and keep `cont
 
 Keep the starter's package/build configuration and runtime entry. Views use the Interface's existing Engine session; they do not need a second connection configuration. Any plugin settings or module/task editors below work with their own [configuration scopes](Storage%20and%20Settings.md).
 
-# Plugin definition and loading
+# Plugin Lifecycle
 
 The starter defines its contributions in `interface/src/plugin.jsx` using **`definePlugin({ register(registry) { ... } })`**. The host evaluates that `register` callback to find out what your plugin adds. Register components and definitions there; their runtime work happens when the host opens or uses them.
 
@@ -50,7 +50,13 @@ Load bundle → registerPlugin(definition) → register(registry)
 
 Keep the starter's runtime wrapper. `definePlugin` describes a plugin; `registerPlugin` makes its definition available to the host. The [registration reference](Reference/Interface/Plugin%20Registration/Overview.md) and [runtime reference](Reference/Interface/Runtime/Overview.md) explain both.
 
-# Choose a contribution
+Uninstalling the Interface side removes its bundle and refreshes the host's contributions immediately. 
+
+Put subscriptions, timers, and event listeners in component effects with cleanup functions so they are released when the view unmounts. Keep `register(registry)` focused on contributions. 
+
+Uninstall leaves saved workspace documents and separately stored settings and assets in place; Bundled assets are removed with the package; [Storage and Settings](Storage%20and%20Settings.md) explains those storage lifetimes.
+
+# Plugin Contributions
 
 The [InterfacePluginRegistrar](Reference/Interface/Plugin%20Registration/InterfacePluginRegistrar.md) lists all current registration methods; the [Interface SDK reference](Reference/Interface/Overview.md) covers their definitions and options. These examples illustrate the main patterns rather than defining a fixed list of everything a plugin can do.
 
@@ -185,9 +191,9 @@ registry.addValueFormat({
 
 Select it with `format=example_device_plugin.one_decimal` in the channel's Units field. The stored number is unchanged. The [value format reference](Reference/Interface/Plugin%20Registration/ValueFormatDefinition.md) also covers parsing and custom editors.
 
-# Use the host SDK
+# Interface APIs
 
-## Use the existing connection
+## Engine connection hooks
 
 Inside your React components, import **`useDartwic`** and **`useDartwicChannelValues`** from `@dartwic/interface-sdk/hooks`. They expose the host's operations, subscription helpers, and live channel data. Use them instead of opening another Engine connection.
 
@@ -230,7 +236,7 @@ This view needs the Engine side's `echo` operation loaded. An Interface-only plu
 
 UI updates are asynchronous relative to the Engine. An accepted request does not establish device feedback or task lifecycle completion. Put scheduled control and condition reactions in Engine tasks or DCode.
 
-## Build with DARTWIC controls
+## Shared UI components
 
 Use the SDK for host services and shared UI inside your registered components:
 
@@ -259,7 +265,7 @@ export function EchoCard(props) {
 }
 ```
 
-### Show linked module tasks
+### Linked module tasks
 
 Use [ModuleRuntimeOverview](Reference/Interface/DARTWIC%20UI%20Components/ModuleRuntimeOverview.md) for linked task status, controls, and mapped channels. Supply the module instance name and channel resolver; the host manages live subscriptions and its shared Start/Stop/Hold confirmation workflow. Target-rate editing stays in Tasks.
 
@@ -276,11 +282,11 @@ export function ModulePanel({instanceConfig}) {
 
 Register it as the module contribution's `panel`. Add `resolveTaskChannels` when you also want the overview to display that driver's mapped channels.
 
-## Share configuration with Config Map
+## Config Map editors
 
 Config Map is an optional editor for existing configuration. It is particularly useful when settings describe how device addresses and channels connect. It does not create another configuration store, require a particular restart policy, or replace custom components.
 
-### Declare one document and its adapter
+### Configuration document and adapter
 
 ```ts
 import {
@@ -312,7 +318,7 @@ Supply your own asynchronous `load(context)` and `apply(next, previous, context)
 
 Contexts contain `operation` plus the resource identity: `module.name`, `task.name`, or `plugin.id`. Resolve current configuration through the API rather than treating the identity summary as another saved document.
 
-### Mix components and multiple maps
+### Custom editors and multiple maps
 
 An explicit `panel`, task `editor`, or settings `component` owns the contents of that resource editor. Register `configMap` alongside it to keep its fields searchable in Config Map. Inside that custom component, the host supplies the registered definition, resource identity, and editor save behavior:
 
@@ -348,7 +354,7 @@ For a standalone map outside a registered editor, supply `definition`, `context`
 
 Config Map remains optional. Register only `panel`, `editor`, or `component` for a completely custom experience. A plugin can mix custom-only and map-backed contributions. Custom actions keep their own application logic; the host's Apply button applies registered map fields, not arbitrary component state. If a custom control edits a field in the same document, declare that field and supply its `render` callback so it participates in the same draft and validation path.
 
-### Choose fields and binding tables
+### Fields and binding tables
 
 Fields support text, numbers, selections, toggles, module selectors, and searchable channel inputs. A dot-separated `path` addresses the existing document. Use `placeholder`, numeric bounds, `required`, `parse`, and synchronous `validate` callbacks for local feedback. The Engine remains authoritative. `defaultValue` may be a pure `(document, row)` function when the native driver derives a missing value, such as an output's `<command>_state` readback channel. This also keeps the derived channel visible in search and ownership traces.
 
@@ -377,7 +383,7 @@ const readMap = defineConfigMap({
 
 A custom cell's `render` callback receives `value`, `draft`, `path`, the draft `document`/`row`, `context`, and `disabled`. Call `onDraft` for text editing and `onCommit` for explicit acceptance. For a structured picker, `onDraftAt(path, value)` can stage related **declared** fields in the same document. `hidden` fields keep picker metadata validated and searchable without displaying a separate column. These callbacks retain host drafts rather than creating another save path. Return a React component from `render`; put hooks inside that component.
 
-### Save behavior and failures
+### Config Map saves and errors
 
 | Presentation | Commit behavior |
 | --- | --- |
@@ -392,7 +398,7 @@ The host preserves undeclared fields in its document snapshots. Adapters must al
 Use a host release providing these Config Map capabilities. Before publishing a plugin that requires them, set its minimum Interface version to the first release that supplies them; raise its minimum Engine version only for Engine capabilities it actually requires. Existing custom components and `TaskBindingTable` remain supported.
 
 
-# Build and inspect
+# Building and Installation
 
 Follow [Packaging and Installation](Packaging%20and%20Installation.md) for build commands, output layout, installing locally, and publishing. Build with the SDK matching your target host and declare the minimum versions your features need.
 

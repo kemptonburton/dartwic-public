@@ -1,6 +1,6 @@
 ---
 summary: Connect, query, write, and subscribe; then turn recorded channels into an analysis plot.
-updated: 2026-10-26T14:16
+updated: 2026-10-27T00:19
 created: 2026-08-03T15:41
 ---
 
@@ -56,7 +56,7 @@ with DartwicClient() as client:
 
 `connect` registers the client and checks engine compatibility. The context manager disconnects even if your script raises an exception.
 
-# Choose what your script does
+# Client operations
 
 The examples below show common uses. See the [Python API reference](Reference/Python/Overview.md) for the full current API, arguments, and return values. Choose the parts your script needs.
 
@@ -205,7 +205,7 @@ The client uses an authenticated heartbeat to detect session loss. A heartbeat s
 
 A timeout does not cancel work on the engine, and writes are never replayed automatically. Query resulting state before retrying a write.
 
-# Run and inspect
+# Script execution and verification
 
 Save the connection example as `analysis.py`, place the task snippets you need inside its `with` block, and run it with the virtual environment's Python:
 

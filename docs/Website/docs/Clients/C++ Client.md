@@ -1,6 +1,6 @@
 ---
 summary: Build a native application with live channels, telemetry, and history queries.
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:52
 created: 2026-09-07T17:03
 ---
 
@@ -69,7 +69,7 @@ int main() {
 
 `connect()` registers, checks compatibility, and starts workers. Calls block until a reply or error.
 
-# Choose what your application does
+# Client operations
 
 The examples below show common uses. See the [C++ API reference](Reference/C%2B%2B/Overview.md) for the full current API, arguments, and return values. Choose the parts your application needs.
 
@@ -197,7 +197,7 @@ TEMPEST automatically registers again after detected connection/session loss. Th
 
 Serialize lifecycle calls. Call `disconnect()` and destroy the client **outside telemetry callbacks**, after application work using the client has finished. Keep callbacks short, and keep captured objects alive until shutdown completes. Explicit disconnect clears subscriptions; a later explicit connect starts a fresh session. `connected()` reflects local readiness rather than proving network reachability at that instant.
 
-# Build and inspect your application
+# Application build and verification
 
 Configure and build the application using the `CMakeLists.txt` above:
 

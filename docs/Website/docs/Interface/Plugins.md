@@ -1,7 +1,7 @@
 ---
 summary: Install drivers and Interface tools, and understand their update status.
 created: 2026-08-03T15:41
-updated: 2026-10-24T23:17
+updated: 2026-10-26T21:52
 ---
 
 Plugins add drivers, task types, editors, schematic nodes, and other tools. Open **Settings → Plugins** to inspect installed extensions or browse new ones.
@@ -19,7 +19,7 @@ A plugin can have an **Engine side**, an **Interface side**, or both. A driver n
 
 The browser selects compatible published releases. A source repository or platform badge alone does not establish that a compatible package is available. **Open plugin from GitHub** previews an unlisted repository through the same checks.
 
-# Read installation status
+# Installation status
 
 | Status | What to do |
 | --- | --- |
@@ -33,7 +33,7 @@ The browser selects compatible published releases. A source repository or platfo
 
 Installed, loaded, and queued versions can differ. Plugin settings that call Engine operations become available after that Engine side loads. Catalog availability warnings are separate from installation errors.
 
-# Update or remove
+# Plugin updates and removal
 
 Engine installations share their plugin directory across workspaces. Updates and removals queue while native code is running, then apply when the selected Engine restarts. If another Engine holds a native file, the selected Engine returns with its previous plugin and reports the locked path. Stop the Engine holding it and explicitly retry.
 
@@ -41,7 +41,7 @@ Interface changes apply immediately. Replacements are staged and validated befor
 
 Workspace setup retains installed versions by default. Recorded dependency versions do not force a downgrade or block startup; installation still checks host compatibility.
 
-# Use what it adds
+# Plugin contributions
 
 | Contribution | Next step |
 | --- | --- |
@@ -52,4 +52,4 @@ Workspace setup retains installed versions by default. Recorded dependency versi
 
 Installing a driver does not configure or connect every device. Follow its documentation for parameters, mappings, and timing. Contribution badges describe registered features, not device readiness.
 
-For manual installation paths and package layout, see [Packaging and Installation](../Plugins/Packaging%20and%20Installation.md#install-locally). To build an extension, start with [Plugin Development](../Plugins/Overview.md).
+For manual installation paths and package layout, see [Packaging and Installation](../Plugins/Packaging%20and%20Installation.md#install-locally-during-development). To build an extension, start with [Plugin Development](../Plugins/Overview.md).

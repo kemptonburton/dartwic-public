@@ -2,7 +2,7 @@
 title: task_timeline
 summary: Schedule cooperative DCode sequence buckets against a signed T-/T+ mission clock. Buckets share one tick thread; ordinary blocking code stalls the entire timeline.
 created: 2026-10-04T18:31
-updated: 2026-10-22T17:41
+updated: 2026-10-26T22:01
 ---
 
 ## Syntax
@@ -25,7 +25,7 @@ Ticks at a configurable frequency (default 10 Hz). Inside a bucket, wait, wait_u
 
 ## Rules
 
-- The timeline requires one `clock:` section containing exactly one of `start: T-1m` or `t0: 2026-10-14T18:00:00Z`, plus at least one `at T-1m (optional_label):` bucket.
+- Require exactly one clock_start: T-1m or clock_t0: <ISO-8601 timestamp with timezone> field, plus at least one at T...: runtime section.
 - Signed T times accept a number followed by `ms`, `s`, `m`, or `h` (`T-1m`, `T+30s`) or an `HH:MM:SS[.fraction]` clock form (`T+00:01:30`). Bare `1m`, `T0`, and `at: T-1m` are not bucket headers.
 - Each bucket may have one `hold_at:` field at the same indentation as `execute:`. Use a signed T time at or after the bucket start, or `next_bucket`. The latter uses the next scheduled bucket after time ordering and requires a following bucket.
 - A bucket can contain direct statements. If it declares any bucket-level `hold:`, `resume:`, `stop:`, or `abort:` section, it also requires `execute:` and all ordinary statements go inside that section.
@@ -33,10 +33,7 @@ Ticks at a configurable frequency (default 10 Hz). Inside a bucket, wait, wait_u
 
 ## Runtime sections
 
-- `clock`
 - `at`
-- `hold_at`
-- `execute`
 - `hold`
 - `resume`
 - `stop`
@@ -62,8 +59,7 @@ Ticks at a configurable frequency (default 10 Hz). Inside a bucket, wait, wait_u
 
 ```dcode
 task_timeline timeline_name:
-    clock:
-        start: T-30m
+    clock_start: T-30m
 
     at T-20m (operation):
         hold_at: T-10m
@@ -77,7 +73,3 @@ task_timeline timeline_name:
 - `frequency_hz` (optional positive number): Timeline scheduler frequency in Hz; defaults to 10.
 - `priority` (optional enum): background, normal (default), high, or critical. Supply frequency_hz first when setting priority.
 - `disable_warnings` (optional flag): Suppress timing warnings while keeping measurements and callback errors.
-- `clock.start` (mission time): Choose the initial signed T time, such as T-1m or T+00:00:05. Use this or clock.t0, never both.
-- `clock.t0` (ISO-8601 timestamp): Alternative to clock.start; include Z or an explicit UTC offset, for example 2026-10-14T18:00:00Z.
-- `at <time> [(label)]` (bucket header): Use at T-1m (tank_fill):, at T+0s (ignition):, or omit the label. Labels, when present, must be unique.
-- `hold_at` (optional bucket field): Use one signed T time at or after this bucket's start, or next_bucket. The latter uses the next bucket in scheduled order and requires a following bucket.

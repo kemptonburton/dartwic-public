@@ -1,16 +1,18 @@
 ---
 summary: Declare stable ARGUS events and react synchronously to firing conditions.
-updated: 2026-10-26T14:16
+updated: 2026-10-27T04:26
 created: 2026-09-04T17:13
 ---
 
-An event reports a condition or occurrence that an operator may need to review. Use a maintained condition for a limit that can stay active, or a one-shot event for something that happened once. An event can also run a DCode reaction.
+An event reports a condition or occurrence that an operator may need to review. Use a maintained condition for a limit that can stay active, or a one-shot event for something that happened once. Events can also run DCode reactions.
 
-ARGUS owns the operator board and history. The event's firing condition and its presence on that board are separate states.
+# Event Configuration
 
-# React to a limit
+Give the declaration a unique key, title, description, and suggested resolution. Types are `message`, `warning`, `error`, and `abort`; the default is `message`. ARGUS groups reports by node, title, system, and subsystem. Changing that combination creates a different logical event.
 
-Create `docs_demo_pressure` and `docs_demo_pressure_limit`, plus a free `docs_demo_fuel_valve` channel in a test project. This example uses a demo output with no hardware connection:
+## Limit event example
+
+Create `docs_demo_pressure` and `docs_demo_pressure_limit`, plus a free `docs_demo_fuel_valve` channel in a test project. This example has no hardware connection:
 
 ```dcode
 event docs_demo_pressure_abort:
@@ -35,29 +37,37 @@ event docs_demo_pressure_abort:
             free |docs_demo_fuel_valve|
 ```
 
-Activate below the limit, then raise pressure. The condition fires and the reaction holds the valve channel at 0. Lower pressure: the reaction releases its override. Freeing control leaves the last value in place; it does not restore an earlier command. Acknowledging the event does not release an active override.
+Activate below the limit, then raise pressure. The reaction overrides the valve channel to 0. Lower pressure to release the override; its last value stays at 0. An `abort` event does not automatically stop tasks or command equipment; its reaction defines those actions.
 
-The trigger evaluates once at activation and then inline when an input dependency is written. Return numeric 1 for active and 0 for inactive. A rising edge fires the event; remaining at 1 does not repeatedly report it or impose a five-second timeout. Keep inline reactions short because they delay the writer.
+## Event details and graphs
 
-An `abort` event does not stop every task or command equipment by itself. The reaction, channel authority, driver, and hardware determine the actual response. [Channels and Control](../Engine/Channels%20and%20Control.md) owns those authority rules.
+The `channels:` field adds event graphs: commas add series, semicolons add graphs, and `@1` through `@5` select a Y axis:
 
-# Generated channels
+```dcode
+channels: |temperature|@1, >100@1; |pressure|@1, =50@2
+```
 
-For the example above:
+# Event Lifecycle
 
-| Channel | Meaning |
-| --- | --- |
-| `docs_demo_pressure_abort_firing` | `1` while the maintained condition is asserted or a one-shot pulse is still within its five-second window. Observe-only. |
-| `docs_demo_pressure_abort` | Whether the event is present on the active ARGUS board. Observe-only; silenced events report zero. |
-| `docs_demo_pressure_abort_trigger` | Writable pulse input, created because the declaration has a `trigger:` section. An assertion automatically resets this input to zero, including a calculated assertion. It does not display the maintained firing state. |
+Activation installs the trigger and reactions and evaluates the trigger once. Subsequent input writes cause reevaluation.
 
-Use `on_firing:` for firing transitions and `on_event:` for board presence, including silence. They receive `value`/`new_value` and `current_value`; do not return a replacement diagnostic value. Static reads add dependencies and can rerun the reaction even without a state change. Such reruns pass the existing state as all three arguments without changing its timestamp.
+Trigger and reaction calculations share the event's authority. Clearing a condition, acknowledging, or silencing does not automatically release channel claims; use `free` in the reaction when control should end.
 
-Acknowledgement does not clear a condition; resolution is allowed once firing stops. A later trigger reopens or refreshes the same keyed event. See [Interface Events](../Interface/Events.md) for operator controls.
+Removing the declaration and reactivating disables its handlers. Removal or replacement releases its claims after active work finishes. Generated channels, stored values, existing board records, and history remain. See the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop) and [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md).
 
-# Trigger a one-shot event
+# Event Execution
 
-Use an empty `trigger:` when an external pulse should report an occurrence:
+Triggers and reactions run **synchronously**: the writing code waits for them to finish. Keep them short; waits and slow functions delay that code too.
+
+## Maintained conditions
+
+Return numeric `1` from `trigger:` for active and `0` for inactive. A rising edge fires the event. Staying at 1 does not repeatedly report it.
+
+Static pipe reads establish dependencies. Runtime-built channel names need explicit static inputs to trigger reevaluation; template-generated names are detected after expansion. See [Channel Calculations](Channel%20Calculations.md#dependencies).
+
+## Trigger a one-shot event
+
+An empty `trigger:` creates a writable pulse input:
 
 ```dcode
 event docs_demo_checkpoint:
@@ -70,51 +80,59 @@ task_sequence docs_demo_checkpoint_run:
     trigger docs_demo_checkpoint
 ```
 
-Activate and start **docs_demo_checkpoint_run**. The `trigger` statement keeps the generated firing channel at 1 for five seconds after the latest pulse. Another pulse refreshes that window. Writing 1 to the generated `_trigger` channel also pulses it; the input resets to 0 automatically. Writing 0 does not cancel a pulse or clear a maintained condition.
+Activate and start **docs_demo_checkpoint_run**. The `trigger` statement asserts firing for five seconds after the latest pulse. Writing 1 to `_trigger` also pulses it; that input resets to 0 automatically. Writing 0 does not cancel a pulse or clear a maintained condition.
 
-Statement-form triggering also works without a `trigger:` section; the empty section creates the writable pulse input. If a declaration uses both maintained and pulse triggers, firing stays active until both are inactive.
+The statement also works without a `trigger:` section. If maintained and pulse triggers are both used, firing stays active until both are inactive.
 
-# ARGUS quiet expiry
+## Event reactions
 
-`separation_seconds` controls the ARGUS occurrence's quiet expiry. It is independent of the generated pulse's five-second window:
+Use `on_firing:` for firing transitions and `on_event:` for board presence, including silence. They receive `value`/`new_value` and `current_value`; their returns do not replace diagnostic values.
 
-| Setting | Consequence |
-| --- | --- |
-| `0` | Disables ARGUS automatic expiry. Use it for maintained conditions. |
-| Positive interval | Can expire the occurrence while `_firing` remains 1. It does not extend or shorten the pulse. |
+Static input reads can rerun a reaction without a state transition. These dependency calls pass the existing event state as all three arguments and leave its timestamp unchanged.
 
-When the maintained condition clears or the final pulse expires, DCode explicitly stops the occurrence even with separation 0. A maintained true condition does not keep submitting reports, so a positive quiet interval can expire its occurrence before the condition clears.
+## Trigger errors
 
-# Event details and graphs
+An error or a result that does not resolve to 1 clears the maintained condition. Return numbers: Lua accepts numeric strings and diagnoses missing returns as nonnumeric; Native C++ rejects numeric strings and treats missing returns as no result.
 
-Give the event a title, useful description, and suggested resolution. Types are `message`, `warning`, `error`, and `abort`; the default is `message`. ARGUS groups reports by node, title, system, and subsystem. Changing that tuple creates a different logical event; the declaration key binds its generated channels and reactions.
+## Reports without a declaration
 
-In `channels:`, commas add series and semicolons add graphs. `@1` through `@5` choose a Y axis. For example:
-
-```dcode
-channels: |temperature|@1, >100@1; |pressure|@1, =50@2
-```
-
-For a report without generated channels, an executable body can call:
+For a report without generated channels, call a reporting function from an executable body:
 
 ```dcode
 warning("Pressure high", "Inspect the sensor", [], "", 0, 5)
 ```
 
-The final 5 is its quiet interval. These reporting functions use positional arguments and return a numeric host result, normally 1; they do not wait for an operator or return an event ID. `error(...)` reports an event rather than raising an execution exception, and `abort(...)` does not automatically stop tasks. Reporting the same tuple does not grant a declaration's channel authority.
+The final 5 is its quiet interval. These calls return a numeric result, normally 1, without waiting for an operator or returning an event ID. `error(...)` reports an event rather than raising an exception; `abort(...)` does not automatically stop tasks. Reporting the same event does not grant its declaration's authority.
 
-# Handle failures and operator input
+# Event State
 
-Use numeric trigger returns in shared scripts. A non-1 result or error clears the maintained condition. Lua accepts numeric strings and diagnoses null or fallthrough as nonnumeric; Native C++ rejects numeric strings and treats null or fallthrough as no numeric result. Check errors as well as displayed state.
+ARGUS tracks firing separately from presence on the operator board. Acknowledgement does not clear a condition; resolution requires firing to stop. Later triggers reopen or refresh the same keyed event. See [Interface Events](../Interface/Events.md) for operator controls.
 
-Static reads establish trigger dependencies. Dynamic channel names need explicit static inputs that cause reevaluation; see [Channel Calculations](Channel%20Calculations.md#dependencies).
+## Generated channels
 
-An event declaration reports a condition; prompts and `hold(...)` are executable calls that wait for operator action. [Scheduling Timelines](Scheduling%20Timelines.md#wait-for-an-operator) explains their effect on buckets and mission time.
+For the limit example:
+
+| Channel | Meaning |
+| --- | --- |
+| `docs_demo_pressure_abort_firing` | Observe-only: 1 while a maintained condition or unexpired pulse is active. |
+| `docs_demo_pressure_abort` | Observe-only: 1 while present on the active ARGUS board; 0 when silenced. |
+| `docs_demo_pressure_abort_trigger` | Writable pulse input, created by `trigger:`. Assertions reset to 0, including calculated assertions; it does not display the maintained firing state. |
+
+## ARGUS quiet expiry
+
+`separation_seconds` controls occurrence expiry, independently of the five-second pulse window:
+
+| Setting | Behavior |
+| --- | --- |
+| `0` | Disables automatic expiry. Use for maintained conditions. |
+| Positive interval | Can expire the occurrence while `_firing` remains 1; does not change pulse duration. |
+
+When neither a maintained condition nor an unexpired pulse is active, DCode stops the occurrence, even with separation 0. A maintained true condition does not repeatedly report, so a positive quiet interval can expire its occurrence before the condition clears.
 
 # Reference
 
 - [Event declaration](Reference/Runtime%20Blocks/runtime-event.md) — Triggering and lifecycle rules.
-- [Event metadata](Reference/Event%20Metadata/Overview.md) — Fields, defaults, and graph settings.
-- [Event reactions](Reference/Runtime%20Sections/section-event_on_firing.md) — Arguments, dependencies, and generated state.
+- [Event metadata](Reference/Fields/Overview.md) — Fields, defaults, and graph settings.
+- [Event reactions](Reference/Handlers/handler-event_on_firing.md) — Arguments, dependencies, and generated state.
 - [Trigger statement](Reference/Statements/statement-trigger_event.md) — One-shot firing.
-- [Reporting and prompt functions](Reference/DCode%20Functions/Overview.md) — Exact arguments and backend behavior.
+- [Reporting functions](Reference/DCode%20Functions/Overview.md) — Exact arguments and backend behavior.

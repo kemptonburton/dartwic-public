@@ -1,12 +1,14 @@
 ---
 summary: Derive channels inline when their inputs change.
-updated: 2026-10-26T14:16
+updated: 2026-10-27T03:37
 created: 2026-08-03T15:41
 ---
 
-A channel calculation derives a number from live inputs, such as a unit conversion or a level percentage. It runs inline in the channel-write path, so use it when the result should follow accepted input writes without waiting for a scheduled task.
+A channel calculation derives a number from live inputs, such as a unit conversion or a level percentage. It runs synchronously in the channel-write path, so use it when the result should follow accepted input writes without waiting for a scheduled task.
 
-# Derive a value
+# Calculation Configuration
+
+The name after `channel_calculation` is the output channel. Return a number to supply its value. Static input pipes establish dependencies automatically; use `depends_on` for additional inputs.
 
 This example updates a percentage whenever either input changes. Create the two input channels first and use the same units for both.
 
@@ -18,40 +20,36 @@ channel_calculation docs_demo_level_percent:
     return clamp((|docs_demo_level| / capacity) * 100, 0, 100)
 ```
 
-Here, zero capacity produces zero as an explicit fallback. In a real controller, choose an appropriate invalid-input policy and report the fault separately; a plausible numeric fallback should not hide a failed sensor.
+Zero capacity returns zero here. Choose an appropriate fallback for your application and report invalid inputs separately so the result does not hide a sensor fault.
 
 Activate the file and update `docs_demo_level` or `docs_demo_capacity`. Inspect `docs_demo_level_percent`; it should remain between 0 and 100.
 
-# When it runs
+# Calculation Lifecycle
 
-| Update | Calculation behavior |
+Activation installs the calculation and its dependencies; ordinary calculations first evaluate on a subsequent target or dependency write. Event trigger calculations also evaluate once at activation.
+
+Each calculation has its own runtime block scope, but unlike a function or a callback, its variables persist between evaluations. Assignments still run each time and can overwrite previous values. To share variables between calculations in the same file, define them at file scope and declare `global` inside each calculation that uses them. See [Values and Scope](Values%20and%20Scope.md#variable-scopes).
+
+Reactivating the file/ runtime block replaces the calculation with fresh variable state; removing its declaration and reactivating removes it. Replacing or removing the calculation releases all of its channel authority after in-flight work finishes. It does not delete any channels or reset their stored values. Other controllers' claims and operator control are preserved. See [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) and the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop).
+
+# Calculation Execution
+
+Calculations run **synchronously**: the writing code waits for calculations and reactions to finish before its write call returns. Keep them short; waits and slow functions delay that code too.
+
+| Channel written | Order |
 | --- | --- |
-| A write to the calculation's target | Runs the attached calculation before committing the target value. |
-| A write to an input dependency | Commits that input, then runs dependent calculations inline before the original write returns. |
-| A display refresh or telemetry packet | Does not schedule the local calculation; publication happens separately. |
+| Calculation's output | Calculate, then store the output. |
+| Input dependency | Store the input, calculate, then store the output. |
 
-Accepted equal-valued writes also run the calculation; a change in the numeric value is not required. Ordinary calculations are registered at activation and evaluated by subsequent target/dependency writes. Event trigger calculations additionally evaluate once at activation.
+Equal-valued writes also trigger evaluation. Metadata changes, display refreshes, and telemetry packets do not.
 
-A calculation runs on the thread that writes its channel or dependency. Keep it short: a wait, slow plugin call, or long calculation delays that writer too. Task start/stop channel writes enqueue lifecycle requests; the lifecycle handlers run later on the task or group thread.
+A [timed `when` block](Common%20Syntax%20and%20Functions.md#when-blocks) can qualify a condition without waiting, but time passing alone does not trigger another evaluation.
 
-Use [timed `when` and `once when` blocks](Common%20Syntax%20and%20Functions.md#require-a-sustained-condition) to require a condition for a duration without waiting inside the calculation. Timing state persists between evaluations, but a deadline alone does not schedule another evaluation. Include any sensor-quality checks in the condition.
+## Dependencies
 
-## Calculation arguments
+A dependency is an input channel whose value writes trigger the calculation. Static pipe reads register dependencies automatically; assignment targets are outputs.
 
-| Variable | Direct target write | Dependency invocation |
-| --- | --- | --- |
-| `value`, `new_value` | The proposed target value. | The committed input value that triggered evaluation. |
-| `current_value` | The existing target value before evaluation. | The target value read before evaluation. |
-
-Read named input pipes when a formula needs particular signals; `value` does not always mean the target's current value. Reads use live channel state, so the inline chain is not an atomic snapshot across several channels.
-
-See [Execution and Timing](../Engine/Execution%20and%20Timing.md) when the calculation participates in a control cycle.
-
-# Dependencies
-
-Both examples can use [Native C++](Native%20C%2B%2B%20Execution.md). Static value pipes use prepared bindings; the dynamic-name example resolves its channel through the host at runtime.
-
-Static pipe reads in the body automatically become dependencies. They subscribe to channel value writes; changing only a metadata field does not invoke the calculation. Assignment targets are outputs. An explicit list can add dependencies:
+Template-generated names are detected automatically after expansion. Names built from runtime variables need explicit `depends_on` entries. List each input that should trigger evaluation, including any selection channel, using channel keys without pipes or metadata suffixes:
 
 ```dcode
 channel_calculation docs_demo_selected_pressure:
@@ -60,23 +58,33 @@ channel_calculation docs_demo_selected_pressure:
     return |docs_demo_{side}_pressure|
 ```
 
-Dynamic references are resolved at runtime and are not discovered as static inputs. List every channel that should cause reevaluation, including any selection channel. Entries in `depends_on` are channel keys, without pipe delimiters or metadata-field suffixes.
+Both examples work in Lua and [Native C++](Native%20C%2B%2B%20Execution.md).
 
-# Errors and cycles
+## Calculation Arguments
 
-| Invocation | If the calculation fails or returns no numeric result |
+These arguments describe the write that caused evaluation:
+
+| Variable | Direct output write | Dependency write |
+| --- | --- | --- |
+| `value`, `new_value` | Proposed output value. | Stored input value that triggered evaluation. |
+| `current_value` | Target value before evaluation. | Target value before evaluation. |
+
+Read named input pipes when you need particular signals. Reads use live values, not a simultaneous snapshot of every input. See [Execution and Timing](../Engine/Execution%20and%20Timing.md) for control-cycle timing.
+
+# Errors and Cycles
+
+A calculation must return a number. If it fails or produces no numeric result, behavior depends on which channel was written:
+
+| Write | Result on failure |
 | --- | --- |
-| A direct write to the target | Uses the original submitted value, subject to authority and normal numeric conversion. Earlier transformations are discarded and later target calculations are skipped. |
-| A dependency update | Leaves the target unchanged; the input remains committed. Evaluation errors are logged. |
+| Calculation's output | Falls back to the original submitted value, subject to authority checks and numeric conversion. Discards earlier calculation results and skips remaining target calculations. |
+| Input dependency | Keeps the input write; leaves the output unchanged. Evaluation errors are logged. |
 
-Side effects already performed are not rolled back. A direct-write fallback produces an ARGUS warning identifying the calculation, source, target, error, writer, and fallback value. Native C++ may provide generic failure text. The console also reports it; warning-storage failure does not prevent the fallback. Repeated failures update the same warning, whose firing expires after five quiet seconds.
+Earlier writes and other side effects remain. Direct-write fallbacks produce an ARGUS warning and console report. Use numeric values rather than numeric strings; Lua and Native C++ handle strings and missing returns differently.
 
-Return a number for portable behavior. Lua logs null/fallthrough as a nonnumeric-result error and accepts numeric strings; Native C++ treats null/fallthrough as no result and rejects numeric strings. An old displayed target does not establish that the latest evaluation succeeded.
-
-Keep dependencies one-way. DCode skips an evaluation that would reenter an already executing calculation and records a cycle error. Earlier writes remain. Use a [periodic task](Tasks.md) when the logic depends on previous iterations. Calculations have no task running, hold, or frequency controls.
+A cycle occurs when calculations feed back into one already executing. DCode skips that reentry and records an error. Keep dependencies one-way; use a [periodic task](Tasks.md) for iterative logic.
 
 # Reference
 
 - [Channel calculation](Reference/Runtime%20Blocks/runtime-channel_calculation.md) — Declaration, invocation, and result rules.
-- [Explicit dependencies](Reference/Runtime%20Sections/section-depends_on.md) — Adding inputs for reevaluation.
-- [Calculation body](Reference/Runtime%20Sections/section-calculation_body.md) — Available calculation arguments.
+- [Explicit dependencies](Reference/Fields/field-depends_on.md) — Adding inputs for reevaluation.

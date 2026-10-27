@@ -2,7 +2,7 @@
 title: loop
 summary: Define a lightweight repeated automation loop in DCode.
 created: 2026-08-04T17:38
-updated: 2026-10-22T17:41
+updated: 2026-10-26T22:01
 ---
 
 ## Syntax
@@ -25,7 +25,7 @@ Activation starts a named repeated body at the requested frequency under a CAESA
 
 ## Persistence
 
-Ordinary runtime variables and state fields persist between iterations until reactivation. Initialize before reading; `once when true:` can initialize the first iteration. A loop has no start section.
+Ordinary runtime variables and state fields persist between iterations until reactivation. Initialize before reading; `once:` can initialize the first iteration. A loop has no start section.
 
 ## Reload behavior
 

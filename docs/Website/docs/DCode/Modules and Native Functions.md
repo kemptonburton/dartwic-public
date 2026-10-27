@@ -1,16 +1,20 @@
 ---
 summary: Share script helpers and call functions supplied by engine plugins.
-updated: 2026-10-26T14:16
+updated: 2026-10-27T05:04
 created: 2026-08-03T15:41
 ---
 
-Helper files let several scripts reuse the same function. Native functions let a script call behavior supplied by an Engine plugin, such as a device operation or C++ calculation.
+DCode can reuse functions from helper files, call functions supplied by Engine plugins, and send operation requests to local or remote Engines.
 
-Both backends import helper-only `.dcode` files, including nested imports. Lua also accepts `.lua` helpers. Importing helpers and calling installed plugin functions are separate choices; use either when your script needs it.
+# Helper Modules
 
-# Share a helper
+A helper module groups reusable functions in a separate file. Import one to share the same filtering, conversions, or other script logic across several files.
 
-Create `scripts/helpers/filter.dcode` in the active project:
+Both backends import helper-only `.dcode` files, including nested imports. Lua also supports `.lua` helpers. Helpers cannot declare runtime blocks or events; use [Callbacks](Callbacks.md) to expose a function to schematic controls or external callers.
+
+## Share a helper
+
+This helper smooths an input by remembering its previous filtered value. Create `scripts/helpers/filter.dcode` in the active project:
 
 ```dcode
 local previous = 0
@@ -27,7 +31,7 @@ function reset(value):
     previous = value
 ```
 
-Bare functions and assignments are exported on the imported module table. `previous` stays private because it is local; `gain`, `low_pass`, and `reset` are public.
+Bare functions and assignments are exported on the module. `previous` stays private because it is local; `gain`, `low_pass`, and `reset` are public.
 
 Create `scripts/filter_demo.dcode` beside the `helpers` directory:
 
@@ -42,38 +46,32 @@ task_periodic docs_demo_filter:
         |docs_demo_filtered| = filter.low_pass(|docs_demo_raw|)
 ```
 
-Relative imports use the importing file's folder, including when one helper imports another; dotted imports map to folders inside `scripts`. Native C++ accepts `.dcode` helpers only. Helpers cannot declare runtime blocks or events. The filter's private value persists within its importing runtime; keep independent filter histories in each task's ordinary variables and pass the previous value to a stateless helper when several tasks need separate filters.
+Create the demo input channel before activating and starting the task. The output follows a smoothed input. Relative imports resolve from the importing file, including nested imports; dotted names map to folders inside `scripts`.
 
-# Call a TEMPEST operation
+## Module Scope and Lifecycle
 
-Pass the current engine's node name or a remote node name first, then the operation name and optional JSON-compatible argument object:
+Helper functions use normal [function scope](Values%20and%20Scope.md#variable-scopes): arguments and working variables belong to each call. Module-level variables, such as `previous`, persist within the importing runtime.
 
-```dcode
-result = tempest_operation("camera-node", "camera/capture", {exposure_ms: 20})
-```
+Helpers use the caller's authority and have no separate runtime registration. The caller's stop/removal lifecycle handles its [channel cleanup](../Engine/Channels%20and%20Control.md#stop). Reactivate the importing file to apply helper edits; [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) covers replacement.
 
-The editor suggests the current node and connected or remembered remote nodes, then the selected node's callable operations. In the argument object, it suggests fields from the operation descriptor and can insert all required fields. The current node dispatches its registered handler directly; remote nodes use the peer connection. A remote timeout means completion is unknown, so operations are not retried automatically. Handlers can block, and remote calls add network latency, so keep these calls outside fixed-rate control callbacks.
+# Native Functions
 
-For a saved pinned operation on the current engine or a remote node, use its stable ID or a label that is unique on that node. Optional overrides replace saved argument fields for this call:
+A [native function](../Plugins/Reference/Engine/DCode/Overview.md) lets DCode call C++ code supplied by an Engine plugin. Use one for a device command, calculation, or library function that the plugin provides. These calls work from both Lua and Native C++ DCode.
 
-```dcode
-result = tempest_pinned_operation("camera-node", "capture-standard", {exposure_ms: 15})
-```
+Install and load the supplying plugin first. Call its functions as `plugin_id.function_name(...)`, using the arguments documented by that plugin.
 
-The editor suggests that node's saved pins. A pin must have a stable ID or a label unique on that node.
+## Call a native function
 
-# Call a native function
-
-With the public example plugin installed and loaded, an executable body can call:
+The public example plugin includes a function that adds two numbers. With that plugin loaded, call it from an executable body:
 
 ```dcode
 result = example_device_plugin.test_value({ base: 40, offset: 2 })
 |docs_demo_result| = result
 ```
 
-This function returns 42 by adding base and offset. Plugin functions are qualified by plugin ID and can receive and return JSON-compatible values, including arrays, objects, and null. Declared schemas are checked at the call boundary; use the installed plugin's documented arguments.
+This returns 42. Arguments and results support JSON-compatible values, including arrays, objects, and null; schemas are checked at the call boundary.
 
-For example, its sample-analysis function returns named outputs:
+For several readings, `analyze_samples` returns their sum and maximum as named fields:
 
 ```dcode
 local samples = [|sensor.one|, |sensor.two|, |sensor.three|]
@@ -82,13 +80,41 @@ local result = example_device_plugin.analyze_samples({samples: samples})
 |sample_maximum| = result.maximum
 ```
 
-The plugin can supply a typed prepared handler for this fixed numeric shape in Native C++. Unsupported prepared shapes fail activation with diagnostics. Native arrays keep their length and objects their keys; Lua can resize arrays.
+## Native Function Execution
 
-The call runs on the calling DCode path. The plugin's allocation, locking, I/O, and execution time add to it. Keep slow functions out of calculations and event reactions; use an [Engine module or loop](../Plugins/Engine%20Plugin.md) when acquisition needs independent scheduling. [Native C++ Execution](Native%20C%2B%2B%20Execution.md) explains prepared bindings.
+Calls run **synchronously**: the calling DCode waits for the handler to return. Allocation, locking, I/O, and computation add to that duration. Keep slow functions out of calculations and event reactions; use an [Engine module or loop](../Plugins/Engine%20Plugin.md) for independently scheduled acquisition.
 
-# Expose a DCode callback
+For Native C++, a plugin can supply a **prepared handler**: a version of the function with known argument and result types for compiled calls. Calls with unsupported argument or result types fail activation; Native arrays retain their length and objects their keys. See [Native C++ Execution](Native%20C%2B%2B%20Execution.md) for prepared bindings.
 
-Use a [callback](Callbacks.md) declaration to expose an ordinary DCode function to schematic controls and other callers. It keeps ordinary function scope; activation registers it without executing its body.
+# TEMPEST Operations
+
+A [TEMPEST operation](Reference/DCode%20Functions/function-tempest_operation.md) is a named request handled by an Engine, such as asking a camera node to capture an image. Use it to request an action on the current Engine or another connected node.
+
+A list of TEMPEST Operations can be viewed by clicking on the node in the Network Map, and opening up the Network Details in the Node Board.
+
+![](_attachments/telemetry-nodes-good-ui-usage.png)
+
+DCode waits synchronously for the response. Handlers can block, and remote calls add network latency, so keep slow operations outside fixed-rate control callbacks.
+
+## Call a TEMPEST operation
+
+Pass the node name, operation name, and optional argument object:
+
+```dcode
+result = tempest_operation("camera-node", "camera/capture", {exposure_ms: 20})
+```
+
+The editor suggests nodes, their operations, and described argument fields. Local operations dispatch directly; remote operations use the peer connection. A remote timeout leaves completion unknown, so calls are not retried automatically.
+
+## Pinned Operations
+
+A [pinned operation](Reference/DCode%20Functions/function-tempest_pinned_operation.md) saves an operation and its arguments on a node so you can reuse the configured call. Select it by its stable ID or a label unique on that node; optional overrides replace saved arguments for this call:
+
+```dcode
+result = tempest_pinned_operation("camera-node", "capture-standard", {exposure_ms: 15})
+```
+
+The editor suggests the selected node's saved pins.
 
 # Reference
 

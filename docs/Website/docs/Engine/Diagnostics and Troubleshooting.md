@@ -1,7 +1,7 @@
 ---
 summary: Interpret runtime evidence and choose the next check when work fails or falls behind.
 created: 2026-10-24
-updated: 2026-10-26T14:16
+updated: 2026-10-26T20:11
 ---
 
 Diagnostics are measurements of how the Engine is working: execution times, queue sizes, dropped data, memory use, and connection activity. They help explain a symptom, such as a slow task or missing history, without guessing from a display alone.
@@ -20,7 +20,7 @@ Open **Settings → Diagnostics** for Engine measurements, Tasks for application
 
 # Engine measurements
 
-A **queue** holds work waiting for a background service. Its depth shows backlog; a **loss counter** records work that could not be admitted. Read the counter for the affected path: missing display updates and missing recorded samples have different causes.
+A **queue** holds work waiting for a background service. Its depth shows backlog; a **loss counter** records rejected work. Compare readings over the interval of the problem: an increasing loss count shows new losses, while a nonzero total may describe an earlier incident. Check the path involved—recording, notification, and network delivery have separate counters.
 
 | Area | What the measurements establish |
 | --- | --- |
@@ -58,6 +58,19 @@ Timing conditions are reported through ARGUS warnings. Execution-budget and miss
 
 The [registered-tasks operation](Reference/TEMPEST/Operations/dartwic/get-registered-tasks.md) returns `execution` details and an independently sampled `health` report. Execution fields include `failed_cycles`, `last_cycle_failed`, `callback_active`, and `callback_active_ms`; active duration includes time waiting inside the callback.
 
+For example, inspect one task with an already [connected Python client](../Clients/Python%20Client.md):
+
+```python
+response = client.operation("dartwic/get-registered-tasks", {
+    "query": "sample_control", "scope": "tasks", "limit": 10,
+})
+response.raise_for_error()
+for task in response.payload["tasks"]:
+    print(task["name"], task.get("execution"), task.get("health"))
+```
+
+Replace `sample_control` with your task's name. Check its execution counters and health together; a callback can remain active even though the control channel already accepted a stop request.
+
 | Health evidence | Meaning |
 | --- | --- |
 | `active_overdue` | A callback is still active after its completion deadline. CAESAR does not forcibly terminate it. |
@@ -68,7 +81,7 @@ Unpaced workers and sequences need an explicit completion deadline when their wo
 
 # Warnings and timestamps
 
-Warnings report a condition and its evidence. Queue pressure or a chosen CPU threshold prompts investigation; loss counters, write failures, and missed deadlines establish their own narrower outcomes. Acknowledgement records that someone saw the warning, while recovery follows the measured condition.
+A warning reports a measured condition. For example, queue pressure asks you to investigate backlog; a rising loss counter establishes that work was rejected. Acknowledging either warning records that it was seen. Recovery depends on the condition improving, not on acknowledgement.
 
 Local clock checks estimate Engine-minus-Interface offset using round-trip timing and uncertainty bounds. A positive offset means the Engine clock is ahead. They cannot determine which clock is correct or assume equal network delay in both directions. Repeated bound-confirmed violations are needed for warnings; delayed or ambiguous replies are insufficient.
 

@@ -1,205 +1,473 @@
 ---
-summary: Build a C++ TEMPEST peer that exchanges channels and ARGUS events with an engine.
-updated: 2026-10-26T14:16
+summary: Preview the simplified C++ peer API for channels, events, logs, and custom operations.
+updated: 2026-10-27T03:53
 created: 2026-09-06T14:49
 ---
 
-A TEMPEST peer is a separate application that participates as a named node. It can own measurements, accept incoming commands, and publish events or logs. The Engine presents its data alongside other nodes while your application remains responsible for its own behavior.
+Connect your C++ application as a named node to publish measurements, handle commands, and exchange events and logs. Your application owns its data; the client handles communication.
 
-For a tool that only calls an Engine, use the ordinary [C++ client](C%2B%2B%20Client.md). This guide uses the [flight-computer example](https://github.com/kemptonburton/dartwic-example-workspace/tree/main/flight-computer), which simulates telemetry and accepts launch, land, and telemetry-rate commands.
+> **Proposed API preview:** The client, package, handlers, and record layouts below are proposed, not implemented. Examples do not compile against the current SDK. Generated references still describe the existing API; this guide changes no runtime behavior.
 
-# Prepare your project
+Use the ordinary [C++ client](C%2B%2B%20Client.md) if your program only accesses Engine data and does not expose its own channels or handlers.
 
-Clone the [example workspace repository](https://github.com/kemptonburton/dartwic-example-workspace). Its CMake project uses the public example plugin's bundled messaging, peer, and engine-protocol libraries. A standalone clone fetches a locked plugin revision; no private engine checkout is required.
+`DARTWIC::PeerClient` assembles the protocol, peer, and default ZeroMQ transport. The same shared libraries run on the Engine side:
 
-For your own project, the **C++ Peer Client** download on [Downloads](/areas/dartwic/downloads) supplies `TEMPEST::Peer`, messaging, and the ZeroMQ transport. It needs CMake 3.20+, C++20, cppzmq/ZeroMQ, and nlohmann JSON. Engine-specific channels, events, and logs also use the separate [Engine Protocol SDK](https://github.com/kemptonburton/dartwic-public/tree/main/sdk/dartwic-engine-protocol). The flight example's locked plugin dependency already bundles that SDK.
+```text
+Application data and handlers ↔ EngineProtocol ↔ TEMPEST::Peer
+                                                    ↕
+                                            Default/custom transport
+                                                    ↕
+                                            Communication link
+                                                    ↕
+                                            Engine-side transport
+                                                    ↕
+                             RAPID / ARGUS ↔ EngineProtocol ↔ TEMPEST::Peer
+```
 
-Follow each package's README for standalone installation; the examples below use the flight application's existing CMake project.
+The default transport needs only connection settings. A custom link needs matching framing at both ends, with the Engine end registered by a plugin. [Transport Setup](#transport-setup) covers that workflow and protocol bridges such as F Prime CCSDS.
 
-# Connection settings
+# Project Setup
 
-| Setting | What it means in this example |
+The proposed **C++ Peer Client** package includes the DARTWIC protocol and default ZeroMQ transport. Extract it into your project's `vendor/dartwic-peer/` directory and link one target:
+
+```cmake
+cmake_minimum_required(VERSION 3.20)
+project(peer_demo LANGUAGES CXX)
+
+add_subdirectory(vendor/dartwic-peer)
+add_executable(peer_demo main.cpp)
+target_link_libraries(peer_demo PRIVATE DARTWIC::PeerClient)
+```
+
+Use a C++20 compiler and provide ZeroMQ dependencies through your CMake toolchain. Current downloads still contain the existing libraries.
+
+# Transport Setup
+
+The default link needs no custom plugin. A custom link needs both an application transport and an Engine plugin registering the matching peer type.
+
+## Application Transport
+
+Implement `TEMPEST::Transport` in your application. These declarations show the boundary; they are not a functioning network implementation:
+
+```cpp
+#include <tempest/Transport.h>
+
+class MyTransport : public TEMPEST::Transport {
+public:
+    void start(TEMPEST::TransportCallbacks callbacks) override;
+    void send(TEMPEST::Message message) override;
+    void stop() override;
+};
+```
+
+| Method | Your implementation supplies |
 | --- | --- |
-| Host and port | Ground Engine address and **base port**; the run command below uses `127.0.0.1:7400`. |
-| Password | Ground Engine password, read from `DARTWIC_PASSWORD`. |
-| Node name | `FLIGHT_COMPUTER`; each running node needs a distinct name. |
-| Peer and protocol IDs | `tempest.engine`, with `DARTWIC::EngineContract::version` for the Engine protocol. |
-| Transport | Native TEMPEST here; the same application can use the example plugin's custom link. |
+| `start` | Open the configured link, retain callbacks, and start I/O. Report physical link state through `callbacks.on_state`; deliver validated decoded messages through `callbacks.on_message`. Registration still determines peer readiness. |
+| `send` | Queue a message promptly in a bounded queue; encode and transmit on your I/O worker. Preserve message kind, request ID, name, payload, and errors. Honor local deadlines without transmitting monotonic-clock values or replaying accepted commands. |
+| `stop` | Stop delivery, join I/O, and release callbacks before returning. The transport destructor should stop it too. |
 
-Start the ground workspace before connecting. Do not run native and custom instances with the same node name together. Engine-side peer settings and channel filtering belong in [Networking and Peers](../Engine/Networking%20and%20Peers.md).
-
-# Create the peer
-
-The application has two parts: `TEMPEST::Peer` manages the connection, while `DARTWIC::EngineProtocol` gives it the engine's channel, event, and log messages. Your code supplies the measurements and decides which commands it accepts.
-
-The snippets below are **excerpts from the flight application**, with unrelated code omitted and lines reformatted. They belong together in [flight-computer/main.cpp](https://github.com/kemptonburton/dartwic-example-workspace/blob/main/flight-computer/main.cpp); use that complete file and the repository's CMake project to build and run them.
-
-For native TEMPEST, create a ZeroMQ transport using the host, base port, and password read by the application. The flight peer identifies itself as `FLIGHT_COMPUTER` and uses the engine protocol:
+Then supply an instance to the proposed client, using the peer ID registered by your Engine plugin:
 
 ```cpp
-auto link = TEMPEST::makeZmqTransport({
-    .host = host,
-    .port = port,
-    .password = password
-});
-TEMPEST::Peer peer({
-    .node_name = "FLIGHT_COMPUTER",
-    .peer_id = "tempest.engine",
-    .protocol_id = "tempest.engine",
-    .protocol_version = DARTWIC::EngineContract::version
-}, link);
-DARTWIC::EngineProtocol protocol(peer);
+#include <dartwic/PeerClient.h>
+#include <memory>
+
+auto transport = std::make_shared<MyTransport>();
+DARTWIC::PeerClient peer({
+    .node_name = "LAB_APP",
+    .peer_id = "my_plugin.my_link"
+}, transport);
+
+// Register channel/event/log handlers before starting; see the sections below.
+peer.start();
+peer.waitUntilReady();
 ```
 
-The root CMake project links `TEMPEST::Peer` and `DARTWIC::EngineProtocol`.
+Your class owns endpoint settings and framing. `PeerClient` supplies the DARTWIC protocol/version; `peer_id` must match the plugin registration. Domain APIs stay unchanged. Follow the [transport implementation workflow](../Plugins/Building%20a%20Custom%20Peer.md#transport-interface) for queue, encoder, and decoder details.
 
-# Choose what your node provides
+## Engine Transport or Protocol Bridge
 
-The examples below illustrate channels, commands, operations, events, and logs. For the full current API, use the [peer reference](Reference/TEMPEST/Overview.md) and [Engine Protocol reference](../Plugins/Reference/TEMPEST/Engine%20Protocol/Overview.md). Register handlers before `peer.start()` so the node can answer as soon as it connects. Your application does not have to provide every feature.
+On the Engine side, follow [Building a Custom Peer — Custom Transport](../Plugins/Building%20a%20Custom%20Peer.md#custom-transport). Register the peer type with `registerPeer`, provide its transport factory, select `tempest.engine` and the shared version, and set `engine_protocol: true`. Install the plugin and select its peer type in Network Map with the matching node and endpoints. The Engine constructs its peer and binds RAPID/ARGUS handlers; the plugin supplies the link.
 
-## Describe and publish channels
+If the external device speaks its own protocol, follow [Protocol Bridge](../Plugins/Building%20a%20Custom%20Peer.md#protocol-bridge) instead. The Engine plugin translates external packets, commands, and supported queries; that device does not need this C++ client. F Prime CCSDS is the example. The linked guide previews the same simplified protocol APIs and the proposed bridge binding.
 
-The flight application keeps its current measurements in atomics because request handlers and the simulation loop access them from different threads. Its `snapshots()` helper turns those values into channel records. This shortened version shows one measurement and one writable setting:
+# Peer Setup
 
-```cpp
-const auto snapshots = [&] {
-    std::vector<DARTWIC::ChannelSnapshot> result;
-    const auto add = [&](std::string key, TEMPEST::Value value,
-                         std::string units, bool writable = false) {
-        result.push_back({"FLIGHT_COMPUTER", key,
-            {{"value", value}, {"units", units},
-             {"timestamp", timestamp()},
-             {"control_policy", writable ? "free" : "observe_only"},
-             {"control_owner", writable ? "" : "peer:flight"},
-             {"record_mode", "on_value_change"},
-             {"stale_timeout", 2.0}, {"storage", "dynamic"}},
-            counter.load(), peer.sessionId()});
-    };
-    add("sample_counter", counter.load(), "samples");
-    add("telemetry_rate_hz", rate.load(), "Hz", true);
-    return result;
-};
-```
+Construct the client with your node name and Engine connection settings. Register handlers before `start()`, then wait for registration before making requests.
 
-`timestamp()` supplies Unix time in nanoseconds. `counter` advances with the simulation, and `rate` starts at 5 Hz. The complete helper also includes altitude, velocity, battery voltage, flight phase, and the received ground state. In the Interface, these become node-qualified channels such as `FLIGHT_COMPUTER:sample_counter`.
-
-The publication loop sends the complete channel set when `peer.ready()` is true and the selected telemetry interval has elapsed:
+The following proposed `main.cpp` is a small publisher. It takes a simulated temperature reading every 200 ms and sends its complete shared channel selection for ten seconds:
 
 ```cpp
-TEMPEST::Value::Object records;
-for (const auto& record : snapshots()) {
-    records[record.channel] = record.channel_data;
+#include <dartwic/PeerClient.h>
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
+#include <thread>
+
+uint64_t nowNs() {
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count();
 }
-peer.publish("tempest-peer/channels/snapshot", {
-    {"owner_node", "FLIGHT_COMPUTER"},
-    {"channels", std::move(records)},
-    {"complete", true}
-});
+
+int main() {
+    try {
+        const char* password = std::getenv("DARTWIC_PASSWORD");
+        if (!password) {
+            std::cerr << "Set DARTWIC_PASSWORD before starting.\n";
+            return 1;
+        }
+
+        DARTWIC::PeerClient peer({
+            .node_name = "LAB_APP",
+            .host = "127.0.0.1",
+            .port = 7400,
+            .password = password
+        });
+
+        // Register any incoming handlers here, before start().
+        peer.start();
+        peer.waitUntilReady();
+
+        for (int sample = 0; sample < 50; ++sample) {
+            const double temperature = 24.0 + sample * 0.1;
+            const auto measuredAt = nowNs();
+
+            if (peer.ready()) {
+                peer.channels().publishSnapshotTelemetry({
+                    .channels = {{
+                        .channel = "temperature",
+                        .fields = {
+                            .value = temperature,
+                            .timestamp = measuredAt,
+                            .units = "degC"
+                        }
+                    }}
+                });
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        }
+
+        peer.stop();
+    } catch (const std::exception& error) {
+        std::cerr << error.what() << '\n';
+        return 1;
+    }
+}
 ```
 
-A complete snapshot describes the node's current channel set, so include every channel you intend to expose. The example also registers a query handler that returns records from `snapshots()` when requested. Publication sends telemetry; it is not an acknowledgement that another node has processed it.
+In Network Map, look for `LAB_APP`. Its measurement appears as `LAB_APP:temperature`. After the program stops, a retained value is an earlier observation, not a fresh measurement.
 
-## Accept a command at the owning node
+## Connection Lifecycle
 
-The ground can command `telemetry_rate_hz`, but the flight application checks the request before changing its setting. This is the actual write handler:
+1. Create application objects before the peer so they outlive its callbacks.
+2. Register handlers, then call `start()` and `waitUntilReady()`.
+3. Publish or call the remote node while ready. After reconnecting, send a fresh complete snapshot.
+4. Call `stop()` before destroying handler state. Destruction also stops the client; create a new client to start again after an explicit stop.
+
+Each `setHandlers` call replaces that group's callbacks: combine the ones you need into one registration. Missing command handlers return an unsupported error. Commands run on the request worker; telemetry callbacks run on a separate callback worker. Synchronize shared application data accordingly.
+
+Commands wait for results or rejection. A timeout after submission leaves the outcome unknown; inspect authoritative state before retrying. Telemetry is best effort. Snapshots repair the current shared view, not every lost sample. Registration alone does not establish fresh observations.
+
+Later blocks are optional excerpts. `controller`, `eventManager`, `logger`, and `display` are application code, not SDK-provided stores.
+
+# Channels
+
+## Sending Commands and Queries
+
+Commands address the connected node. Upsert changes only supplied fields; the owner decides whether a change or creation is allowed:
 
 ```cpp
-channels.upsert = [&](const DARTWIC::ChannelUpsert& request) {
-    if (request.owner_node != "FLIGHT_COMPUTER" ||
-        request.channel != "telemetry_rate_hz" ||
-        request.field != "value") {
-        throw TEMPEST::RemoteError(
-            "Only telemetry_rate_hz is writable", "permission_denied");
-    }
-    const auto value = number(request.value);
-    if (value < 1 || value > 20) {
-        throw TEMPEST::RemoteError(
-            "Telemetry rate must be 1 through 20 Hz", "invalid_argument");
-    }
-    rate = value;
-    log("Ground commanded telemetry rate: " +
-        std::to_string(value) + " Hz");
+peer.channels().upsert("target_temperature", {.value = 30.0, .units = "degC"});
+peer.channels().upsert(writes);  // Batch of channel changes.
+peer.channels().remove("temporary_channel");
+
+auto selected = peer.channels().query({"temperature", "target_temperature"});
+auto all = peer.channels().query();
+```
+
+| Argument or result | Contents |
+| --- | --- |
+| Upsert change | `channel` name and `fields` containing only requested changes. `request.changes` holds one or more changes. |
+| Writable fields | Numeric `value`, optional Unix-nanosecond `timestamp`, `units`, `stale_timeout` in seconds, `record_mode`, `calculation_scripts`, `value_options`, and `startup_value`. Structured settings follow RAPID's field definitions. Identity and authority are not writable fields. |
+| Recording mode | `"on_value_change"`, `"every_value"`, or `"never"` for write-triggered recording. |
+| `ChannelQuery` | `channels` and optional `fields` selections; empty selections mean all available channels/fields. |
+| `ChannelQueryResult` | `channels`: matching current records, with channel name, owner, fields, and source lineage. |
+
+A timestamp accompanies a value, not an independent measurement-time change. A batch does not imply an atomic transaction. Current-state queries do not retrieve historical samples; Interface graph history keeps using the connected Engine's recorded database.
+
+## Receiving Commands
+
+`ChannelHandlers` holds the callbacks. The upsert and removal callbacks complete normally on success or throw `TEMPEST::RemoteError(message, code)` on rejection; queries return records:
+
+```cpp
+DARTWIC::ChannelHandlers handlers;
+handlers.upsertCommand = [&](const DARTWIC::ChannelUpsertRequest& request) {
+    controller.applyChannelChanges(request);
+};
+handlers.queryCommand = [&](const DARTWIC::ChannelQuery& query)
+    -> DARTWIC::ChannelQueryResult {
+    return controller.queryChannels(query);
+};
+handlers.removeCommand = [&](const DARTWIC::ChannelRemoveRequest& request) {
+    controller.removeChannel(request.channel);
+};
+// Add any telemetry callbacks below to this same object.
+peer.channels().setHandlers(std::move(handlers));
+```
+
+Validate names, fields, ranges, and authority. For example, reject invalid targets with `RemoteError("Target must be 0 through 100", "invalid_argument")`. Success confirms handling, not physical feedback.
+
+## Sending Channel Telemetry
+
+Report a measurement with its source timestamp, or pass a `ChannelUpdates` batch to the same method:
+
+```cpp
+peer.channels().publishChannelTelemetry({
+    .channel = "temperature",
+    .fields = {.value = 24.5, .timestamp = measuredAt, .units = "degC"}
+});
+peer.channels().publishChannelTelemetry(updates);
+```
+
+`measuredAt` is the reading's Unix-nanosecond timestamp. A batch can contain multiple timestamped samples from one channel. The client supplies local source identity and protocol lineage. Publishing neither stores the reading nor changes unmentioned channels.
+
+## Sending Channel Snapshots
+
+A `ChannelSnapshot` contains the complete current shared selection in `channels`, as shown in the initial publisher. An application adapter can return it directly:
+
+```cpp
+peer.channels().publishSnapshotTelemetry(controller.sharedChannels());
+```
+
+Include unchanged channels with their original measurement timestamps. Missing channels leave the receiver's mirrored selection; an empty complete snapshot clears it. Never send a partial collection as complete. The Engine publishes snapshots at 5 Hz; an external application schedules its own loop.
+
+## Receiving Channel Telemetry
+
+Add these callbacks to the channel handler object before registering it:
+
+```cpp
+handlers.channelTelemetry = [&](const DARTWIC::ChannelUpdates& updates) {
+    display.applyChannelUpdates(updates);
+};
+handlers.snapshotTelemetry = [&](const DARTWIC::ChannelSnapshot& snapshot) {
+    display.replaceSharedChannels(snapshot);
 };
 ```
 
-`channels` is a `DARTWIC::ChannelHandlers` object, installed with `protocol.channels().setHandlers(std::move(channels))`. The application's `number()` helper rejects nonnumeric and nonfinite values. Command the rate to 10 from the Interface: the peer accepts the setting, its published channel reads 10, and the **Flight computer** log records the change. A value of 30 is rejected and leaves the previous rate in place.
+`updates` carries selected channel fields/samples with owner and source information. `snapshot.channels` contains the sender's complete current selection. Updates leave other records alone; snapshots reconcile membership. Both describe the sender's data, not commands to locally owned channels.
 
-## Register an operation
+# Events
 
-The same application registers named operations for actions that need more than a channel write. For example, landing changes the simulated flight phase only while the rocket is ascending:
+## Sending Events
+
+`ArgusEvent` is the event record. Publish every event type through one method:
 
 ```cpp
-peer.registerOperation({
-    .name = "flight/land",
-    .display_name = "Land mock rocket",
-    .description = "Begin the mock rocket landing sequence.",
-    .category = "Flight computer"
-}, [&](const TEMPEST::Value::Object&) {
-    if (flight_phase.load() != 1) {
-        throw TEMPEST::RemoteError(
-            "Rocket is not ascending", "failed_precondition");
-    }
-    flight_phase = 2;
-    log("Land command accepted; mock rocket descending");
-    return TEMPEST::Value::Object{{"flight_phase", "descent"}};
+auto eventId = peer.argus().publishEventTelemetry({
+    .type = DARTWIC::EventType::Warning,
+    .title = "High temperature",
+    .description = "Temperature exceeded the configured limit.",
+    .separation_seconds = 2.0
 });
 ```
 
-The response confirms that descent was requested. Watch `FLIGHT_COMPUTER:altitude_m` and `FLIGHT_COMPUTER:flight_phase` for the result. The launch handler similarly checks the ground quick-disconnect channel before accepting launch. The **Rocket Flight** schematic's `rocket_launch_sequence` and `rocket_land_sequence` call these operations through the saved `launch-rocket` and `land-rocket` actions.
+| Field | Contents |
+| --- | --- |
+| `type` | Proposed `EventType::Message`, `Warning`, `Error`, `Abort`, `Hold`, or `Prompt`. |
+| `event_id`, `owner_node` | Event identity and owner. The client supplies local identity when omitted; reuse the event ID for updates. |
+| `title`, `description` | Human-readable condition and explanation. |
+| `status` | A string such as `"new"` or `"acknowledged"`; see the status table below. |
+| `timestamp`, `channels`, `details` | Unix-nanosecond event time, related channel references, and extra key/value data. |
+| `separation_seconds` | Required finite, nonnegative firing separation: positive groups nearby reports; zero needs an explicit owner-side stop. |
 
-## Publish events and logs
+Your application owns event lifecycle. Publishing neither stores events nor executes timers, aborts, or holds. The returned ID is not delivery confirmation.
 
-ARGUS events describe conditions an operator may need to review; log streams keep the node's diagnostic messages. The flight application registers query and action handlers before starting, so the ground can retrieve events, update their status, and read its **Flight computer** log.
+## Event Actions
 
-When registration or a new remote session becomes available, it publishes the readiness event created earlier in the application:
+Commands operate on an event owned by the connected node and return an `ArgusActionResult`:
 
 ```cpp
-{
-    std::lock_guard lock(mutex);
-    protocol.argus().publishTelemetry({
-        .owner_node = "FLIGHT_COMPUTER", .event = event
+auto result = peer.argus().updateStatus(eventId, "acknowledged");
+peer.argus().respondToPrompt(promptId, {
+    {"prompt_type", "string"}, {"prompt_response", "continue"}
+});
+peer.argus().releaseHold(holdId);  // Optional response object defaults to {}.
+peer.argus().remove(eventId);
+```
+
+`updateStatus` receives an event ID and a **status string**, not a status object. Ordinary workflow values are:
+
+| Status string | Requested meaning |
+| --- | --- |
+| `"new"` | Mark unacknowledged, where the owner permits that transition. |
+| `"acknowledged"` | Mark seen; also used by the Interface to undo silence or resolution. Does not clear an active condition. |
+| `"silenced"` | Silence the event while preserving its firing condition. |
+| `"resolved"` | Resolve the event. The Engine rejects resolution while it is still firing. |
+
+These describe the existing Engine workflow, not an exhaustive SDK string whitelist; the owner validates supported transitions. Received records may also contain `"responded"`, `"released"`, `"deleted"`, or `"stale"`. Use `respondToPrompt`, `releaseHold`, and `remove` for those actions: assigning a status string does not deliver a prompt answer or release an actual hold. `updateStatus` does not edit titles, descriptions, or related channels.
+
+A prompt response is a `DARTWIC::Value::Object` (a string-keyed map of values). The example uses the Engine's existing fields: `prompt_type` selects `"string"`, `"int"`, `"double"`/`"input-numerical"`, or `"yes-no"`; `prompt_response` supplies the answer as text. An application-owned prompt can define other documented payload fields. Hold-release payloads are also objects and may be empty.
+
+## Receiving Event Actions
+
+The status callback makes the input and output concrete. In this excerpt, your `eventManager.updateStatus` applies and validates a transition and returns a Boolean:
+
+```cpp
+DARTWIC::ArgusHandlers handlers;
+handlers.updateStatusCommand = [&](const std::string& id, const std::string& status)
+    -> DARTWIC::ArgusActionResult {
+    if (!eventManager.updateStatus(id, status)) {
+        throw TEMPEST::RemoteError("Status change rejected", "invalid_transition");
+    }
+    return {id, {{"updated", true}, {"status", status}}};
+};
+// Add other actions and telemetry callbacks, then register once.
+peer.argus().setHandlers(std::move(handlers));
+```
+
+`ArgusActionResult` holds `event_id` and a `result` object, here `{"updated": true, "status": "acknowledged"}`. Publish the changed event separately.
+
+| Other handler | Receives | Returns |
+| --- | --- | --- |
+| `queryCommand` | `const ArgusQuery&` | `ArgusQueryResult`: `events`, returned `count`, and matching `total_count`. |
+| `respondToPromptCommand` | Event ID string and `const Value::Object& response` | `ArgusActionResult` describing whether the response was handled; reject unsupported answers. |
+| `releaseHoldCommand` | Event ID string and `const Value::Object& response` | `ArgusActionResult` after validating and releasing the hold. |
+| `removeCommand` | Event ID string | `ArgusActionResult`, for example `{id, {{"deleted", true}}}` after removal. |
+
+Reject actions with `RemoteError`. Prompt answers use `respondToPromptCommand`. Successful removal lets the caller remove its mirror; other nodes reconcile on the next snapshot. Mirrored removal does not erase history.
+
+## Querying Events
+
+`ArgusQuery` can select `event_id`, `owner_node`, `type`, `status`, time bounds `since`/`until`, and `limit`, plus supported extra `filters`. Time bounds use Unix nanoseconds; unsupported filters should be rejected by the owner. Query `type` retains the existing lowercase string representation:
+
+```cpp
+auto result = peer.argus().query({.status = "new", .type = "warning", .limit = 50});
+for (const auto& event : result.events) {
+    std::cout << event.event_id << ": " << event.status << '\n';
+}
+```
+
+## Event Snapshots and Reception
+
+Send the complete current board from your application; `currentBoard()` returns an `ArgusBoardSnapshot` containing an `events` collection:
+
+```cpp
+peer.argus().publishSnapshotTelemetry(eventManager.currentBoard());
+```
+
+Add receive callbacks to the ARGUS handler object before registering:
+
+```cpp
+handlers.eventTelemetry = [&](const DARTWIC::ArgusEvent& event) {
+    display.updateEvent(event);
+};
+handlers.snapshotTelemetry = [&](const DARTWIC::ArgusBoardSnapshot& snapshot) {
+    display.replaceEventBoard(snapshot);
+};
+```
+
+Individual events update one record; snapshots reconcile the complete board, including removals. Neither is a local detection. Engine snapshots run at 5 Hz; applications schedule their own.
+
+# Logs
+
+Logs are chronological text entries grouped by source stream and process session. They have no acknowledgement workflow or complete-snapshot message.
+
+## Sending and Receiving Logs
+
+`publishLogTelemetry` accepts one `LogEntry` or a batch; the receive callback always gets a batch:
+
+```cpp
+peer.logs().publishLogTelemetry({
+    .stream = "Device", .level = "info",
+    .text = "Device connected.", .timestamp_ns = nowNs()
+});
+peer.logs().publishLogTelemetry(entries);
+
+peer.logs().setHandlers({
+    .logTelemetry = [](const std::vector<DARTWIC::LogEntry>& entries) {
+        for (const auto& entry : entries) std::cout << entry.text << '\n';
+    }
+});
+```
+
+| `LogEntry` field | Contents |
+| --- | --- |
+| `stream`, `text` | Source name, such as `"Device"`, and message text. |
+| `level`, `channel` | Severity label, commonly `"info"`, `"warning"`, or `"error"`; output channel, normally `"stdout"` or `"stderr"`. Both are strings. |
+| `timestamp_ns` | Original entry time in Unix nanoseconds. |
+| `owner_node`, `session`, `sequence` | Source node, process session, and increasing sequence within that stream/session. |
+
+For new local entries, the proposed client supplies source/sequence bookkeeping. If your logger retains entries for queries, it must share those identifiers rather than generate a second sequence. Publishing does not retain history or confirm remote persistence.
+
+## Log History
+
+Add history handlers only if your application retains logs. `listCommand` takes no arguments and returns `std::vector<LogStream>`; `queryCommand` receives a `LogQuery` and returns `std::vector<LogEntry>`:
+
+```cpp
+DARTWIC::LogHandlers handlers;
+handlers.listCommand = [&]() -> std::vector<DARTWIC::LogStream> {
+    return logger.listStreams();
+};
+handlers.queryCommand = [&](const DARTWIC::LogQuery& query)
+    -> std::vector<DARTWIC::LogEntry> {
+    return logger.query(query);
+};
+// Include logTelemetry here as well if needed.
+peer.logs().setHandlers(std::move(handlers));
+```
+
+A `LogStream` contains `owner_node`, `session`, and `stream`. Use those fields to query a remote source:
+
+```cpp
+auto streams = peer.logs().list();
+if (!streams.empty()) {
+    const auto& source = streams.front();
+    auto entries = peer.logs().query({
+        .owner_node = source.owner_node, .session = source.session,
+        .stream = source.stream, .limit = 50
     });
 }
 ```
 
-Here `event` is the application's `DARTWIC::ArgusEvent`, protected by `mutex` because query/action handlers can access it concurrently. Its `log(...)` helper adds messages such as accepted commands to the node's log stream. These helpers and handlers are shown in the complete source; event publication does not confirm operator acknowledgement.
+`LogQuery` also accepts `text`, `level`, `channel`, sequence bounds `before`/`after`, and Unix-nanosecond bounds `from_ns`/`to_ns`. Apply requested filters and limit, or reject unsupported filters. The Engine uses these queries for catch-up; a program without retained logs cannot recover entries lost before reaching the Engine.
 
-# Follow the connection lifecycle
+# Operations
 
-The complete source starts the peer after registering channel, operation, ARGUS, and log handlers. Its loop checks `peer.ready()` and `peer.remoteSession()`, publishes while connected, and announces the readiness event when a connection or remote session becomes available. On a detected disconnect it clears the cached quick-disconnect permission. Ctrl+C exits the loop and calls `peer.stop()`.
+Use a custom operation when a request does not fit channel, event, or log behavior. Register it before starting the peer:
 
-Try stopping and restarting the flight process. After the ground detects the disconnect, its last channel values remain visible but commands to that owner are rejected. On reconnect, confirm that `sample_counter` advances before relying on the readings. If an action request times out, inspect the resulting state before retrying it.
-
-# Use a custom link
-
-The [example workspace](../Getting%20Started/Example%20Workspace.md#optional-flight-node) uses the same application with the example plugin's transport. The transport carries framed messages through bounded queues; the peer handles registration, heartbeat, and request correlation. In this example, a reported custom-link failure ends the flight process. Restore the link and restart the process to reconnect.
-
-[Networking and Peers](../Engine/Networking%20and%20Peers.md) explains connection settings, channel filtering, and cleanup.
-
-# Build and inspect
-
-On Windows, install the toolchain described in its README and set `VCPKG_ROOT`, then run from the repository root:
-
-```powershell
-cmake --preset windows-clang-release
-cmake --build --preset build-windows-clang-release --target rocket-flight-peer
+```cpp
+peer.registerOperation("lab/echo", [](const TEMPEST::Value::Object& arguments) {
+    return arguments;
+});
 ```
 
-Use the executable under `build/windows-clang-release/Release/`, keeping its runtime DLLs beside it. The downloadable example includes a copy under `flight-computer/bin/`.
+Arguments and replies are `TEMPEST::Value::Object`: string-keyed maps whose values can be numbers, strings, Booleans, arrays, or objects. Throw `RemoteError` to reject a request; the descriptor overload supplies argument metadata and roles.
 
-Start the ground workspace first. Stop any custom-mode flight process, then remove its saved connection and start the native peer:
+Call an operation implemented by the connected node with:
 
-```powershell
-$env:DARTWIC_PASSWORD = Read-Host 'Ground engine password' -MaskInput
-python tools/peer_mode.py native --port 7400
-./flight-computer/bin/rocket-flight-peer.exe --transport native --host 127.0.0.1 --port 7400
+```cpp
+auto reply = peer.call("lab/echo", {{"message", "hello"}});
 ```
 
-Use your ground engine's actual base port. The commands above use PowerShell 7. In Network Map, confirm `FLIGHT_COMPUTER` connects, then inspect `FLIGHT_COMPUTER:sample_counter`. It should advance while the flight process runs.
+That node must register `lab/echo`; registering it locally only lets the other node call your implementation. A response confirms the remote handler's result, not an arbitrary physical outcome.
 
-Use the **Rocket Flight** schematic in the [example workspace](../Getting%20Started/Example%20Workspace.md) for launch and land operations. Stop the process with Ctrl+C when finished.
+# Building and Running
+
+Once the proposed package is implemented, build the publisher with your dependency toolchain:
+
+```sh
+cmake -S . -B build
+cmake --build build --config Release
+```
+
+Start the Engine, set `DARTWIC_PASSWORD`, and run `peer_demo`. Check `LAB_APP:temperature` in Channels. Keep runtime libraries beside the executable or on the library search path.
+
+The [flight-computer example](https://github.com/kemptonburton/dartwic-example-workspace/tree/main/flight-computer) still uses the existing API and will need migration.
 
 # Reference
 
-- [TEMPEST peer reference](Reference/TEMPEST/Overview.md) — Peer configuration, operations, telemetry, and transport.
-- [Engine Protocol reference](../Plugins/Reference/TEMPEST/Engine%20Protocol/Overview.md) — Typed channel, ARGUS, and log APIs.
+The following references describe the currently implemented API, not the proposed names on this page:
+
+- [TEMPEST peer reference](Reference/TEMPEST/Overview.md) — Peer lifecycle, operations, telemetry, and transport.
+- [Engine Protocol reference](../Plugins/Reference/TEMPEST/Engine%20Protocol/Overview.md) — Current channel, event, and log types.
+- [Building a Custom Peer](../Plugins/Building%20a%20Custom%20Peer.md) — Plugin-defined transports and protocol bridges.

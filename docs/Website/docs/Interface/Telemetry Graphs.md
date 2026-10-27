@@ -1,7 +1,7 @@
 ---
 summary: Plot signals, navigate live and recorded ranges, and compare events and logs.
 created: 2026-10-24
-updated: 2026-10-25T21:55
+updated: 2026-10-26T21:52
 ---
 
 Telemetry graphs help you compare signals over time. Open **Telemetry**, or send selected channels from Channels, a dataframe, or a supported schematic graph.
@@ -31,7 +31,7 @@ The **live/realtime** view follows a moving window. Pause to inspect a fixed ran
 
 Bucketing reduces the preview. [CSV export](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-a-visible-range) uses raw recorded samples in the selected range.
 
-# Read status and gaps
+# Signal status and data gaps
 
 Lines retain their series colors. Legend values show stale or unavailable status and can retain the last known number. Recorded gaps remain visible; a missing sample is not a new zero measurement.
 
@@ -43,9 +43,9 @@ Enable **Events** or **Logs** to open history beside the plot. Doing this while 
 
 Select an item in the activity strip to inspect its details. Blue spans identify the history pages currently covered; they do not mean a record exists at every instant. See [Events](Events.md) and [Logs](Logs.md) for their controls.
 
-# Keep or export a range
+# Saved ranges and exports
 
-Use a [dataframe](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#save-existing-history) to retain the range and filters. Pause and open **Export telemetry** to download the visible range; the [data guide](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-a-visible-range) owns selection and file-format details.
+Use a [dataframe](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#dataframes-from-recorded-history) to retain the range and filters. Pause and open **Export telemetry** to download the visible range; the [data guide](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-a-visible-range) owns selection and file-format details.
 
 | Problem | Check |
 | --- | --- |

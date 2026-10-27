@@ -1,14 +1,14 @@
 ---
 summary: Register raw clients and exchange operations and telemetry over ZeroMQ or HTTP/WebSocket.
 created: 2026-08-04T16:25
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:52
 ---
 
 TEMPEST is the communication layer between an Engine and its connected applications. An **operation** is a request with a response, such as reading events or changing a channel. **Telemetry** delivers updates to applications watching the system.
 
 Most applications can use a [client library](../../Clients/Overview.md). This guide explains the raw connection for applications implementing the protocol themselves. The [operation reference](../Reference/TEMPEST/Operations/Overview.md) describes each request's application data.
 
-Use [Network Discovery](Network%20Discovery.md) to find Engine addresses and base ports before connecting.
+Before running a raw client, start an Engine and obtain its host, base port, and access credentials. The examples use `127.0.0.1` with base port `7000`. Use [Network Discovery](Network%20Discovery.md) when you need to find an address first.
 
 # Connection endpoints
 
@@ -39,7 +39,7 @@ Registration creates a **session**: a client ID and permissions held by the Engi
 4. For telemetry, connect the separate receiving socket and request any engine-specific subscriptions.
 5. Send `unregister_client` before closing a session normally.
 
-Registration is a normal operation envelope. Send this JSON as one ZeroMQ message or as the body of an HTTP POST to `/tempest/operation`:
+Registration uses the same operation envelope as later requests. Replace `YOUR_ENGINE_PASSWORD` and send this JSON as one ZeroMQ message or as an HTTP POST body to `/tempest/operation`. The zero timestamp is a wire-example placeholder; real clients send the current epoch milliseconds:
 
 ```json
 {
@@ -58,7 +58,7 @@ Registration must include `tempestCompatibilityVersion` matching the server; the
 
 Use the exact key **`serverPassword`** inside `payload`. `username` is optional display metadata, not a separate account login. Other registration fields are retained as client metadata; the password is excluded. Supply only metadata intended to describe your client.
 
-In these wire examples, `timestamp: 0` is a placeholder; send the current Unix-epoch time in **milliseconds**. A successful registration looks like:
+A successful registration returns the assigned ID and token:
 
 ```json
 {
@@ -94,7 +94,7 @@ The password is needed at registration; subsequent operations authenticate with 
 
 For a viewer, register with `payload: {"role": "viewer", "tempestCompatibilityVersion": 2}`. No username or password is required, but the server must have `allow_viewers` enabled. Viewers receive their own session token and can call only viewer-enabled operations. An attempted mutation returns `permission_denied`; disabled viewer access returns `viewer_access_disabled`.
 
-## Keep the session alive and reconnect
+## Session keepalive and reconnect
 
 A **heartbeat** is a lightweight operation that tells the Engine the client is still active. Send it periodically while waiting for telemetry or user input:
 
@@ -104,7 +104,7 @@ A **heartbeat** is a lightweight operation that tells the Engine the client is s
 | `heartbeat` | `{}` | Returns `{ "status": "ok" }`. |
 | `unregister_client` | `{}` | Removes the session and cancels its detached jobs; success has an empty payload. |
 
-Use the saved ID for heartbeat and unregister operations. The current server expires clients after **15 seconds without an operation**, checked by maintenance roughly once per second. A heartbeat every **5 seconds** matches the web and Python clients; use enough margin for your connection and operation latency. Receiving telemetry does not refresh this timer, and sending WebSocket telemetry does not replace the operation heartbeat.
+Use the saved ID and token for heartbeat and unregister operations. The server expires a client after **15 seconds without an operation**, checked roughly once per second. Send a heartbeat every **5 seconds**, allowing margin for latency. Receiving telemetry or sending WebSocket telemetry does not refresh that operation timer.
 
 The server authenticates heartbeats as well as ordinary operations. If a call returns `authentication_required` because the session is invalid or expired, register again and restore subscriptions with the new ID and token. Re-register after a server restart as well; sessions and subscriptions are not durable across restarts. Avoid registering repeatedly while a working session is already active.
 
@@ -206,6 +206,8 @@ finally:
         context.term()
 ```
 
+The program prints an initial snapshot, then channel records for about ten seconds. Check that records belong to your `client_id` and that source timestamps advance. The `finally` path unregisters the session and closes sockets even when a read fails.
+
 There are **two subscriptions** involved: `SUBSCRIBE` filters topic prefixes in your local ZeroMQ socket; `dartwic/add-channel-to-telemetry` asks the engine to include a channel in your session's snapshots. One does not replace the other. The operation returns `snapshot` so you can initialize your display immediately. At 5 Hz, `rapid/channels/snapshot` carries complete current records for the subscribed set, including unchanged values. ZeroMQ subscription setup is asynchronous; PUB/SUB has no replay of missed updates.
 
 Use [add-channels-to-telemetry](../Reference/TEMPEST/Operations/dartwic/add-channels-to-telemetry.md) with `channel_names` for a batch. Subscriptions are reference-counted: pair each add with [remove-channel-from-telemetry](../Reference/TEMPEST/Operations/dartwic/remove-channel-from-telemetry.md), or unregister when finished. ZeroMQ topic filters match prefixes, so compare the received topic when you need an exact match. The broadcast PUB socket can carry snapshots for other clients; check `payload.client_id` before processing the channel set. This recipient label is not encryption or a transport access boundary.
@@ -218,7 +220,7 @@ HTTP uses the **same registration and operation JSON**. POST to `http://host:700
 
 ## Python HTTP example
 
-This uses only Python's standard library to register, read ARGUS events, and unregister:
+Save this as a Python script, set `DARTWIC_PASSWORD`, and use an Engine with base port `7000`. The HTTP endpoint is then port `7002`. This variation uses only the standard library to register, read ARGUS events, and unregister:
 
 ```python
 import json
@@ -265,6 +267,8 @@ finally:
         operation("unregister_client", {})
 ```
 
+The script prints the active-event response, which can contain an empty event list. It sends the same operation envelope and checks the same error field as the ZeroMQ example; only the transport wrapper changes.
+
 For a longer-lived HTTP application, send the same heartbeat operation periodically. Browser applications can use `fetch` with this envelope; use `https` and `wss` when your deployment provides TLS.
 
 ## Attach a WebSocket telemetry connection
@@ -290,7 +294,7 @@ Closing the last identified WebSocket for a client unregisters that client in th
 
 # Operations
 
-With a connected Python client:
+When using a [connected Python client](../../Clients/Python%20Client.md) rather than raw transport code, the same event query is shorter:
 
 ```python
 response = client.operation("argus/get-active-events", {
@@ -301,6 +305,8 @@ response.raise_for_error()
 for event in response.payload["events"]:
     print(event)
 ```
+
+Each printed object is a matching active event. The client supplies its session credentials and raises on an operation error; your application still needs to decide how to handle that failure.
 
 The client supplies connection and transport fields. Application code supplies the operation name and its payload. [Operation reference pages](../Reference/TEMPEST/Operations/Overview.md) describe the object inside `payload`, not an extra envelope you should nest around it.
 
@@ -336,7 +342,7 @@ Telemetry envelope timestamps use Unix-epoch milliseconds; recorded RAPID sample
 
 # Detached jobs
 
-A **detached job** is work that continues after its start operation returns, such as a large history query or export. The returned job ID lets the client track progress, fetch results, or request cancellation. Acceptance does not mean the result is ready.
+A **detached job** continues after its start operation returns, such as a large history query or export. Follow one job from admission to completion: keep the returned job ID, poll its status, and read the result only when its state is `completed`. Handle `failed` and `canceled` as terminal outcomes too.
 
 | Operation | Action |
 | --- | --- |

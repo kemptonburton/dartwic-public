@@ -1,6 +1,6 @@
 ---
 summary: Connect your equipment, write control logic, and build a workspace your team can use.
-updated: 2026-10-26T01:09
+updated: 2026-10-26T21:52
 created: 2026-09-04T17:13
 ---
 
@@ -8,7 +8,7 @@ DARTWIC brings data acquisition, controls, and an operator interface together. Y
 
 It began with rocket testing, where changing a sensor or valve often meant changing several different tools and hardware, which takes a lot of time. The aim is to keep the useful parts of a control system together so the next person can understand and extend it without starting over, and providing the tools to iterate very quickly.
 
-# How it fits together
+# Engine and Interface
 
 To use DARTWIC, you work with two main processes: an [Engine](../Engine/Overview.md) and an [Interface](../Interface/Overview.md). The Engine gathers data, runs your control logic, and records what happens. The Interface is where you configure and operate the system, view data, and send commands.
 
@@ -28,7 +28,7 @@ A **workspace** is the folder that keeps your projects and shared resources toge
 
 During a run, channel history, events, and logs help explain what happened. You can review a time range and export the measurements alongside the events from that run.
 
-# Inside the Engine
+# Engine subsystems
 
 The Engine uses a few subsystems that you will see mentioned throughout these docs:
 
@@ -46,13 +46,13 @@ A device module receives a measurement and writes it to RAPID. Inline calculatio
 
 You can then view all channel data alongside events, logs, and labeled time ranges named DataFrames. Everything in the range can be exported with one click.
 
-# Try it without hardware
+# Example workspace
 
 The [example workspace](Example%20Workspace.md) includes a simulated test stand with sensors, valves, a fill-and-ignition sequence, and faults you can inject. Start there to see the pieces working together, then follow an exercise to change a calculation or controller.
 
 For a guided setup, [First Session](First%20Session.md) walks through installing an Interface, starting a local Engine or connecting to an existing one, and setting up your first workspace. You do not need to write a hardware driver to begin.
 
-# Build your own system
+# DCode, plugins, and clients
 
 Start with an existing driver and configure a project. When you need something custom, where you put your code depends on what it needs to do:
 

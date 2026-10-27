@@ -1,7 +1,7 @@
 ---
 summary: Know which files are portable, which belong to an instance, and when changes apply.
 created: 2026-10-24
-updated: 2026-10-26T13:19
+updated: 2026-10-26T21:52
 ---
 
 A DARTWIC setup has software to run, workspace content to share, and local data to keep on its machine. Knowing which folder owns each part makes it easier to move a workspace, run another setup, or back up recordings.
@@ -17,6 +17,18 @@ A DARTWIC setup has software to run, workspace content to share, and local data 
 
 The workspace is the portable folder to commit and share. The installation and instance hold software and local state alongside it.
 
+A typical installation keeps these folders beside one another:
+
+```text
+dartwic/
+  interface/                 # Interface software and its local preferences
+  engine/                    # Engine software, plugins, and instances
+    instances/<instance>/    # Local configuration, recordings, and caches
+  workspaces/<workspace>/    # Portable projects, settings, and shared assets
+```
+
+These are example folder names, not required absolute paths. Cloning the workspace brings its authored content; it does not bring an Engine instance's recordings or credentials.
+
 | Location | Contents |
 | --- | --- |
 | `engine/bin/`, `engine/assets/` | Engine software and stock content. |
@@ -30,7 +42,7 @@ The workspace is the portable folder to commit and share. The installation and i
 
 RAPID keeps local values and timestamps in `runtime/<project>/rapid/channel_state.json`, with channel recordings in the same directory. ARGUS stores events and logs under `runtime/<project>/argus/`. Back up needed instance data separately from workspace Git.
 
-# Choose an instance
+# Instance selection
 
 For a packaged setup, follow [First Session](../Getting%20Started/First%20Session.md). Its starter workspace uses `instances/default/`; other workspaces usually receive a workspace-named instance.
 
@@ -41,11 +53,13 @@ For a packaged setup, follow [First Session](../Getting%20Started/First%20Sessio
 | Debug executable | Source checkout's `tests/engine/instances/primary/`. |
 | `DARTWIC_CONFIG_DIR` set | Uses that explicit instance directory, bypassing the selector. |
 
-Check the startup log for the resolved configuration directory. Separate instances keep separate local configuration and recordings, while sharing their installation's binaries and plugins.
+Check the startup log for the resolved configuration directory before changing files. For example, two instances can share one Engine installation while using different workspaces, server ports, credentials, and recording directories.
 
 # Configuration and restart
 
-Engine startup settings are read from the instance configuration. The connected Interface saves inputs on Enter or blur and masks credentials; the local login startup editor shows all values and waits for its footer **Save** action. Fields distinguish unsaved edits from saved changes requiring restart. New workspace instances default to the admin password `admin`. For manual edits, stop the instance, edit its configuration, and restart it.
+Engine startup settings come from the instance configuration. In the connected Interface, inputs save on Enter or blur and credentials are masked. The local login startup editor shows the values and uses its footer **Save** action. Fields distinguish unsaved edits from saved changes that need a restart.
+
+New workspace instances default to the admin password `admin`. For manual file edits, stop the instance, edit its configuration, and restart it. Check the startup log and reconnect using the resulting address and credentials.
 
 | Setting | Owning scope |
 | --- | --- |
@@ -59,7 +73,7 @@ The Interface keeps its saved local-node list at `<interface>/.dartwic/local-eng
 
 # Updates, removal, and sharing
 
-An Engine update replaces managed software and restarts the selected instance. Other instances can still hold installation files; read a reported lock/retry result before assuming an update applied. Plugin file installation and runtime loading have their own [status](../Interface/Plugins.md#read-installation-status).
+An Engine update replaces managed software and restarts the selected instance. Other instances can still hold installation files; read a reported lock/retry result before assuming an update applied. Plugin file installation and runtime loading have their own [status](../Interface/Plugins.md#installation-status).
 
 Removing a registered local node deletes its instance storage, including recordings and credentials. The Interface shows the target folder and requires its Engine stopped. Removing a remote entry only forgets the connection.
 

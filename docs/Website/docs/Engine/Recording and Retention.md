@@ -1,14 +1,14 @@
 ---
 summary: Choose recording policies, query history, recognize loss, and manage retention.
 created: 2026-08-03T15:41
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:52
 ---
 
 Recording saves past measurements so you can graph a test, compare it with events, or export its data later. RAPID holds each channel's latest value in memory and stores recorded samples separately on disk.
 
 **Retention** decides how long those recordings remain available. Recording policy determines what is saved; a dataframe selects a named range to review; retention can eventually remove the underlying history.
 
-# The three channel paths
+# Live values, recording, and telemetry
 
 A live value answers “what is the latest reading?” History answers “what happened during this interval?” Telemetry delivers observations to connected applications:
 
@@ -21,9 +21,9 @@ RAPID live channel store
 
 Tasks and direct queries read live state. Recording saves admitted samples; telemetry sends observations independently. A value can be available locally before its history or display update arrives. Check source timestamps when you need to know how fresh a reading is.
 
-# Choose a recording policy
+# Recording modes
 
-The `record_mode` field controls samples produced by value writes. Choose whether you need every accepted sample or only changes:
+The `record_mode` field controls samples produced by value writes. For a pressure sensor, decide whether repeated equal measurements matter to your review:
 
 | `record_mode` | Samples recorded |
 | --- | --- |
@@ -31,11 +31,13 @@ The `record_mode` field controls samples produced by value writes. Choose whethe
 | `every_value` | Every accepted value write. Use when repeated equal samples matter. |
 | `never` | No write-triggered samples; the channel remains available live. |
 
+For example, a constant 12.5 bar signal can produce a sample for every accepted measurement under `every_value`, while `on_value_change` produces sparse write-triggered history. Choose the mode before collecting the run you need to investigate.
+
 The periodic auto recorder is a separate path. By default it snapshots channels once per second, including fixed, remote, and diagnostic channels marked `never`. The `engine_rapid_autorecord_*` controls configure this sampling and appear under **recording** with the writer controls in the Tasks / Modules channel view. Write-triggered history and periodic snapshots can therefore coexist; `record_mode: never` alone does not establish that a channel has no history.
 
 [Dataframes](../Interface/DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md) save named time ranges over this history. They may select channels, ARGUS events, and logs for review without changing which samples are recorded. A view can remain after its live channels are removed.
 
-# Understand delivery
+# Recording and telemetry delivery
 
 Accepted writes update live state and run dependent calculations inline. Recording and telemetry continue in the background. [Execution and Timing](Execution%20and%20Timing.md) explains those completion boundaries.
 
@@ -43,7 +45,7 @@ Display telemetry can omit intermediate writes. Compare recorded samples when in
 
 # Query historical samples
 
-A range query retrieves a channel's recorded samples between a start and end time. Recorded timestamps are **Unix-epoch nanoseconds**: integer nanoseconds since the UTC epoch. Use those bounds for precision. `rapid/query-channel-range` also normalizes epoch milliseconds and microseconds by magnitude, but does not accept epoch seconds. This example requests the last minute:
+A range query retrieves recorded samples between a start and end time. First connect a [Python client](../Clients/Python%20Client.md) and confirm that `tank_pressure` has history. This example requests a bucketed preview of the last minute using **Unix-epoch nanoseconds**, integer nanoseconds since the UTC epoch:
 
 ```python
 import time
@@ -56,11 +58,13 @@ result = client.query_channel_range(
 )
 ```
 
+Inspect the returned series and timestamps before widening the range. The preview requests 500 buckets, not every recorded point. For raw samples, omit `bucket_count`; `rapid/query-channel-range` accepts epoch milliseconds, microseconds, or nanoseconds, but not epoch seconds.
+
 Use the [Python guide](../Clients/Python%20Client.md) for setup and result handling. For large work, the engine also exposes detached historical query and export operations; [Using TEMPEST](Advanced/Using%20TEMPEST.md#detached-jobs) explains their lifecycle.
 
 # Preview versus raw data
 
-**Bucketing** reduces the points returned for a preview so a long recording can fit a graph. Raw samples retain the recorded points. Omit `bucket_count` for a raw range query; [Telemetry Graphs](../Interface/Telemetry%20Graphs.md) can use a bucketed preview while CSV exports use raw data.
+**Bucketing** reduces returned points so a long recording can fit a graph. Use a preview for browsing and raw samples for individual-point analysis. [Telemetry Graphs](../Interface/Telemetry%20Graphs.md) uses that distinction too: a graph preview can be bucketed while CSV export uses raw data.
 
 Before widening a query, confirm the channel and recorded time coverage. Empty history may reflect recording policy, deletion, retention, or the requested time range; it is different from a stale live value.
 

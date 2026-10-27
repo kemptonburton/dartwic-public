@@ -1,7 +1,7 @@
 ---
 summary: Navigate resources and configure your Interface, connections, and Engine settings.
 created: 2026-08-03T15:41
-updated: 2026-10-26T13:19
+updated: 2026-10-26T23:04
 ---
 
 The top bar identifies your connected node and active project. The sidebar opens resource types and supporting panels. Resources open in tabs that you can arrange for your work.
@@ -37,7 +37,7 @@ If an administrator connection needs a username, **Choose a username** saves it 
 
 **Connect as viewer** permits supported read-only views when the Engine allows it. Viewers cannot command equipment, invoke callbacks, edit resources, or manage Engine settings. Local appearance and clock-warning preferences remain available.
 
-# Save and apply changes
+# Saving and applying settings
 
 | Change | When it applies |
 | --- | --- |
@@ -47,6 +47,8 @@ If an administrator connection needs a username, **Choose a username** saves it 
 | History cleanup | Saved workspace defaults or project overrides; zero leaves an age/size limit unrestricted. |
 
 The selected local executable's version and the connected Engine's version can differ. **Version unavailable** means the selected executable has no readable verified version evidence; hover for the cause. It does not prevent starting it.
+
+Starting a local Engine from the desktop Interface opens its output in a separate Windows console or Linux terminal window. The Interface startup console also retains its logs. On Linux, install a graphical terminal if the start action reports that none is available.
 
 Local node **Edit engine → Engine config settings** also edits startup settings before connection. Password and license fields are write-only: leaving them blank retains saved values; the license removal switch clears the key. Closing flushes pending edits, without restarting the Engine automatically. Host-side web controls require a browser on the Interface host.
 

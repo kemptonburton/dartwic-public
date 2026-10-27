@@ -1,7 +1,7 @@
 ---
 summary: Inspect clients, remote nodes, and the connections between them.
 created: 2026-08-03T15:41
-updated: 2026-10-24T23:23
+updated: 2026-10-26T21:52
 ---
 
 Open **Network Map** from the left navigation to see the engine serving your interface, its connected clients, and remote nodes linked through [TEMPEST Peer](../Engine/Networking%20and%20Peers.md).
@@ -10,7 +10,7 @@ Open **Network Map** from the left navigation to see the engine serving your int
 
 The interface-to-engine connection and the engine-to-peer link are separate connections. Select the connection you want to inspect or configure.
 
-# Read the map
+# Nodes, clients, and peers
 
 | Item | Meaning |
 | --- | --- |
@@ -30,7 +30,7 @@ Choose the peer transport and the remote endpoint in the connection controls. Bu
 
 A remembered node is a saved target, not proof of a live connection. **Disconnect** stops the current link; **forget** also removes the saved target. Reconnect remembered targets when the peer becomes available again.
 
-# Diagnose remote data
+# Remote channel diagnostics
 
 | Symptom | Check next |
 | --- | --- |

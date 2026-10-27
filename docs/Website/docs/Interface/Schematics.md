@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:52
 ---
 
 A schematic puts live signals and controls in the context of the equipment they represent. It is a saved project resource: operators can reopen the same layout without rebuilding a channel search.
@@ -10,13 +10,13 @@ A schematic puts live signals and controls in the context of the equipment they 
 
 This is an example project, not a schematic included with every installation. Its channel names and controls come from that project's simulation and automation.
 
-# Open and navigate
+# Schematic navigation
 
 Choose **Schematics** in the left navigation and open a resource. Use the toolbar's fit-view control to bring all nodes into view, especially after resizing a panel. Pan and zoom to inspect a section. The context panel follows the selected node.
 
 The toolbar separates editing and interaction modes. Use editing to arrange and configure the diagram; use interaction mode to operate its controls. Check the tooltip of an icon to identify its action.
 
-# Build a view
+# Schematic editing
 
 1. Create a schematic resource in the project's resource list, or open one you can edit.
 2. Enter edit mode and add a node from the node palette. Channels can also be dragged into the canvas from supported channel lists.
@@ -42,13 +42,13 @@ Use **Import media node** in the palette to add an SVG or image as a reusable no
 | Remote view | Source schematic or embedded view configuration. |
 | Plugin node | Properties supplied by the installed plugin. |
 
-# Use graphs
+# Graphs
 
 A graph can compare several channels and show configured thresholds. Use an appropriate time window for the process; a very short window reveals recent changes while a longer one helps identify a trend. Open [Telemetry Graphs](Telemetry%20Graphs.md) when you need a historical range or CSV.
 
 Use [Telemetry Graphs](Telemetry%20Graphs.md) for live/historical navigation and interpreting graph status.
 
-# Operate controls
+# Schematic controls
 
 A schematic button writes through the engine's normal authority rules. If it is disabled or the value does not change, inspect the underlying channel in [Channels](Channels.md). Check `control_policy`, the active controller, and whether the signal belongs to a remote node.
 
@@ -60,7 +60,7 @@ For a valve with separate command and feedback channels, the blue commanded posi
 
 The command marker shows the requested position; the feedback stem follows received readback.
 
-# Show equipment in 3D
+# 3D equipment models
 
 Add a **3D model** node and import a GLB or glTF 2.0 model. Include the glTF's referenced buffers and textures; the complete import is limited to 20 MiB. The asset is saved with the schematic.
 

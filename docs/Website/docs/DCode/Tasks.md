@@ -1,10 +1,10 @@
 ---
 summary: Choose periodic, state-machine, or sequence tasks and use their shared lifecycle.
 created: 2026-10-26
-updated: 2026-10-26T14:42
+updated: 2026-10-27T03:06
 ---
 
-Tasks give an operator a named piece of automation to start, hold, inspect, and stop. Choose the task body that matches the work; the shared controls and lifecycle are described once below.
+Tasks are named pieces of automation that operators can start, hold, inspect, and stop.
 
 | Task kind | Use it for |
 | --- | --- |
@@ -12,9 +12,40 @@ Tasks give an operator a named piece of automation to start, hold, inspect, and 
 | State machine | Named stages with transitions accepted by your script. |
 | Sequence | Ordered steps that run once per start, including waits. |
 
-These three kinds work in Lua and Native C++. Use [Scheduling Timelines](Scheduling%20Timelines.md) for countdown buckets or [Loops](Loops.md) for lightweight work that starts on activation.
+These three kinds work in Lua and Native C++. Use [Timelines](Timelines.md) for countdown buckets or [Loops](Loops.md) for lightweight work that starts on activation.
 
-# Run and control tasks
+# Task Configuration
+
+Set scheduling options after the task name. This header requests 10 Hz at normal priority with timing warnings disabled (body omitted):
+
+```dcode
+task_periodic tasks_noise_filter 10 normal disable_warnings:
+```
+
+| Header option | Meaning |
+| --- | --- |
+| Frequency, such as `10` | Positive Hz; defaults to 10. `10` requests ten iterations per second, with a nominal 100 ms interval. |
+| Priority | `background`, `normal`, `high`, or `critical`; defaults to `normal`. Supply a frequency before a priority. |
+| `disable_warnings` | Optional final flag suppressing automatic timing warnings. Diagnostics, missed-cycle counts, and callback errors remain available. Omit it to keep timing warnings enabled. |
+
+Periodic and state-machine tasks share these options. Sequence headers accept them too, but frequency does not pace sequence steps or create frequency channels; use waits.
+
+Frequency and priority are scheduling requests, not deadline guarantees. [Execution and Timing](../Engine/Execution%20and%20Timing.md) explains timing costs and scheduling.
+
+# Task Lifecycle
+
+Activation installs a definition. Each start begins a task execution, which can contain many iterations before it stops or completes.
+
+| Phase | Behavior |
+| --- | --- |
+| Activation | Register the task and its control channels. |
+| Configuration | Prepare task resources; plugin task types expose this through `on_configure`. |
+| Start | Create fresh working variables and run `start:` once. |
+| Execution | Repeat `task:`, run the current `state:`, or advance a sequence body. |
+| Hold / Resume | Pause and continue the same execution, keeping variables and authority. |
+| Completed stop | Finish active work and `end:`, then remove the task's channel claims. |
+
+## Activation
 
 Save and activate the `.dcode` file, then start the task in **Tasks**. Activation registers its definition; starting executes it. Closing the editor does not stop it.
 
@@ -22,25 +53,52 @@ Save and activate the `.dcode` file, then start the task in **Tasks**. Activatio
 
 The image above shows a state machine task running. By clicking the task icon in the DCode editor gutter, you can go to the Tasks page and start the task.
 
-Tasks create common channels for diagnostic and control purposes:
+## Configuration
 
-| Channel suffix | Purpose |
+Plugin tasks use `on_configure` to prepare handles, buffers, and module bindings during configuration or reconfiguration, not every restart. Per-run setup belongs in `on_start`. See [Modules and Tasks](../Engine/Modules%20and%20Tasks.md) and [Building a Hardware Driver](../Plugins/Building%20a%20Hardware%20Driver.md).
+
+DCode has no `configure:` section; its declaration supplies setup and `start:` initializes each run.
+
+## Start
+
+Initialize working variables in `start:` or before their first read. They persist across the run's sections and iterations, then reset on the next start. File globals have a separate lifetime; see [Values and Scope](Values%20and%20Scope.md).
+
+Starting does not grant channel authority. Value-free `command` or `set` in `start:` can acquire an available claim without changing the stored value.
+
+For DCode, **prefer `command` on every commanded write and `set` on every published measurement or status value**, even after acquiring authority in `start:`. These operations show intent and can reacquire an available claim; ordinary assignments only use existing authority. See the [authority examples](../Engine/Channels%20and%20Control.md#dcode).
+
+A rejected authority operation warns and leaves that channel unchanged; it does not automatically fail start or skip the task body.
+
+## Hold and Resume
+
+Hold pauses supported execution and managed waits while preserving working variables, channel authority, and output values. Resume continues the same execution without repeating `start:`. A hold request does not guarantee that an already executing callback has finished.
+
+## Stop and Cleanup
+
+**Completed stop releases all channel authority held by the task**, after active work and applicable `end:` handling finish. Natural sequence completion uses the same cleanup.
+
+| Channel control before stop | Result |
 | --- | --- |
-| `_running` | Write 1 to start or 0 to stop. |
-| `_hold` | Write 1 to hold and 0 to resume. |
-| `_failed_cycles` | Counted callback failures. |
-| `_target_frequency`, `_actual_frequency` | Requested and measured Hz for periodic/state-machine tasks. |
-| `_execution_time`, `_missed_cycles` | Timing diagnostics for periodic/state-machine tasks. |
-| `_current_line` | Current sequence source line; zero after completion. |
+| Task owns `automatic` through `command`, with no override | Channel becomes `free`; owner and active controller are cleared. |
+| Task publishes `observe_only` through `set`, with no override | Publisher and active controller are cleared; the channel stays `observe_only`. |
+| Task owns the underlying claim beneath another controller's override | Task's claim is removed; the other controller's override stays. |
+| Task holds the current `automatic_override` | Task's override is removed; the remaining underlying owner and policy take over. |
+| Operator holds `manual_override` | Task's claims are removed; operator control stays. The stopped task is not restored when manual control ends. |
 
-For example, `tasks_noise_filter_running` controls the filter below. A sequence runs once per start; frequency does not pace its statements. Use waits for procedure timing.
+Put intentional final commands in end:. Stopping a task during a managed wait skips the remaining statements in its current handler. See the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop) for policy and override behavior.
 
-# Periodic tasks
+Removing a task declaration and reactivating stops and removes that task using the same cleanup. Its channels and last stored values remain. Reactivation rebuilds even unchanged definitions with fresh state and restarts previously running tasks. See [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md).
 
-A periodic task reads its inputs when each scheduled iteration runs. This filter remembers its previous result between iterations. Create `demo_noise` at 0 in a test project, then activate and start the task:
+# Task Execution
+
+Below are some examples of the three task types.
+
+## Periodic Tasks
+
+A periodic task reads live inputs each iteration. This filter retains its previous result. Create `demo_noise` at 0 in a test project, then activate and start:
 
 ```dcode
-task_periodic tasks_noise_filter:
+task_periodic tasks_noise_filter 10 normal:
     start:
         last = |demo_noise|
 
@@ -56,20 +114,16 @@ task_periodic tasks_noise_filter:
         log("Noise filter", "Stopped")
 ```
 
-Change `demo_noise` to 10. The filtered value should approach 10 over several iterations. `start:` initializes the run, `task elapsed_seconds:` repeats while running and not held, and `end:` runs on stop. Elapsed time excludes held time. Changing frequency changes this filter's response because its coefficient is applied once per iteration.
+Set `demo_noise` to 10; the filtered value approaches 10 over several iterations. `elapsed_seconds` excludes held time. Changing frequency changes the response because the coefficient applies once per iteration.
 
-## Missed releases
+Use a [calculation](Channel%20Calculations.md) or [event condition](Events.md) for a reaction in the input-write path.
 
-CAESAR can skip overdue releases. The example's `missed:` handler receives `missed_count` and `lateness_ms` once for the skipped group. Check the **Noise filter** log stream and timing diagnostics when the requested frequency is not being achieved. Keep the handler short; it cannot recover samples never acquired.
+## State-machine Tasks
 
-A 10 Hz task has a nominal 100 ms interval. Use a [calculation](Channel%20Calculations.md) or [event condition](Events.md) for a reaction in the input-write path.
-
-# State-machine tasks
-
-A state machine repeats only its current state's handler. Your script decides when to move to another state. Create free demo channels `demo_start_request`, `demo_done`, and `demo_active` at 0, then activate and start this task:
+A state machine repeats its current state's handler until your script transitions elsewhere. Create free demo channels `demo_start_request`, `demo_done`, and `demo_active` at 0, then activate and start:
 
 ```dcode
-task_state_machine docs_demo_process:
+task_state_machine docs_demo_process 10 normal:
     states:
         idle
         active
@@ -89,37 +143,35 @@ task_state_machine docs_demo_process:
 
 Write `demo_start_request = 1` to enter active, then `demo_done = 1` to return to idle. Each state body repeats while current; put one-time state-entry work in a `once:` block. Sensor checks wait for the next scheduled iteration.
 
-## Accept state requests
+### State Requests
 
 | Channel | Meaning |
 | --- | --- |
 | `docs_demo_process_current_state` | Read-only current state. |
 | `docs_demo_process_target_state` | Writable requested state. |
 
-Both expose numeric value options generated from the `states:` list. A target-state write alone does **not** select another handler. Your script must accept the request and call `transition`, which updates both state channels for the current task.
-
-For example, this check in the active handler accepts an operator request for idle:
+Both use numeric options from `states:`. A target-state write is a request; the task must accept it with `transition`, which updates both channels. For example, the active handler can accept an idle request:
 
 ```dcode
 if target_state == states.idle:
     transition idle
 ```
 
-The handler receives snapshots of `current_state` and `target_state`. Define the permitted transitions in script logic so the UI's target selector represents a request with explicit acceptance rules.
+Each handler receives `current_state` and `target_state` snapshots for that iteration.
 
-From another task or timeline runtime body, request this task's state with:
+Another task or timeline can request a state with:
 
 ```dcode
 transition docs_demo_process to idle
 ```
 
-This changes its requested target state. The owning task must accept it and call `transition`; the request alone does not select a handler.
+The owning task still decides whether to accept the request.
 
 ![](_attachments/Pasted%20image%2020261026144254.png)
 
 The target state channel has value options, so it can be commanded from the channel searcher, or even from schematics, or other DCode files by directly writing the state channel, without needing to use the `transition` keywords.
 
-# Sequence tasks
+## Sequence Tasks
 
 A sequence runs its body once on each start. Create `docs_demo_continue` at 0, then activate and start **docs_demo_steps**:
 
@@ -134,23 +186,32 @@ task_sequence docs_demo_steps:
 
 The step channel changes to 1, then 2 after the wait. Set `docs_demo_continue` to 1 before the timeout to reach step 3. Follow `docs_demo_steps_current_line` to see the active source line.
 
-## Use waits deliberately
+This example uses the shared [wait functions](Common%20Syntax%20and%20Functions.md#wait-and-wait_until), which are available wherever executable DCode is allowed.
 
-`wait(1)` pauses the sequence for one second. `wait_until` waits for its live condition; a positive `timeout` raises an execution error when it expires. Its optional `time` argument requires the condition to remain true continuously; false resets that interval. A zero timeout disables expiry.
+# Task Controls and Diagnostics
 
-Both waits work in Lua and Native C++. They block the sequence callback and belong outside fixed-rate control loops. A task hold pauses their duration and timeout accounting. Stop cancels a wait before later statements run; earlier accepted writes remain. Execution resumes according to scheduler and operating system timing.
+Tasks create common channels for diagnostic and control purposes:
 
-# State and cleanup
+| Channel suffix | Purpose |
+| --- | --- |
+| `_running` | Write 1 to start or 0 to stop. |
+| `_hold` | Write 1 to hold and 0 to resume. |
+| `_failed_cycles` | Counted callback failures. |
+| `_target_frequency`, `_actual_frequency` | Requested and measured Hz for periodic/state-machine tasks. |
+| `_execution_time`, `_missed_cycles` | Timing diagnostics for periodic/state-machine tasks. |
+| `_current_line` | Current sequence source line; zero after completion. |
 
-Working variables persist across lifecycle sections and iterations within one task run. Initialize them in `start:` or before their first read. Each start recreates task state; file globals have their own shared lifetime. Use [Values and Scope](Values%20and%20Scope.md) for those ownership rules.
+Use your task's name as the prefix, such as `tasks_noise_filter_running`. Change periodic or state-machine task frequency through `_target_frequency` or Tasks, then compare `_actual_frequency` with the target.
 
-Hold preserves task state and pauses execution without resetting outputs. Completed stop releases automatic channel ownership, but the last stored value is separate from a physical stop command. Put required final actions in `end:` or the driver's shutdown behavior. Operator manual override remains in effect.
+Start, hold, and stop writes request a change; confirm the resulting task state. For automatic Engine startup, configure startup value `1` on `<name>_running`; see [startup behavior](../Engine/Modules%20and%20Tasks.md#startup-and-stop).
 
-Reactivation rebuilds the file's runtime definitions with fresh state, including unchanged declarations. Surviving tasks that were running restart. See [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) before editing an active procedure.
+## Missed Releases
 
-# Order related tasks
+CAESAR can skip overdue releases. `missed:` receives `missed_count` and `lateness_ms` once for that group. Check the example's **Noise filter** stream and timing diagnostics. Keep this handler short; it cannot recover unacquired samples.
 
-A task group declares the order of existing tasks or loops that are due together. For example, if `read_sensors` and `control_outputs` are already registered:
+# Task Groups
+
+A task group orders existing tasks or loops that are due together. With `read_sensors` and `control_outputs` already registered:
 
 ```dcode
 task_group acquisition_cycle:
@@ -158,22 +219,11 @@ task_group acquisition_cycle:
     run: control_outputs
 ```
 
-Each member retains its frequency, diagnostics, and enabled state. A slow member delays following members; ordering alone does not establish that acquisition succeeded or data is fresh. [Execution and Timing](../Engine/Execution%20and%20Timing.md#task-groups) owns the scheduling explanation.
+Members retain their frequency, diagnostics, and enabled state. A slow member delays later members; ordering does not establish successful acquisition or data freshness. See [task-group scheduling](../Engine/Execution%20and%20Timing.md#task-groups).
 
-# Dynamic channel names
+## Task Group Lifecycle
 
-This syntax works in both backends. [Native C++](Native%20C%2B%2B%20Execution.md) resolves interpolated names through the host at runtime, so these accesses are outside the prepared fixed-binding path.
-
-`{expression}` inside a pipe reference builds a name at runtime:
-
-```dcode
-task_periodic tasks_state_copy:
-    task elapsed_seconds:
-        for name in ["alpha", "beta", "gamma"]:
-            |demo_{name}_state| = |demo_{name}_command|
-```
-
-With `name` equal to `alpha`, the target is `demo_alpha_state`. Dynamic names work in calculations too, but require explicit trigger dependencies there. See [Channel Calculations](Channel%20Calculations.md).
+Activation installs the group's scheduling arrangement. Removing the group releases that arrangement; its members keep their definitions, running state, and authority. Members replaced or removed in the same activation still follow their own [stop and cleanup](#stop-and-cleanup) rules. The group has no separate channel authority to release.
 
 # Reference
 
@@ -181,5 +231,3 @@ With `name` equal to `alpha`, the target is `demo_alpha_state`. Dynamic names wo
 - [Runtime sections](Reference/Runtime%20Sections/Overview.md) — Lifecycle bodies and their arguments.
 - [State transitions](Reference/Statements/statement-transition.md) — Changing the current task state.
 - [Cross-task transitions](Reference/Statements/statement-transition_task.md) — Requesting another task's state.
-- [Wait](Reference/DCode%20Functions/function-wait.md) — Duration and cancellation.
-- [Wait for a condition](Reference/DCode%20Functions/function-wait_until.md) — Continuous-truth time and timeout.

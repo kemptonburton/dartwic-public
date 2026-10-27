@@ -1,7 +1,7 @@
 ---
 summary: Edit scripts, understand saved versus active code, and find runtime errors.
 created: 2026-10-24
-updated: 2026-10-26T00:08
+updated: 2026-10-26T21:52
 ---
 
 Open **Scripts** to edit a project's DCode files. The editor connects source code to the tasks, calculations, events, and callbacks it creates. For the language itself, start with the [DCode overview](../DCode/Overview.md).
@@ -25,7 +25,7 @@ Run can execute top-level code and register or reconfigure runtime declarations.
 
 For YAML template parameters, Run saves the YAML and activates its dependent scripts. Review which scripts are affected. [Templates and Configuration](../DCode/Templates%20and%20Configuration.md) explains this relationship.
 
-# Find an error
+# Script and activation errors
 
 Fix reported DCode errors before activation. Checking code helps find problems; activation can still fail during configuration, native compilation, or dependency binding.
 

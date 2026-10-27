@@ -1,12 +1,12 @@
 ---
 summary: Choose where settings, private device configuration, runtime files, and shared assets belong.
-updated: 2026-10-26T14:16
+updated: 2026-10-27T00:11
 created: 2026-10-05T15:38
 ---
 
 Plugins often need to remember settings, read device configuration, or save files such as calibration data and operator layouts. This page explains **where that data belongs** and which SDK helpers to use.
 
-**Settings** are named options, such as a discovery interval or display precision. **Files and assets** hold documents or reusable content. Their location determines whether they travel with the workspace, stay private to one Engine, or are replaced when the plugin updates.
+The main choice is whether the data should travel with the workspace, stay private to one Engine, or ship with the plugin. The examples below cover each case.
 
 | You want to save… | Start with… |
 | --- | --- |
@@ -16,9 +16,9 @@ Plugins often need to remember settings, read device configuration, or save file
 | A shared calibration file, layout, or model | [Workspace assets](#shared-and-bundled-assets). |
 | Files shipped with your plugin | [Bundled assets](#bundled-files). |
 
-Interface examples use the connected Engine through `createStorageClient(operation)`; `operation` comes from `useDartwic()`. C++ examples use an `SDK_API& api`. `my_driver` is the example plugin ID; replace it with your manifest ID. The [Interface storage reference](Reference/Interface/Storage/Overview.md) and [Engine storage reference](Reference/Engine/Storage/Overview.md) contain the full APIs.
+The examples use `my_driver` as the manifest ID. Interface calls use `operation` from `useDartwic()`; C++ calls use an `SDK_API& api`. The [Interface](Reference/Interface/Storage/Overview.md) and [Engine](Reference/Engine/Storage/Overview.md) storage references cover the full APIs.
 
-# Choose where data belongs
+# Storage scopes
 
 A workspace is the portable folder you commit and share. Keep machine-specific state outside it. In this guide, the installation is `engine/`, the workspace is `workspace/`, and the example project is `default`.
 
@@ -42,9 +42,25 @@ Under `engine/instances/<instance>/`, project data uses three directories:
 
 Only cache data should be disposable. Keep needed recordings and private settings when clearing generated files. [Configuration and Storage](../Engine/Configuration%20and%20Storage.md#file-ownership) has the Engine paths; [Tracking a Workspace in GitHub](../Getting%20Started/Tracking%20a%20Workspace%20in%20GitHub.md) covers sharing the complete workspace.
 
+# Module configuration and private values
+
+Device connections and task mappings already have a home in the project. A module's connection parameters normally live in `modules/<instance>.json`, under `parameters`; task scheduling and mappings belong to task configuration. Use those resources so the plugin and its editors work with the same configuration. [Building a Hardware Driver](Building%20a%20Hardware%20Driver.md#configs) shows both, and [Config Map](Interface%20Plugin.md#config-map-editors) explains how to edit them in the Interface.
+
+If a device also needs credentials specific to one Engine, keep those in the instance's private settings folder:
+
+```cpp
+using Json = nlohmann::json;
+const auto privateConfig = api.readStorageJson(
+    "settings", "my_driver/device_credentials.json", Json::object(), "default");
+const auto token = privateConfig.value("token", std::string{});
+if (token.empty()) throw std::runtime_error("Configure this Engine's device token.");
+```
+
+Save with `writeStorageJson("settings", path, value, project)`. This stores local JSON without encryption. The helpers do not detect secrets placed in workspace files.
+
 # Defaults and overrides
 
-A plugin can provide defaults in code, share a workspace-wide choice, and let one project override it:
+Plugin-wide options, such as a discovery interval or display precision, can have defaults in code, a shared workspace value, and an override for one project:
 
 ```text
 Code defaults → workspace/settings.json → workspace/<project>/settings.json
@@ -58,11 +74,10 @@ Store plugin settings under `plugins.<plugin-id>`. Save only intentional changes
 | Objects merge recursively | A patch can change one field without replacing its neighbors. |
 | Arrays replace | Saving an array replaces that entire array. |
 | `false`, `0`, `""`, and `null` are values | Use reset to inherit again. |
-| Notification mutes combine | A mute at either workspace or project scope still suppresses the notification. |
 
 ## Read and change a setting
 
-A read returns the **effective** values and a **revision**, an opaque token identifying the settings you read. Supply that revision when saving so a stale panel cannot silently overwrite another edit. `sources` identifies which layer supplied each leaf setting.
+A read returns the **effective** settings after merging the layers, plus a **revision** identifying the version you read. Supply that revision when saving to prevent an older edit from overwriting newer changes. `sources` identifies each setting's layer.
 
 This example changes a plugin's discovery interval for one project:
 
@@ -82,19 +97,6 @@ await storage.writeSettingsOverride('project', {
 
 Use `'workspace'` instead for a choice shared by all projects. Capture the selected project once before a load or delayed save; a project switch must not redirect work already in progress. Validate your plugin's fields before applying them.
 
-To remove an override, reset its JSON pointer:
-
-```js
-const saved = await storage.readEffectiveSettings(defaults, project);
-await storage.resetSettingsOverride('project', [
-    '/plugins/my_driver/discovery_interval_ms',
-], {project, revision: saved.revision});
-```
-
-Resetting at project scope reveals the workspace value; resetting at workspace scope reveals the code default unless a project still overrides it. Resetting a section removes that scope's whole section. In pointer tokens, escape `/` as `~1` and `~` as `~0`.
-
-Read back with your defaults after saving. Write responses do not retain defaults supplied to an earlier read. On a revision conflict, reload and reconcile the edit instead of silently retrying it with a newer token.
-
 Engine plugins use the same model:
 
 ```cpp
@@ -107,49 +109,47 @@ api.writeSettingsOverride("project", {
 }, Json::array(), project, snapshot.at("revision").get<std::string>());
 ```
 
+## Reset an override
+
+Reset an override to inherit from the layer below it again. Identify the setting with its JSON pointer:
+
+```js
+const saved = await storage.readEffectiveSettings(defaults, project);
+await storage.resetSettingsOverride('project', [
+    '/plugins/my_driver/discovery_interval_ms',
+], {project, revision: saved.revision});
+```
+
+Resetting a project override reveals the workspace value; resetting a workspace override reveals the code default unless a project overrides it. Resetting a section removes all its overrides at that scope. In pointer tokens, escape `/` as `~1` and `~` as `~0`.
+
+Read back with your defaults after saving to check the effective value; the write response does not retain defaults from an earlier read. On a revision conflict, reload the settings and reconcile the edit before saving again.
+
 ## Apply settings to running code
 
-Saving configuration and applying it are separate steps. The Engine merges plugin settings into the configuration passed to the factory at load time; it does not rewrite the installed `plugin.json`. A running plugin must reread and safely apply changes, or require a restart. Keep file reads and JSON parsing outside high-frequency task loops.
+Saving a setting makes it persistent, but does not automatically change running code. At load time, the Engine merges plugin settings into the configuration passed to the factory without rewriting `plugin.json`. For later changes, your plugin must reread and safely apply them, or require a restart. Keep file reads and JSON parsing outside high-frequency task loops.
 
-Core policies have their own application timing. For example, [recording configuration](../Engine/Advanced/Recording%20and%20Delivery%20Tuning.md#recording-queues) requires an Engine restart; do not assume every settings write takes effect immediately.
+Core policies also have their own timing; for example, [recording configuration](../Engine/Advanced/Recording%20and%20Delivery%20Tuning.md#recording-queues) requires an Engine restart.
 
 ## Autosaved settings panels
 
-Autosave keeps a local draft responsive while saving changed fields in the background. The [example plugin](https://github.com/kemptonburton/dartwic-example-plugin) uses it for display precision and unit labels. Its implementation is split into:
+Autosave lets someone edit settings without pressing a Save button. The [example plugin](https://github.com/kemptonburton/dartwic-example-plugin) uses a 500 ms debounce for display precision and unit labels. Its `interface/src/settings.mjs`, `settingsAutosave.mjs`, and `useDisplaySettings.jsx` show the storage calls, save queue, and React integration.
 
-| Example file | Responsibility |
-| --- | --- |
-| `interface/src/settings.mjs` | Defaults, validation, project capture, and storage calls. |
-| `interface/src/settingsAutosave.mjs` | Debounce and serialize changed-field patches. |
-| `interface/src/useDisplaySettings.jsx` | Connect saving state and errors to React and notifications. |
-
-Reuse that pattern rather than adding another settings file or localStorage copy:
+When building a similar panel:
 
 - Validate drafts before queuing; an empty numeric input is not automatically zero.
 - Queue only changed fields and save them sequentially, using each returned revision.
 - Keep newer user edits when an older save response arrives.
-- Flush on blur/cleanup and show pending, saved, or failed state. Failed changes stay pending; revision conflicts require deliberate reload/reconciliation.
+- Flush on blur/cleanup and show pending, saved, or failed state. Keep failed changes available for retry; reload and reconcile revision conflicts.
 
-The example uses a 500 ms debounce. Its queue helper is example-plugin code, not an SDK export. Device commands belong to command APIs rather than delayed settings writes; personal Interface preferences belong to Interface storage.
+The queue is example code, not an SDK export. Use command APIs for device commands and Interface storage for personal display preferences.
 
-# Module configuration and private values
+## Settings persistence checks
 
-A module's connection parameters normally live in the project's `modules/<instance>.json`, under `parameters`. Task scheduling and mappings belong to task configuration. Edit those existing resources instead of storing a second copy in plugin settings; [Building a Hardware Driver](Building%20a%20Hardware%20Driver.md#configs) shows both.
+Before relying on a settings panel, read back through the same helper and captured project. Check that only intended overrides were saved, reset restores inheritance, and a stale revision or disconnect leaves the UI reporting an unsaved change.
 
-Private values can stay in the Engine instance while the module remains portable:
+# Scoped file helpers
 
-```cpp
-const auto privateConfig = api.readStorageJson(
-    "settings", "my_driver/device_credentials.json", Json::object(), "default");
-const auto token = privateConfig.value("token", std::string{});
-if (token.empty()) throw std::runtime_error("Configure this Engine's device token.");
-```
-
-Save with `writeStorageJson("settings", path, value, project)`. This is local JSON, not an encrypted credential vault. These helpers do not detect secrets placed in arbitrary workspace files.
-
-# Save ordinary files
-
-Use scoped file helpers for documents that are not layered settings. They choose a root and validate the relative path:
+Calibration documents, generated previews, and other files can use scoped helpers to select their storage location. Each helper chooses a root and validates the relative path:
 
 | Helper | Root |
 | --- | --- |
@@ -175,7 +175,9 @@ await storage.writeJson(projectCachePath('my_driver/preview.json', 'default'), {
 
 Interface helpers return Engine file references, not paths on the browser's computer. C++ path helpers return `std::filesystem::path`. Pass an explicit project for delayed operations; Interface instance-subdirectory helpers require it.
 
-Engine code uses `readStorageJson` / `writeStorageJson` with scopes `installation`, `instance`, `workspace`, `project`, `settings`, `runtime`, or `cache`. Writes replace one file atomically; they do not form a multi-file transaction or migrate its schema. Host permissions still apply, and general storage/settings calls are admin-only unless explicitly allowed. Path checks are not a sandbox around native plugin code.
+Engine code uses `readStorageJson` / `writeStorageJson` with scopes `installation`, `instance`, `workspace`, `project`, `settings`, `runtime`, or `cache`. A write atomically replaces one file; your plugin handles schema changes and coordination across files.
+
+General storage/settings calls require admin access unless explicitly allowed. Relative-path checks help prevent misplaced files, but native plugins still run with the Engine process's filesystem access.
 
 # Shared and bundled assets
 
@@ -189,7 +191,7 @@ An **asset** is a reusable file referenced by a project, such as a layout or mod
 
 ## Shared plugin files
 
-Use the manifest ID when creating the helper. Save its returned reference in your schematic or resource, instead of an absolute machine path:
+Workspace asset helpers are useful when several projects need the same layout, model, or calibration file. Use your manifest ID to group plugin-authored files, and save the returned reference in the schematic or resource:
 
 ```js
 import {createPluginWorkspaceAssetClient} from '@dartwic/interface-sdk/assets';
@@ -199,13 +201,24 @@ const layout = await authored.readJson('layouts/operator.json');
 // reference: assets/plugins/my_driver/layouts/operator.json
 ```
 
-Subdirectories are supported and filenames need an extension. Use `createWorkspaceAssetClient` for other shared namespaces. For example, the [3D model node](../Interface/Schematics.md#show-equipment-in-3d) stores a shared model package and keeps `asset_path` in its node data.
+Subdirectories are supported and filenames need an extension. Use `createWorkspaceAssetClient` for other shared namespaces. For example, the [3D model node](../Interface/Schematics.md#3d-equipment-models) stores a shared model package and keeps `asset_path` in its node data.
 
-Asset helpers read/write UTF-8 or JSON, not raw binary. Package binary content in a validated text format before saving. JSON parsing does not validate your plugin's schema. Reads cache per operation callback; invalidate after external edits, or use a new filename. Failed reads are evicted. One project's reference does not establish that an asset is unused elsewhere.
+Asset helpers read and write UTF-8 text or JSON. Encode binary content in a validated text format, and validate loaded documents against your plugin's schema. Reads are cached per operation callback; invalidate after external edits or use a new filename. Failed reads are evicted.
+
+An asset may be used by several projects. Check those references before deleting a shared file.
+
+Engine plugins can save and read the same assets. Here `node_name` is the target Engine node and `layout` is your JSON document:
+
+```cpp
+const auto reference = api.savePluginWorkspaceAsset(
+    node_name, "my_driver", "layouts/operator.json", layout.dump());
+const auto text = api.readPluginWorkspaceAsset(
+    node_name, "my_driver", "layouts/operator.json");
+```
 
 ## Bundled files
 
-Put distributed files in your plugin repository's `assets/`. The build copies them into each installed side. Keep descriptors such as `plugin.json` at their required package locations and renderer code in the compiled bundle.
+Files that ship with the plugin, such as labels or default layouts, belong in its source `assets/` directory. The build copies them into each installed side. These files are replaced on update and removed on uninstall, so save user-authored changes through workspace helpers.
 
 ```js
 import {createBundledPluginAssetClient} from '@dartwic/interface-sdk/assets';
@@ -214,22 +227,10 @@ const bundled = createBundledPluginAssetClient('my_driver');
 const labels = await bundled.readJson('labels.json');
 ```
 
-Bundled readers are read-only. Installation does not copy these files into a workspace; save user-authored changes through workspace helpers.
-
-Engine plugins have matching asset APIs. Here `node_name` is the target Engine node and `layout` is your JSON document:
+Bundled readers are read-only, and installation leaves these files in the plugin directory. Engine plugins locate them with `pluginAssetPath`:
 
 ```cpp
 const auto bundled_labels = api.pluginAssetPath("my_driver", "labels.json");
-const auto reference = api.savePluginWorkspaceAsset(
-    node_name, "my_driver", "layouts/operator.json", layout.dump());
-const auto text = api.readPluginWorkspaceAsset(
-    node_name, "my_driver", "layouts/operator.json");
 ```
 
-C++ file/asset calls are synchronous and can block or throw. Interface helpers return Promises; awaiting a write establishes file-operation completion. Keep file/network work outside timing-sensitive callbacks. Generic storage APIs remain available when a workflow needs another scope.
-
-# Check the saved result
-
-Read back through the same helper and captured project. Check that only intended overrides were saved, reset restores inheritance, and a stale revision or disconnect leaves the UI reporting an unsaved change.
-
-Follow [Config Map](Interface%20Plugin.md#share-configuration-with-config-map) when settings are part of a module/task editor rather than a standalone panel.
+C++ file/asset calls are synchronous and can block or throw. Interface helpers return Promises; awaiting a write confirms file-operation completion. Keep file/network work outside timing-sensitive callbacks.

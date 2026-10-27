@@ -1,7 +1,7 @@
 ---
 summary: Understand RAPID channels, fields, storage, authority, and native or DCode publishing.
 created: 2026-09-04T17:13
-updated: 2026-10-26T19:42
+updated: 2026-10-26T21:37
 document_kind: walkthrough
 ---
 
@@ -163,7 +163,7 @@ These rules apply to CAESAR tasks, sequences, state machines, timelines, workers
 
 Starting does not grant authority by itself. Acquire it in the start callback or later where needed. Configuration does not repeat on restart, so each run must reacquire its claims.
 
-A rejected authority operation raises the normal ARGUS warning and leaves that channel unchanged. Start continues into the task body; the rejection does not automatically fail or stop the task. Earlier successful claims and writes remain in place. If your code acquires authority only at start, resolve the conflict and restart the task to try again.
+A rejected authority operation raises the normal ARGUS warning and leaves that channel unchanged. Start continues into the task body; the rejection does not automatically fail or stop the task.
 
 ## Hold and resume
 
@@ -306,7 +306,7 @@ rapid.setChannel(*pressure);
 rapid.setChannel(*valve_feedback);
 ```
 
-The driver reads `valve_command` without owning it. A publishing conflict fails start before the body runs.
+The driver reads `valve_command` without owning it. A publishing conflict emits an ARGUS warning and leaves the rejected channel unchanged; task start continues into the body.
 
 After obtaining a device sample, use the retained handles in `on_task`:
 

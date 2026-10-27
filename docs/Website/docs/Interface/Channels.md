@@ -1,7 +1,7 @@
 ---
 summary: Find signals, understand their status, and inspect or change their values.
 created: 2026-09-04T17:13
-updated: 2026-10-26T14:17
+updated: 2026-10-27T03:58
 ---
 
 A channel is a named signal: a measurement, command, task status, or calculated value. Open **Channels** to find it and see where they come from and what is controlling them.
@@ -40,6 +40,8 @@ The views support similar functions for channels, or toolbar actions. If they do
 # Channel List View
 
 Use the channel list to view and search all the channels in the engine.
+
+Channel pickers in configuration and other inputs use the same word-based search. For example, `test 23` finds `test_23`; matching parts are highlighted in the choices. Select the saved channel name from the list.
 
 ![](_attachments/Pasted%20image%2020261025161050.png)
 

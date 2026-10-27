@@ -2,7 +2,7 @@
 title: Blocks
 summary: Ordinary indentation-based control-flow, iteration, and definition constructs used inside executable DCode bodies.
 created: 2026-08-04T17:38
-updated: 2026-10-26T01:01
+updated: 2026-10-26T22:01
 ---
 
 | Feature | Family | Syntax | Available in |
@@ -15,7 +15,6 @@ updated: 2026-10-26T01:01
 | [for each](block-for_each.md) | Iteration | `for <name> in <array-or-object>:` | Executable DCode bodies |
 | [function](block-function.md) | Definition | `[local] function <name>(<arguments>):` | File scope, Executable DCode bodies |
 | [if](block-if.md) | Conditional | `if <condition>:` | Executable DCode bodies |
-| [once](block-once.md) | DCode Conditional | `once:` | State handlers |
-| [once when](block-once_when.md) | DCode Conditional | `once when(condition, time=0):` | Executable DCode bodies |
-| [when](block-when.md) | DCode Conditional | `when(condition, time=0):` | Executable DCode bodies |
+| [once](block-once.md) | DCode Conditional | `once:` | Task, state, loop, sequence and timeline runtime sections |
+| [when](block-when.md) | DCode Conditional | `when(condition, time=seconds):` | Executable DCode bodies |
 | [while](block-while.md) | Iteration | `while <condition>:` | Executable DCode bodies |

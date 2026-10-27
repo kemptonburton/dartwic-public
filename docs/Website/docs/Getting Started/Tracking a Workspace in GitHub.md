@@ -1,12 +1,12 @@
 ---
 summary: Keep portable workspace content in Git, with software and recordings stored separately.
-updated: 2026-10-25T15:00
+updated: 2026-10-26T21:52
 created: 2026-09-08T14:04
 ---
 
 Instructions for tracking and sharing a DARTWIC project in a content management program like GitHub.
 
-# Share and update
+# Workspace sharing
 
 To share your DARTWIC project, it is best to commit the **entire workspace folder** to GitHub so others can clone it, open it in DARTWIC, and pull future updates.
 
@@ -24,7 +24,7 @@ Save your work and stop its Engine before committing, pulling changes, or editin
 
 For more detailed instructions on how to install DARTWIC, setup the Interface and a local Engine, and open a workspace, check out [First Session](First%20Session.md).
 
-# Usual DARTWIC setup
+# DARTWIC folder layout
 
 The usual folder layout separates the applications from your workspaces:
 
@@ -39,7 +39,7 @@ dartwic/
 
 Create the repository inside `workspaces/experiment/`. The surrounding `dartwic/` folder holds your local installation.
 
-# What stays local
+# Local Engine files
 
 The Engine folder holds its binaries and local data. For example, on Windows, using an instance and project both named `default`:
 
@@ -72,7 +72,7 @@ Each local workspace setup has an **Engine instance**. Its `config.json` selects
 
 The Interface keeps its local Engine registry and desktop preferences under `interface/.dartwic/`. Web Interface preferences live in the browser's storage for that site.
 
-# What to commit
+# Workspace contents
 
 Commit the entire workspace folder and everything inside it:
 

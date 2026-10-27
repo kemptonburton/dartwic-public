@@ -1,7 +1,7 @@
 ---
 summary: Investigate conditions, acknowledge events, and respond to prompts and holds.
 created: 2026-08-03T15:41
-updated: 2026-10-25T13:10
+updated: 2026-10-26T21:52
 ---
 
 Events draw attention to conditions that need investigation or a response. Open **Events** or the **Events Board**; the bottom event bar also highlights aborts, holds, and prompts.
@@ -16,7 +16,7 @@ A graph opened from recorded details starts paused around the occurrence. Choose
 
 Use filters for node, type, status, source, text, session, or time. An item leaving the active board can still have recorded history.
 
-# Choose an action
+# Event actions
 
 | Action | Result |
 | --- | --- |
@@ -31,7 +31,7 @@ Available actions depend on the event's type and state. Resolving a new event al
 
 Acknowledging or silencing an event does not clear its trigger or change equipment. A released task hold permits execution to resume; check the task's state afterward.
 
-# Understand firing and history
+# Firing status and event history
 
 **Firing** describes the trigger condition. **Board presence** describes the operator-facing event. A condition can remain true after the event has been silenced, and an event can await resolution after firing ends.
 

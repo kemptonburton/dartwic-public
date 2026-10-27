@@ -1,16 +1,18 @@
 ---
 summary: Create several controllers or warnings from one DCode definition and a YAML file.
-updated: 2026-10-26T14:16
+updated: 2026-10-27T04:42
 created: 2026-10-14T15:04
 ---
 
-A template repeats one DCode definition for several devices or signals. Keep the behavior in DCode and list each instance's names and settings in YAML. This avoids maintaining a separate copy of the same controller or warning.
+A template creates several runtime definitions from one DCode block and a YAML list. Keep shared behavior in DCode and each device's or signal's names and settings in YAML.
 
-The example workspace uses templates for valve controllers and sensor warnings. Each generated declaration has its own name and runtime state.
+![](_attachments/Pasted%20image%2020261027044224.png)
 
-# Start with two warnings
+# Template Configuration
 
-Create `sensor_limits.yaml` beside a new `sensor_limits.dcode` file:
+Load YAML rows with `params = yaml`, then use `template(params)` to repeat a declaration for each row. Each generated name must be unique. Templates support tasks, task groups, loops, calculations, events, and callbacks, subject to each block's backend support.
+
+For example, create `sensor_limits.yaml` beside a new `sensor_limits.dcode` file:
 
 ```yaml
 sensors:
@@ -22,7 +24,7 @@ sensors:
     high: 350
 ```
 
-Create those two demo channels before activating this script:
+Create the two demo channels, then put this in `sensor_limits.dcode`. The `#sensors` suffix selects the YAML list:
 
 ```dcode
 params = yaml "./sensor_limits.yaml#sensors"
@@ -38,31 +40,39 @@ template(params) event docs_limit_{params.name}:
         return 0
 ```
 
-The `#sensors` suffix selects the YAML list. For each row, the template inserts its fields into the declaration before compilation. It creates `docs_limit_pressure` and `docs_limit_temperature`. Names must stay unique.
+Activate the file to create `docs_limit_pressure` and `docs_limit_temperature`. Raise `docs_demo_pressure` above 80: only the pressure warning fires. Lower it to clear the condition; the board record can remain until resolved. Restore the demo values when finished.
 
-Raise `docs_demo_pressure` above 80 and check that only the pressure warning fires. Lower it and check the firing condition clears. The occurrence can remain on the board until the operator resolves it. Restore both demo values when finished.
+# Template Expansion
 
-# Use the valve and warning examples
+Placeholders such as `{params.channel}` are replaced before compilation. Static channel reads produced by templates are therefore detected automatically as calculation dependencies.
 
-In the [example workspace](../Getting%20Started/Example%20Workspace.md), open `scripts/valves/valves.yaml` and `double_acting_valves.dcode`. The four `valve` rows create `rocket_valve_fuel`, `rocket_valve_oxidizer`, `rocket_valve_fill`, and `rocket_valve_vent`.
+Quote placeholders inside strings, as in the title above. Numeric fields go directly into expressions; arrays, objects, and null become DCode values. [Values and Scope](Values%20and%20Scope.md#values-from-templates) covers these substitutions.
 
-Each loop remembers its last request independently. When the request changes, it pulses the selected coil for half a second, then records the completed command. Each valve has one last-known state channel, `rocket_sim_<valve>_state`: `1` is open and `0` is closed. It retains that value after the pulse; it is not measured position feedback.
+Use **Expand template** in the editor gutter to inspect generated declarations and **Collapse template** to return to the source. Previewing does not activate code.
 
-The files under `scripts/warnings/` use the same pattern for names, channels, titles, and low/high limits. They also check device validity and sample age, because a retained value can still sit inside its normal limits after acquisition fails.
+![](_attachments/Pasted%20image%2020261027044137.png)
 
-# Change the configuration
+# Template Lifecycle
 
-Stop the relevant example procedure before changing controller definitions. Edit the YAML, then Run the consuming DCode file and inspect the activation result. The YAML editor's Run action saves the YAML and reactivates its consumers too.
+Each generated definition belongs to its consuming `.dcode` file and follows that runtime block's lifecycle. Expanding a template does not create a separate runtime owner.
 
-Activation replaces all runtime definitions from each consuming file. Surviving running tasks restart with fresh local state. Removing a row removes its generated runtime after successful reactivation, but can leave channels and recorded history behind. Use [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) when changing a live project.
+Stop the relevant procedure before changing controller definitions. Edit the YAML, then Run the consuming DCode file and inspect the activation result. The YAML editor's Run action also saves the YAML and reactivates its consumers.
 
-A YAML string is inserted as text. Quote a placeholder when it belongs inside a DCode string, as in the event title above. Numeric fields can appear directly in expressions; arrays and objects expand into DCode collections. Templates work with both backends, subject to the chosen runtime block's normal backend support.
+Reactivation replaces all runtime definitions in each consuming file, including unchanged ones. Surviving running tasks restart with fresh state. Removing a row removes its generated definition after successful reactivation.
 
-# Inspect the expansion
+![](_attachments/Pasted%20image%2020261026140141.png)
 
-Use **Expand template** in the editor gutter to see the generated declarations. **Collapse template** returns to the source. This preview does not activate code.
+In the photo above, the YAML that drives the templated loops has been changed, which requires the script to be ran again.
 
-Templates can produce tasks, task groups, loops, calculations, events, and callbacks. The selected block's backend and lifecycle rules still apply.
+Channels, stored values, and history remain. Authority cleanup follows the generated block's lifecycle and the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop). [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) covers replacement and backend limits.
+
+# Example workspace templates
+
+In the [example workspace](../Getting%20Started/First%20Session.md), open `scripts/valves/valves.yaml` and `double_acting_valves.dcode`. Its four rows generate the fuel, oxidizer, fill, and vent valve controllers.
+
+Each loop independently remembers its last request. A changed request pulses the selected coil for half a second, then records completion in `rocket_sim_<valve>_state`: 1 for open, 0 for closed. This retained command state is not measured position feedback.
+
+The templates in `scripts/warnings/` generate sensor warnings with low/high limits, device-validity checks, and sample-age checks. A retained value can remain within limits after acquisition fails.
 
 # Reference
 

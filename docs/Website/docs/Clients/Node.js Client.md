@@ -1,6 +1,6 @@
 ---
 summary: Connect Node.js tools, read and write channels, receive telemetry, and export recorded data.
-updated: 2026-10-26T14:16
+updated: 2026-10-27T00:37
 created: 2026-09-07T17:03
 ---
 
@@ -46,7 +46,7 @@ try {
 
 Connection registers the client and checks compatibility. Helpers reject on transport or operation errors.
 
-# Choose what your application does
+# Client operations
 
 The examples below show common uses. See the [Node.js API reference](Reference/Node.js/Overview.md) for the full current API, arguments, and return values. Choose the parts your application needs.
 
@@ -169,7 +169,7 @@ Heartbeats check session responsiveness; use source timestamps and operation tim
 
 `isConnected()` is local state. A registered heartbeat probe detects connection or session loss; it is not instantaneous. This client does not reconnect automatically: await `disconnect()`, call `connect()` again, then recreate managed channel subscriptions. Serialize connection lifecycle calls. Timed-out operations are never replayed automatically, and a timeout does not cancel work on the engine. Check resulting state before retrying writes.
 
-# Run and inspect
+# Application execution and verification
 
 After setting `DARTWIC_PASSWORD`, run the file from your application directory:
 

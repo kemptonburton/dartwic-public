@@ -1,12 +1,12 @@
 ---
 summary: Understand configuration, execution, recording, and connections in the Engine.
 created: 2026-08-03T15:41
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:52
 ---
 
 The Engine is the part of DARTWIC that connects to devices, runs automation, and records what happens. It runs independently of the Interface, so closing a display does not stop the work running on it.
 
-A typical setup reads a sensor, uses that measurement to make a decision, and sends a command to equipment. Channels hold the signals passed between those steps; the Interface lets you inspect and operate them.
+For example, a device task publishes pressure to a channel, a controller calculates a valve request, and an output task sends it to the device. The guides below explain that path, how to configure it, and how to check its results.
 
 ```text
 Device → Module / task → Channels → Calculations and event reactions
@@ -15,7 +15,7 @@ Device → Module / task → Channels → Calculations and event reactions
                             └─ Telemetry → Interfaces, clients, and peers
 ```
 
-# Find the explanation you need
+# Engine guides
 
 | Question | Guide |
 | --- | --- |
@@ -38,4 +38,4 @@ Device → Module / task → Channels → Calculations and event reactions
 | Find Engine addresses before connecting | [Network Discovery](Advanced/Network%20Discovery.md) |
 | Implement a raw operation and telemetry connection | [Using TEMPEST](Advanced/Using%20TEMPEST.md) |
 
-The [operation reference](Reference/TEMPEST/Overview.md) lists request and telemetry contracts. [DCode](../DCode/Overview.md), [Plugins](../Plugins/Overview.md), and [Clients](../Clients/Overview.md) own authoring APIs. Use [First Session](../Getting%20Started/First%20Session.md) for installation and first use.
+Use [First Session](../Getting%20Started/First%20Session.md) for installation and the first connection. [DCode](../DCode/Overview.md), [Plugins](../Plugins/Overview.md), and [Clients](../Clients/Overview.md) cover writing your own behavior; the [operation reference](Reference/TEMPEST/Overview.md) lists the current request and telemetry APIs.

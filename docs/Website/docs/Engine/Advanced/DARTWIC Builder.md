@@ -1,7 +1,7 @@
 ---
 summary: Follow native builds, fixed-channel preparation, binding changes, and activation.
 created: 2026-09-07T05:26
-updated: 2026-10-26T14:16
+updated: 2026-10-26T20:14
 ---
 
 DARTWIC Builder prepares code and channels for execution in the Engine. It turns Native C++ DCode into a compiled library, connects the code to its channels, and reports whether the new runtime became active. This helps explain why an activation failed or why an edit is not running yet.
@@ -23,7 +23,9 @@ A **session** groups the stages and results of a build or configuration operatio
 | `ACTIVATE` | Replaced tasks, released/restored task groups, and previously running tasks restarted. |
 | `VERIFY` | `READY` after successful activation, or the failure that prevented it. |
 
-Stages can appear in a different order or be absent when no compilation is needed. A fixed-channel warning can coexist with a successful activation: a dynamic read is allowed, but may be unintended for a control path. Inspect the record's context to find the channel name.
+Stages can appear in a different order or be absent when no compilation is needed.
+
+Follow one activation through the stages: activate your `.dcode` file, inspect any channel/binding warnings, read compiler output if compilation is needed, then check the final activation result. `LOADED` alone means the library entered memory; `VERIFY / READY` establishes that the replacement runtime became ready. A fixed-channel warning can coexist with a successful activation: a dynamic read is allowed, but may be unintended for a control path. Inspect the record's context to find the channel name.
 
 The shared log viewer shows compiler output across builds, labelled by script path. The action row reports activation status, including failures before compiler output exists. Structured records retain compiler lines too.
 
@@ -36,7 +38,7 @@ The shared log viewer shows compiler output across builds, labelled by script pa
 | Native cache `logs/<script-path>/<script-name>.log` | Script output flushed during compilation. |
 | Native cache `bin/` | Named compiled libraries. |
 
-The fixed-configuration API below reports allocated fixed slots and reserved capacity. A protected layout does not prove every task is running or every input is fixed.
+Check that the intended tasks are running and their bindings use the intended channels after activation. The fixed-configuration API reports allocated slots and capacity; it does not replace that runtime check.
 
 # Configuration and binding changes
 
@@ -85,14 +87,16 @@ For [Native C++ DCode](../../DCode/Native%20C%2B%2B%20Execution.md), activation 
 
 Reading `|input|` does not declare a fixed producer. If no channel exists, native activation creates a dynamic channel with value zero and reports a warning. Configure the acquiring plugin to publish fixed storage, or supply the intended native producer. Do not add a dummy writer merely to suppress a dynamic-binding warning.
 
-For an engine plugin, declare channels during task configuration (`on_configure`), using its SDK pointer:
+For an Engine plugin, declare channels in `on_configure`, using its `SDK_API* api`. This excerpt prepares two outputs; retain the returned handles in that task's state:
 
 ```cpp
 auto pressure = api->createFixedChannel("sensor_pressure", 0.0);
 auto temperature = api->createFixedChannel("sensor_temperature", 0.0);
 ```
 
-This creates or promotes storage and returns a retained local handle. The supplied initial value applies only to a new channel; existing fixed or promoted dynamic state stays intact. Call it during configuration, save the handles in task instance state, then use [queryChannel](../../Plugins/Reference/Engine/Channels/SDK_API-queryChannel.md) and [upsertChannel](../../Plugins/Reference/Engine/Channels/SDK_API-upsertChannel.md) at the executing lines. Ordinary upserts do not claim authority. `TaskRuntime::setFixedInputChannels` retains declared plugin inputs; ordinary DCode reads them when reached.
+These calls create or promote storage and return retained local handles. The initial value applies only to a new channel; an existing channel keeps its value. Save the handles in task instance state and inspect each channel's `storage` field afterward.
+
+Use [queryChannel](../../Plugins/Reference/Engine/Channels/SDK_API-queryChannel.md) and [upsertChannel](../../Plugins/Reference/Engine/Channels/SDK_API-upsertChannel.md) during execution. Ordinary upserts do not claim authority. `TaskRuntime::setFixedInputChannels` declares plugin inputs during configuration; [Channels and Control](../Channels%20and%20Control.md#recommended-practices) shows preparation, start-time authority, and repeated publishing together.
 
 ## Configure and verify the layout
 
@@ -103,6 +107,18 @@ Inspect the channel's `storage` value (`fixed` or `dynamic`) and the editor's na
 # Builder API
 
 Send these operations through a [registered TEMPEST connection](Using%20TEMPEST.md):
+
+For example, after activating `native_demo.dcode` in your project, inspect its Builder report with a connected Python client:
+
+```python
+response = client.operation("dartwic/builder/get-report", {
+    "script_path": "native_demo.dcode", "limit": 100,
+})
+response.raise_for_error()
+print(response.payload)
+```
+
+Replace the script path with your project-relative file. Inspect the matching session's final activation result and any errors. These related queries answer different questions:
 
 | Operation | Payload | Result |
 | --- | --- | --- |

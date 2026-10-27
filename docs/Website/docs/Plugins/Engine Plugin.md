@@ -1,15 +1,14 @@
 ---
 summary: Follow the Engine plugin entry point, registration flow, and SDK services.
-updated: 2026-10-26T16:28
+updated: 2026-10-27T00:40
 created: 2026-09-06T14:32
 ---
 
-
 An Engine plugin extends DARTWIC with native C++ code. It can supply reusable work, script functions, device connections, or communication features. Choose the contributions your plugin needs; a plugin does not have to include a module or a hardware driver.
 
-Start from the [example plugin](Overview.md#start-from-the-example). The source paths below belong to **your plugin repository**. Keep the starter's SDK, entry-point exports, and build setup while adding your implementation.
+Start from the [example plugin](Overview.md#example-plugin). The source paths below belong to **your plugin repository**. Keep the starter's SDK, entry-point exports, and build setup while adding your implementation.
 
-# Configure the plugin
+# Plugin Config
 
 The root **`plugin.json`** identifies your plugin and tells the host which sides it contains. For the combined Engine/Interface examples on these pages:
 
@@ -31,7 +30,7 @@ Keep `contains_engine_plugin: true`; set `contains_interface_plugin: false` if y
 
 Module types can also reference bundled `module_config.json` and `default_parameters.json` through their registration's `config_path` and `default_parameters_path`. These describe the type and its default parameters. A user's module instance and task arguments are separate workspace configuration; [Building a Hardware Driver](Building%20a%20Hardware%20Driver.md#configs) shows those files when your plugin needs them.
 
-# Engine loading and entry point
+# Plugin Lifecycle
 
 The Engine loads the native library, checks its SDK ABI export, and calls `createPlugin` to construct your `BasePlugin` subclass. It then calls **`onPluginLoaded()`**, the main hook for registering what your plugin provides.
 
@@ -58,7 +57,11 @@ DARTWIC_PLUGIN_EXPORT DARTWIC::Plugins::BasePlugin* createPlugin(
 
 When the Engine constructs your plugin, `BasePlugin::config` receives the manifest merged with effective `plugins.<plugin-id>` settings. This is plugin-wide configuration; `createModule` receives a particular module instance's configuration. Use [Storage and Settings](Storage%20and%20Settings.md) for scoped settings rather than creating another configuration store.
 
-# Choose what to register
+Uninstalling the Engine side queues removal for the next Engine restart. `BasePlugin` has no unload callback. Release plugin-owned resources in your subclass's destructor, including stopping and joining any threads you created. Keep task cleanup in its `on_end` / `cleanup` callbacks and module resources with the module. 
+
+Uninstall leaves saved workspace documents and separately stored settings and assets in place; Bundled assets are removed with the package; [Storage and Settings](Storage%20and%20Settings.md) explains those storage lifetimes.
+
+# Plugin Registrations
 
 For the full current API, use the [Engine SDK reference](Reference/Engine/Overview.md) and the `register*` declarations in your bundled `engine/include/sdk/sdk_api.h`. The examples below illustrate the main registration patterns; check your target SDK for available methods and exact fields.
 
@@ -234,9 +237,9 @@ dartwic->registerPeer({
 });
 ```
 
-Keep includes at file scope. Registration makes the peer type available; [Network Map](../Interface/Network%20Map.md) configures a connection using it. Use the [peer registration reference](Reference/Engine/TEMPEST/SDK_API-registerPeer.md) for its full definition and the starter for the transport implementation.
+Keep includes at file scope. Registration makes the peer type available; [Network Map](../Interface/Network%20Map.md) configures a connection using it. [Building a Custom Peer](Building%20a%20Custom%20Peer.md) explains custom transports and protocol bridges. Use the [peer registration reference](Reference/Engine/TEMPEST/SDK_API-registerPeer.md) for the full definition.
 
-# Use Engine APIs
+# Engine APIs
 
 The **Engine Plugin SDK** exposes normal Engine services through `SDK_API`. In your starter, `engine/include/sdk/sdk_api.h` declares that interface, with supporting types and helpers alongside it. The generated reference explains their arguments and behavior.
 
@@ -265,7 +268,7 @@ Channel writes still obey authority. Ordinary updates use existing authority wit
 
 Accepted writes can run dependent calculations inline. Recording and telemetry follow asynchronously; device delivery belongs to your driver. Report feedback and failures separately from command acceptance. For fixed-channel preparation, use [DARTWIC Builder](../Engine/Advanced/DARTWIC%20Builder.md).
 
-# Build and inspect
+# Building and Installation
 
 Use [Packaging and Installation](Packaging%20and%20Installation.md) for tools, build commands, output layout, local installation, and releases.
 

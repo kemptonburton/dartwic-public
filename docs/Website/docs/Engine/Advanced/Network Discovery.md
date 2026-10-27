@@ -1,10 +1,10 @@
 ---
 summary: Find Engine endpoints with local UDP discovery and implement a discovery requester.
 created: 2026-10-26
-updated: 2026-10-26
+updated: 2026-10-26T21:52
 ---
 
-**Discovery** finds running Engines without requiring their addresses in advance. A short IPv4 UDP query collects address/base-port replies before normal connection. The standalone Python example uses only the standard library.
+**Discovery** finds running Engines before you know their addresses. An application sends an IPv4 UDP query, collects replies, then connects to a selected Engine using its advertised base port. Use this for an Engine chooser or a local-network scan; the Python example below uses only the standard library.
 
 TEMPEST client and peer libraries do not currently provide discovery APIs or announce themselves through this service. An application can implement its own UDP requester using the protocol below; the example is application code, not a built-in client or peer feature.
 
@@ -12,9 +12,9 @@ TEMPEST client and peer libraries do not currently provide discovery APIs or ann
 
 In DARTWIC, enable **Engine settings > Enable network discovery** and set **Network discovery port** (default `47600`). Restart the engine to apply changes. Its normal TEMPEST connection port can be different. Multiple servers can share the same discovery port.
 
-The Engine starts its responder after the built-in transports; shutdown closes the socket and joins its worker. A discovery bind or multicast-join failure logs a warning while ordinary connections remain available. Configure the Engine's TEMPEST bind IP as a concrete adapter address to restrict the listener, or `127.0.0.1` for local-only access.
+After restart, check that discovery started without a bind or multicast warning. Ordinary connections remain available if discovery fails. Use a concrete TEMPEST bind IP to restrict the responder to an adapter, or `127.0.0.1` for a local-only listener.
 
-# Query and collect replies
+# Discovery queries
 
 A **nonce** is a random ID for one discovery round. The server echoes it so the requester can match replies to its query.
 
@@ -45,7 +45,9 @@ A server echoes the nonce in its reply:
 }
 ```
 
-Use a nonempty `address` as the endpoint IP; otherwise use the UDP packet's source IP. The discovery port identifies the UDP query service, while `port` identifies the connection endpoint. `workspace_name` is the workspace folder's display name, without its path. It is optional for older responders; treat a missing value as unknown. Instance IDs identify a responder lifetime and change when it restarts; node names alone cannot distinguish multiple servers.
+Use a nonempty `address` as the endpoint IP; otherwise use the UDP packet's source IP. In the reply above, connect to that address on base port `7000`, then register normally.
+
+Keep the two ports distinct: the discovery port receives UDP queries, while `port` is the TEMPEST connection base port. `workspace_name` is a display name without a path and may be absent on older responders. Deduplicate by `instance_id`, not node name; an instance ID changes when the responder restarts.
 
 Queries are limited to 256 bytes, with a nonce of at most 64 bytes. Each server admits at most 64 replies per second. Collect periodically or on user request rather than continuously flooding queries. A reply is an unauthenticated location hint, not proof of compatibility, permissions or device health. No credentials are included.
 
@@ -136,10 +138,12 @@ if __name__ == "__main__":
 
 Run `python discover_tempest.py 127.0.0.1 192.168.1.20`, replacing the LAN address with one assigned to your computer. Omit it for a local-only search. For custom discovery ports, call `discover_tempest(["127.0.0.1", "192.168.1.20"], discovery_ports=(47600, 48700))` from your application.
 
+The script prints each responding instance, workspace/node names, and a list of `(address, base_port)` endpoints. Choose an endpoint and use [Client registration](Using%20TEMPEST.md#client-registration); discovery itself does not log in.
+
 This function blocks the caller during collection and closes every socket before returning. Run it on a background worker for a graphical application and outside control callbacks. It retains at most 128 server instances and 16 endpoints per instance. An empty result means no valid replies arrived during that round; it does not establish that no servers exist.
 
 # Network scope and fallback
 
 Discovery covers IPv4 on the local network. Loopback-bound servers reject non-loopback queries. Disabled or older responders, IPv6-only servers, routed networks, firewalls and multicast filtering can prevent replies. Keep a manual host/base-port connection option. Ordinary browser JavaScript cannot open these UDP sockets; a browser UI needs a native or backend discovery service. DARTWIC's web Interface discovers from its web host, not from the browser's computer.
 
-Local Windows responder/host tests cover multiple servers and custom ports. The Python example is checked against a local UDP fixture; cross-machine and other operating-system behavior require deployment testing.
+Check discovery from the adapters and machines you intend to support, including a restart and a custom discovery port. If no reply arrives, try the known address through ordinary TEMPEST connection before treating the Engine as unavailable.

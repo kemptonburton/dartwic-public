@@ -1,8 +1,8 @@
 ---
 title: once
-summary: Run a block once whenever the containing state is entered.
+summary: Run this block on its first visit during the containing runtime-section execution. Nested ordinary blocks do not reset it. Not allowed in functions, callbacks, calculations or events.
 created: 2026-08-04T17:38
-updated: 2026-10-22T17:41
+updated: 2026-10-26T22:01
 ---
 
 ## Syntax
@@ -13,11 +13,11 @@ once:
 
 ## Available in
 
-- State handlers
+- Task, state, loop, sequence and timeline runtime sections
 
 ## Example
 
 ```dcode
 once:
-    -- state-entry work
+    -- one-time work
 ```

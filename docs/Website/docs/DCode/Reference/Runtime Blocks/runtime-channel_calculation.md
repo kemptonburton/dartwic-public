@@ -2,7 +2,7 @@
 title: channel_calculation
 summary: Define a reactive calculation for a RAPID channel.
 created: 2026-08-04T17:38
-updated: 2026-10-22T18:14
+updated: 2026-10-26T22:01
 ---
 
 ## Syntax
@@ -30,11 +30,6 @@ Calculation state remains available between evaluations while the calculation is
 ## Reload behavior
 
 DARTWIC tracks changes to the block when loading the calculation.
-
-## Runtime sections
-
-- `depends_on`
-- `calculation body`
 
 ## Example
 

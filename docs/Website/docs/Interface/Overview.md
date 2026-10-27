@@ -1,14 +1,14 @@
 ---
 summary: Find the right view for your signals, automation, and recorded data.
 created: 2026-08-03T15:41
-updated: 2026-10-24T23:17
+updated: 2026-10-26T21:52
 ---
 
 The Interface is where you watch a system, operate it, and review what happened. Open resources from the sidebar and arrange them in tabs or panels to suit your work.
 
 For installation and your first connection, follow [First Session](../Getting%20Started/First%20Session.md).
 
-# Find the right page
+# Interface guides
 
 | You want to… | Read… |
 | --- | --- |

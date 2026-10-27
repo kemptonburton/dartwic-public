@@ -5,6 +5,11 @@
 
 namespace DARTWIC {
 namespace {
+constexpr const char* LOG_QUERY_OPERATION = "tempest-peer/argus/logs/query";
+constexpr const char* LOG_LIST_OPERATION = "tempest-peer/argus/logs/list";
+constexpr const char* LOG_TOPIC = "tempest-peer/argus/logs";
+constexpr const char* LOG_BATCH_TOPIC = "tempest-peer/argus/logs/batch";
+
 Value::Object logValue(const LogEntry& entry) {
     return {{"owner_node", entry.owner_node}, {"session", entry.session}, {"stream", entry.stream},
         {"channel", entry.channel}, {"level", entry.level}, {"text", entry.text},
@@ -105,20 +110,30 @@ struct EngineProtocol::Impl {
 
 EngineProtocol::EngineProtocol(TEMPEST::Peer& peer):impl_(std::make_shared<Impl>(peer)) {
     std::weak_ptr<Impl> weak=impl_;
-    for(const auto* name:{"tempest-peer/channels/upsert","tempest-peer/channels/remove","tempest-peer/channels/upsert-bulk",
-                         "tempest-peer/channels/query","tempest-peer/argus/query","tempest-peer/argus/action"}) {
+    // Use the codec's names so registration and outgoing requests cannot drift.
+    const EngineRequest requests[] = {
+        ChannelUpsert{}, ChannelRemove{}, ChannelBulkUpsert{},
+        ChannelQuery{}, ArgusQuery{}, ArgusAction{}
+    };
+    for (const auto& request : requests) {
+        const auto name = EngineContract::operation(request);
         peer.registerOperation(name,[weak,name](const Value::Object& args) {
             auto p=weak.lock();
             if(!p)throw TEMPEST::DisconnectedError("Engine Protocol was destroyed.");
             return p->dispatch(name,args);
         });
     }
-    for(const auto* name:{"tempest-peer/channels/updated","tempest-peer/channels/removed","tempest-peer/channels/samples",
-                         "tempest-peer/channels/snapshot",
-                         "tempest-peer/channels/generation","tempest-peer/argus/events"}) {
+    const EngineTelemetry telemetry_types[] = {
+        ChannelTelemetry{ChannelTelemetry::Kind::Upsert},
+        ChannelTelemetry{ChannelTelemetry::Kind::Remove},
+        ChannelTelemetry{ChannelTelemetry::Kind::BulkUpsert},
+        ChannelSnapshotTelemetry{}, FixedGenerationTelemetry{}, ArgusEventTelemetry{}
+    };
+    for (const auto& telemetry : telemetry_types) {
+        const auto name = EngineContract::topic(telemetry);
         peer.onTelemetry(name,[weak,name](const Value::Object& args){if(auto p=weak.lock())p->receive(name,args);});
     }
-    peer.registerOperation("tempest-peer/argus/logs/query", [weak](const Value::Object& args) {
+    peer.registerOperation(LOG_QUERY_OPERATION, [weak](const Value::Object& args) {
         auto p = weak.lock();
         if (!p) throw TEMPEST::DisconnectedError("Engine Protocol was destroyed.");
         LogHandlers handlers;
@@ -139,7 +154,7 @@ EngineProtocol::EngineProtocol(TEMPEST::Peer& peer):impl_(std::make_shared<Impl>
         for (const auto& entry : handlers.query(query)) rows.emplace_back(logValue(entry));
         return Value::Object{{"records", rows}};
     });
-    peer.registerOperation("tempest-peer/argus/logs/list", [weak](const Value::Object&) {
+    peer.registerOperation(LOG_LIST_OPERATION, [weak](const Value::Object&) {
         auto p = weak.lock();
         if (!p) throw TEMPEST::DisconnectedError("Engine Protocol was destroyed.");
         LogHandlers handlers;
@@ -150,7 +165,7 @@ EngineProtocol::EngineProtocol(TEMPEST::Peer& peer):impl_(std::make_shared<Impl>
             {"owner_node", stream.owner_node}, {"session", stream.session}, {"stream", stream.stream}});
         return Value::Object{{"streams", streams}};
     });
-    peer.onTelemetry("tempest-peer/argus/logs", [weak](const Value::Object& args) {
+    peer.onTelemetry(LOG_TOPIC, [weak](const Value::Object& args) {
         auto p = weak.lock();
         if (!p) return;
         LogHandlers handlers;
@@ -158,7 +173,7 @@ EngineProtocol::EngineProtocol(TEMPEST::Peer& peer):impl_(std::make_shared<Impl>
         if (!handlers.telemetry) return;
         handlers.telemetry(readLog(args));
     });
-    peer.onTelemetry("tempest-peer/argus/logs/batch", [weak](const Value::Object& args) {
+    peer.onTelemetry(LOG_BATCH_TOPIC, [weak](const Value::Object& args) {
         auto p = weak.lock();
         if (!p) return;
         LogHandlers handlers;
@@ -179,7 +194,7 @@ std::vector<LogEntry> EngineProtocol::Logs::query(LogQuery request) const {
         {"after", std::to_string(request.after)}, {"limit", std::to_string(request.limit)},
         {"channel", request.channel}, {"level", request.level},
         {"from_ns", std::to_string(request.from_ns)}, {"to_ns", std::to_string(request.to_ns)}};
-    const auto response = owner_->impl_->peer.call("tempest-peer/argus/logs/query", args);
+    const auto response = owner_->impl_->peer.call(LOG_QUERY_OPERATION, args);
     std::vector<LogEntry> records;
     const auto it = response.find("records");
     if (it == response.end()) return records;
@@ -190,7 +205,7 @@ std::vector<LogEntry> EngineProtocol::Logs::query(LogQuery request) const {
     return records;
 }
 std::vector<LogStream> EngineProtocol::Logs::list() const {
-    const auto result = owner_->impl_->peer.call("tempest-peer/argus/logs/list", {});
+    const auto result = owner_->impl_->peer.call(LOG_LIST_OPERATION, {});
     std::vector<LogStream> streams;
     auto found = result.find("streams");
     if (found == result.end()) return streams;
@@ -201,14 +216,14 @@ std::vector<LogStream> EngineProtocol::Logs::list() const {
     return streams;
 }
 void EngineProtocol::Logs::publish(LogEntry entry) const {
-    owner_->impl_->peer.publish("tempest-peer/argus/logs", logValue(entry));
+    owner_->impl_->peer.publish(LOG_TOPIC, logValue(entry));
 }
 void EngineProtocol::Logs::publishBatch(std::vector<LogEntry> entries) const {
     if (entries.empty()) return;
     Value::Array rows;
     rows.reserve(entries.size());
     for (const auto& entry : entries) rows.emplace_back(logValue(entry));
-    owner_->impl_->peer.publish("tempest-peer/argus/logs/batch", {{"records", rows}});
+    owner_->impl_->peer.publish(LOG_BATCH_TOPIC, {{"records", rows}});
 }
 EngineProtocol::~EngineProtocol()=default;
 void EngineProtocol::Channels::setHandlers(ChannelHandlers h)const{std::lock_guard lock(owner_->impl_->mutex);owner_->impl_->channel_handlers=std::move(h);}

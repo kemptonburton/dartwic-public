@@ -1,14 +1,14 @@
 ---
 summary: Understand inline reactions, scheduled releases, ordering, and completion.
 created: 2026-09-06T14:34
-updated: 2026-10-26T14:16
+updated: 2026-10-26T21:52
 ---
 
 Execution timing describes when work starts, what it waits for, and when its result becomes available. A pressure reading, a controller's next decision, and a graph update can happen at different times.
 
 **Inline** work runs within the call that triggered it. **Scheduled** work runs when its next iteration is due. **Asynchronous** work is handed to a background service. These distinctions help you put a response in the right place and measure the delay that matters.
 
-# What runs when
+# Execution paths
 
 | Work | Trigger | Timing boundary |
 | --- | --- | --- |
@@ -38,7 +38,16 @@ CAESAR is the Engine component that schedules tasks and manages their execution.
 
 Fixed-channel reads and writes in a CAESAR task occur at their executing lines. A later task failure does not roll back an accepted write. [Fixed and dynamic channels](Channels%20and%20Control.md#fixed-and-dynamic-channels) explains fixed storage and retained native bindings. [DARTWIC Builder](Advanced/DARTWIC%20Builder.md) prepares the known layout before the task starts.
 
-At 10 Hz, a periodic task has a nominal 100 ms period. A value arriving just after an iteration may wait until a later iteration to be observed. Execution time, operating-system scheduling, holds, and missed releases can add delay. Increasing the target frequency does not establish a guaranteed deadline.
+At 10 Hz, the nominal period is 100 ms. A value arriving just after a task reads its input may wait for the next iteration. To interpret the delay, separate when the iteration was due from when it actually ran:
+
+| Point in the cycle | Meaning |
+| --- | --- |
+| Planned release | The scheduled start of the iteration. |
+| Actual start | The callback begins; scheduling lateness has already occurred. |
+| Callback return | Its reads, writes, and synchronous reactions have finished. |
+| Device feedback | The equipment reports its response, potentially later. |
+
+Increasing target frequency changes the requested period; it does not establish a deadline for all four steps.
 
 Use task diagnostics such as actual frequency, execution time, missed cycles, callback failures, and independently sampled health to detect missed timing or failed execution. These observations do not identify the cause by themselves. DCode's `missed:` section can react to missed releases; it does not replay every missed sample. See [Periodic Tasks](../DCode/Tasks.md).
 
@@ -64,7 +73,7 @@ A missed handler cannot run while its thread is blocked. Requested priority infl
 
 # Task groups
 
-A **task group** coordinates existing tasks that need an order, such as read the device, calculate a command, then send it. Members keep their identities and schedules:
+A **task group** coordinates tasks that need an order, such as reading a device, calculating a command, then sending it. This declaration assumes `device_read`, `sample_control`, and `device_write` already exist. Members keep their identities and schedules:
 
 ```dcode
 task_group device_cycle:
@@ -81,10 +90,9 @@ A blocking member delays later members. Ordering does not require earlier member
 
 For declaration details and restrictions, use the [task-group reference](../DCode/Reference/Runtime%20Blocks/runtime-task_group.md).
 
+## Read-control-write example
 
-## Try a read-control-write cycle
-
-This complete demo copies a simulated measurement through three tasks. Save it as `docs_cycle.dcode`, activate it, and start all three tasks. Their group puts them in read, control, write order at 10 Hz.
+This complete demo needs no device: it creates its own simulated measurement and output channels. Save it as `scripts/docs_cycle.dcode` in a test project, activate it, and start all three tasks. Their group puts them in read, control, write order at 10 Hz.
 
 ```dcode
 task_periodic docs_cycle_read 10:
@@ -107,7 +115,7 @@ task_group docs_cycle:
 
 The feedback should follow twice the measurement. A live display can span adjacent updates, so compare recorded samples when investigating individual cycles. The last task only copies a value; it does not simulate a device's physical response.
 
-Stop `docs_cycle_read` while the others run. The old measurement remains and the later tasks can still execute. That demonstrates why a real controller needs acquisition validity and freshness checks in addition to task order. Stop all three tasks when finished.
+Try one variation: stop `docs_cycle_read` while the other two tasks run. The measurement remains at its last value and later tasks can still execute. Task order alone therefore does not establish that acquisition succeeded or supplied fresh data. Stop all three tasks when finished.
 
 To try the prepared path, select Native C++ and activate the same file again. Its direct output declarations supply the fixed channels used by the other tasks. Check Builder and the editor's bindings, then repeat the observations. See [Native C++ Execution](../DCode/Native%20C%2B%2B%20Execution.md) for toolchain setup.
 
@@ -121,7 +129,7 @@ Fixed reads observe the live value when their DCode line executes. A stale fixed
 
 Authority-denied value writes leave the live value unchanged and do not publish a successful commit notification. This applies to ordinary and prepared fixed operations. An accepted write still does not establish that hardware applied the command.
 
-Command ownership, a local channel commit, and a successful physical action are separate facts. Choose fault responses from the hardware's hazards and verify them with device feedback; a universal zero output is not a safe default for every device. The Modbus driver guide describes software and protocol behavior; verify the physical response on your own equipment.
+Choose the output response for your equipment and verify it through feedback. A zero command is not suitable for every device. [Channels and Control](Channels%20and%20Control.md) explains write authority; the [driver guide](../Plugins/Building%20a%20Hardware%20Driver.md) covers delivery and readback.
 
 # Hardware response
 

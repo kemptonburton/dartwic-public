@@ -1,12 +1,12 @@
 ---
 summary: Save runs, browse recorded data, and choose what to export or delete.
 created: 2026-08-03T15:41
-updated: 2026-10-24
+updated: 2026-10-26T21:52
 ---
 
 Open **Data** to review recordings on the connected Engine. **Databases** browse the underlying history. **Dataframes** save named time ranges and filters so you can return to a test or export it later.
 
-# Choose a database
+# Databases
 
 | Database | Contains |
 | --- | --- |
@@ -18,7 +18,7 @@ Choose a database, set a calendar range, and filter by source or text as needed.
 
 Event and log viewers load pages. The calendar separates the selected query range, loaded coverage, and currently visible rows. Scrolling does not change your query dates. These views read this Engine's retained history, including remote data recorded here; they do not query another node's complete archive.
 
-# Mark a live run
+# Live run dataframes
 
 1. Open **Data → Dataframes → New dataframe**.
 2. Choose **Start now**, name the run, and optionally choose channels.
@@ -35,7 +35,7 @@ local run = startDataFrame("Tank fill", {"channels": ["tank_pressure"], "events"
 stopDataFrame(run)
 ```
 
-# Save existing history
+# Dataframes from recorded history
 
 Choose **From history**, enter a name and time range, and select channels and filters. A dataframe is a saved view; it does not copy or tag samples. An empty channel list includes all recorded channels in its range. Overlapping frames can show the same records.
 
@@ -43,7 +43,7 @@ Choose **From history**, enter a name and time range, and select channels and fi
 
 Open a frame to review its graph, channels, events, and logs. Add checked channels to the plot or drag them onto it. **Select all channels** includes off-screen matching rows; in the dataframe list, **Select visible dataframes** checks only on-screen frames. Selections survive scrolling and search changes; **Clear selection** clears them.
 
-# Choose an export
+# Export formats
 
 | Starting point | Scope and files |
 | --- | --- |
