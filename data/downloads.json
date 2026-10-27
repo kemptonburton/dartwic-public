@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-27T01:25:23.606Z",
+  "generatedAt": "2026-10-27T01:25:36.079Z",
   "repositories": {
     "kemptonburton/dartwic-ethercat-plugin": [
       {
@@ -222,6 +222,46 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.0/SHA256SUMS.txt",
+            "size": 252,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "v1.0.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/tag/v1.0.1",
+        "prerelease": false,
+        "published_at": "2026-10-27T01:25:32Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-labjack-plugin/zipball/v1.0.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-labjack-plugin/tarball/v1.0.1",
+        "assets": [
+          {
+            "name": "plugin-linux-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.1/plugin-linux-x64.zip",
+            "size": 1471467,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.1/plugin-win32-x64.zip",
+            "size": 3237930,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.1/plugin.json",
+            "size": 568,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-labjack-plugin-1.0.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.1/release-manifest-labjack-plugin-1.0.1.json",
+            "size": 1471,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.0.1/SHA256SUMS.txt",
             "size": 252,
             "state": "uploaded"
           }
