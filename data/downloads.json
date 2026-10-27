@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-27T01:25:09.645Z",
+  "generatedAt": "2026-10-27T01:25:23.606Z",
   "repositories": {
     "kemptonburton/dartwic-ethercat-plugin": [
       {
@@ -264,6 +264,46 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.1/SHA256SUMS.txt",
+            "size": 252,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "v1.0.2",
+        "html_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/tag/v1.0.2",
+        "prerelease": false,
+        "published_at": "2026-10-27T01:25:20Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-modbus-tcp-client/zipball/v1.0.2",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-modbus-tcp-client/tarball/v1.0.2",
+        "assets": [
+          {
+            "name": "plugin-linux-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.2/plugin-linux-x64.zip",
+            "size": 1707316,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.2/plugin-win32-x64.zip",
+            "size": 3305247,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.2/plugin.json",
+            "size": 957,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-modbus-plugin-1.0.2.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.2/release-manifest-modbus-plugin-1.0.2.json",
+            "size": 1471,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.0.2/SHA256SUMS.txt",
             "size": 252,
             "state": "uploaded"
           }
