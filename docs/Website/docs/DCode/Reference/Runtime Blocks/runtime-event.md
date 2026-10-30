@@ -2,7 +2,7 @@
 title: event
 summary: Declare a keyed ARGUS event with board-state and firing-state channels.
 created: 2026-09-04T17:13
-updated: 2026-10-26T22:01
+updated: 2026-10-28T19:18
 ---
 
 ## Syntax
@@ -21,13 +21,13 @@ Compiled triggers and reactions use the same event lifecycle as Lua. Only an exa
 
 ## Lifecycle
 
-The event channel is 1 while the event is on the active board; silencing removes it from that board. The firing channel stays 1 while a maintained trigger condition is asserted, or for five seconds after the latest one-shot trigger. Clearing the maintained condition does not cancel an unexpired pulse. Acknowledgement does not clear firing; resolution requires acknowledgement and a stopped firing state.
+The event channel is 1 while the event is on the active board; silencing removes it from that board. The firing channel reflects the declaration firing lifecycle. A false trigger condition, explicit stop, or configured inactivity timeout ends firing. Zero timeout requires a false condition or explicit stop. Acknowledgement does not clear firing; resolution requires acknowledgement and a stopped firing state.
 
 ## Rules
 
-- A populated trigger section runs at activation and synchronously after accepted dependency value writes. Return numeric 1 to assert the condition and numeric 0 to clear it. Staying true does not report another detection; other numeric values, null, no return, or an execution error deassert it. Lua also converts numeric strings, which Native C++ rejects; use explicit numeric returns.
-- Writing 1 directly to <event_key>_trigger or executing trigger <event_key> fires once and refreshes the five-second pulse window. The trigger channel automatically resets to 0, including after a calculated assertion; observe <event_key>_firing for the maintained state. Writing 0 directly does not clear a maintained condition or cancel a pulse.
-- The optional separation_seconds defaults to 0 and controls ARGUS record quiet expiry, independently of the generated firing signal. Use 0 for a maintained condition. A positive interval can end the ARGUS occurrence while the generated firing channel remains asserted. Pulse-window expiry explicitly stops the occurrence when no maintained condition remains, even with separation_seconds set to 0.
+- A populated trigger section runs at activation and synchronously after accepted dependency value writes. Return numeric 1 to assert the condition and numeric 0 to clear it. Each evaluation returning 1 reports another detection; other numeric values, null, no return, or an execution error deassert it. Lua also converts numeric strings, which Native C++ rejects; use explicit numeric returns.
+- Writing 1 directly to <event_key>_trigger or executing trigger <event_key> reports a detection and refreshes the configured inactivity deadline. The trigger channel automatically resets to 0, including after a calculated assertion; observe <event_key>_firing for the maintained state. Automatic trigger reset and direct writes of 0 do not end firing.
+- The optional firing_timeout_seconds defaults to 0. Positive values end firing after that many seconds without a declaration detection, including when the last trigger evaluation was true. Zero disables inactivity expiry. Generic reporters sharing this event identity do not renew the declaration binding or invoke its reactions.
 
 ## Generated channels
 

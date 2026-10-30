@@ -2,7 +2,7 @@
 title: Events
 summary: Query and manage event records exposed by the engine.
 created: 2026-08-04T17:33
-updated: 2026-10-20T18:59
+updated: 2026-10-29T00:32
 ---
 
 | Operation | Description |
@@ -17,7 +17,7 @@ updated: 2026-10-20T18:59
 | [`argus/query-events/start`](argus/query-events/start.md) | Starts a detached ARGUS event query job. |
 | [`argus/release-hold`](argus/release-hold.md) | Releases hold. |
 | [`argus/respond-to-prompt`](argus/respond-to-prompt.md) | Responds to prompt. |
-| [`argus/update-event-status`](argus/update-event-status.md) | Updates event status. |
+| [`argus/update-event-status`](argus/update-event-status.md) | Updates event status. Resolving a retained remote event while its owner is |
 | [`dartwic/delete-console-message`](dartwic/delete-console-message.md) | Deletes console message. |
 | [`dartwic/release-hold`](dartwic/release-hold.md) | Releases hold. |
 | [`dartwic/respond-to-prompt`](dartwic/respond-to-prompt.md) | Responds to prompt. |

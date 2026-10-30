@@ -2,7 +2,7 @@
 title: SDK_API
 summary: Host API available to engine plugins and their module instances.
 created: 2026-09-04T17:13
-updated: 2026-10-27T14:08
+updated: 2026-10-28T22:20
 ---
 
 Registration functions qualify local identifiers as `<plugin-id>.<local-id>`. Channel authority calls require an active task or plugin loop controller.
@@ -72,14 +72,104 @@ class SDK_API {
             DCodePreparedFunctionHandler prepared_handler = {}
         ) = 0;
         virtual std::string registerLoop(std::string local_id, std::string name, PluginLoopDefinition definition) = 0;
-        virtual int consoleError(
-            std::string message_title,
-            std::string message_description,
-            std::vector<std::string> tags,
-            std::string resolution,
-            int auto_acknowledge,
-            double separation_seconds
-        ) = 0;
+        virtual int message(const std::string& title, const std::string& description,
+            nlohmann::json channels = nlohmann::json::array(), const std::string& resolution = "",
+            int auto_acknowledge = 0,
+            double firing_timeout_seconds = 5, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") {
+            return reportEvent("message", title, description, channels, resolution, auto_acknowledge,
+                firing_timeout_seconds, system, subsystem);
+        }
+        virtual int warning(const std::string& title, const std::string& description,
+            nlohmann::json channels = nlohmann::json::array(), const std::string& resolution = "",
+            int auto_acknowledge = 0,
+            double firing_timeout_seconds = 5, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") {
+            return reportEvent("warning", title, description, channels, resolution, auto_acknowledge,
+                firing_timeout_seconds, system, subsystem);
+        }
+        virtual int error(const std::string& title, const std::string& description,
+            nlohmann::json channels = nlohmann::json::array(), const std::string& resolution = "",
+            int auto_acknowledge = 0,
+            double firing_timeout_seconds = 5, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") {
+            return reportEvent("error", title, description, channels, resolution, auto_acknowledge,
+                firing_timeout_seconds, system, subsystem);
+        }
+        virtual int abort(const std::string& title, const std::string& description,
+            nlohmann::json channels = nlohmann::json::array(), const std::string& resolution = "",
+            int auto_acknowledge = 0,
+            double firing_timeout_seconds = 5, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") {
+            return reportEvent("abort", title, description, channels, resolution, auto_acknowledge,
+                firing_timeout_seconds, system, subsystem);
+        }
+        virtual int hold(const std::string& title, const std::string& description,
+            nlohmann::json channels = nlohmann::json::array(), const std::string& resolution = "",
+            int auto_acknowledge = 0, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") {
+            throw std::runtime_error("ARGUS hold is not supported by this host.");
+        }
+        virtual double promptNumerical(const std::string& title, const std::string& description,
+            nlohmann::json channels = nlohmann::json::array(), const std::string& resolution = "",
+            int auto_acknowledge = 0, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") {
+            throw std::runtime_error("ARGUS promptNumerical is not supported by this host.");
+        }
+        virtual int promptYesNo(const std::string& title, const std::string& description,
+            nlohmann::json channels = nlohmann::json::array(), const std::string& resolution = "",
+            int auto_acknowledge = 0, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") {
+            throw std::runtime_error("ARGUS promptYesNo is not supported by this host.");
+        }
+        virtual std::string promptString(const std::string& title, const std::string& description,
+            nlohmann::json channels = nlohmann::json::array(), const std::string& resolution = "",
+            int auto_acknowledge = 0, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") {
+            throw std::runtime_error("ARGUS promptString is not supported by this host.");
+        }
+        virtual std::string promptOptions(const std::string& title, const std::string& description,
+            const std::vector<std::string>& options,
+            nlohmann::json channels = nlohmann::json::array(), const std::string& resolution = "",
+            int auto_acknowledge = 0, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") {
+            throw std::runtime_error("ARGUS promptOptions is not supported by this host.");
+        }
+        virtual int releaseHold(const std::string& title) {
+            throw std::runtime_error("ARGUS releaseHold is not supported by this host.");
+        }
+
+    protected:
+        static nlohmann::json eventGraphs(const nlohmann::json& channels) {
+            if (channels.is_null() || (channels.is_array() && channels.empty())) return nlohmann::json::array();
+            if (!channels.is_array()) throw std::invalid_argument("ARGUS channels must be an array.");
+            const bool grouped = channels.front().is_array();
+            for (const auto& group : channels) {
+                if (grouped) {
+                    if (!group.is_array()) throw std::invalid_argument("ARGUS graph groups must be arrays of strings.");
+                    for (const auto& series : group)
+                        if (!series.is_string()) throw std::invalid_argument("ARGUS graph series must be strings.");
+                } else if (!group.is_string()) {
+                    throw std::invalid_argument("ARGUS graph series must be strings.");
+                }
+            }
+            return grouped ? channels : nlohmann::json::array({channels});
+        }
+
+    private:
+        int reportEvent(const std::string& type, const std::string& title, const std::string& description,
+            const nlohmann::json& channels, const std::string& resolution, int auto_acknowledge,
+            double firing_timeout_seconds, const std::string& system, const std::string& subsystem) {
+            const auto result = recordEvent({{"type", type}, {"title", title}, {"description", description},
+                {"graphs", eventGraphs(channels)}, {"resolution", resolution},
+                {"auto_acknowledge_seconds", auto_acknowledge}, {"firing_timeout_seconds", firing_timeout_seconds},
+                {"system", system}, {"subsystem", subsystem},
+                {"actions", type == "abort" ? std::vector<std::string>{"acknowledge", "delete"}
+                    : std::vector<std::string>{"acknowledge", "silence", "delete"}}});
+            return result.is_object() && !result.empty() ? 1 : 0;
+        }
+
+    public:
         virtual std::shared_ptr<Modules::BaseModule> getModuleInstance(const std::string& instance_name) = 0;
         virtual std::vector<ModuleInstanceSummary> getModuleInstances(const std::string& plugin_id = "") = 0;
         virtual void upsertChannelValueBulk(const std::string& channel,
@@ -89,6 +179,8 @@ class SDK_API {
         virtual void setChannel(const std::string& channel, std::optional<ChannelValue> value = std::nullopt) = 0;
         virtual void freeChannel(const std::string& channel) = 0;
         virtual nlohmann::json recordEvent(nlohmann::json event) { return nlohmann::json::object(); }
+        virtual bool stop_event_firing(const std::string& title, const std::string& system = "SOFTWARE",
+            const std::string& subsystem = "DCODE") { return false; }
         virtual bool updateEventStatus(const std::string& event_id, const std::string& status) {
             (void)event_id;
             (void)status;
@@ -122,6 +214,15 @@ class SDK_API {
             (void)channel;
             (void)level;
             return false;
+        }
+        bool log(const std::string& stream, const std::string& text) {
+            return writeLog(stream, text + "\n", "stdout", "info");
+        }
+        bool log_warning(const std::string& stream, const std::string& text) {
+            return writeLog(stream, text + "\n", "stdout", "warning");
+        }
+        bool log_error(const std::string& stream, const std::string& text) {
+            return writeLog(stream, text + "\n", "stderr", "error");
         }
         virtual void registerChannelReferenceSource(std::string local_id,
             std::function<void(ChannelReferenceSink&)> collect) {

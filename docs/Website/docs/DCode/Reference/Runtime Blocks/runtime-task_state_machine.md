@@ -2,7 +2,7 @@
 title: task_state_machine
 summary: Define a named-state CAESAR task in DCode.
 created: 2026-08-04T17:38
-updated: 2026-10-26T22:01
+updated: 2026-10-27T16:09
 ---
 
 ## Syntax

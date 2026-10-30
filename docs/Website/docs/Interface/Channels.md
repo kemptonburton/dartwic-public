@@ -1,7 +1,7 @@
 ---
 summary: Find signals, understand their status, and inspect or change their values.
 created: 2026-09-04T17:13
-updated: 2026-10-27T03:58
+updated: 2026-10-27T21:40
 ---
 
 A channel is a named signal: a measurement, command, task status, or calculated value. Open **Channels** to find it and see where they come from and what is controlling them.
@@ -56,7 +56,7 @@ A **remote** node is another DARTWIC Engine, or a custom outside process, that c
 
 Remote nodes are implemented through **TEMPEST Peers**. A peer refers to a continuous monitored connection that occurs in both directions. While your Interface is considered a client because it only sends commands in one direction, a TEMPEST Peer can send and receive commands in both directions.
 
-In reality, you will only use local nodes, unless you configure a TEMPEST Peer connection in the [Network Map](Network%20Map.md) (shown below). If you want to read more about TEMPEST Peers, check these out: [TEMPEST Peer](../Engine/Reference/TEMPEST/Telemetry/TEMPEST%20Peer.md), [C++ TEMPEST Peer](../Clients/C++%20TEMPEST%20Peer.md), and [Using TEMPEST](../Engine/Advanced/Using%20TEMPEST.md).
+In reality, you will only use local nodes, unless you configure a TEMPEST Peer connection in the [Network Map](Network%20Map.md) (shown below). If you want to read more about TEMPEST Peers, check these out: [TEMPEST Peer](../Engine/Reference/TEMPEST/Telemetry/TEMPEST%20Peer.md), [C++ Engine Protocol Peer](../Clients/C%2B%2B%20Engine%20Protocol%20Peer.md), and [Using TEMPEST](../Engine/Advanced/Using%20TEMPEST.md).
 
 ![](_attachments/network-map-updated.png)
 
@@ -174,7 +174,7 @@ The Config Map puts a module's settings and linked task mappings on one sheet. P
 
 Right-click a channel and choose **Show config…** to open Config Map with that channel as the search. Matching sheets are selected and the matching field is brought into view.
 
-Config options depend on the plugin. If the plugin does not use the shared `Config Map` APIs, then a **Open Config** button leads to its dedicated view when no configuration table is available.
+Config options depend on the plugin. A plugin with no settings panel shows **No config**. If it provides a custom settings panel without a Config Map, **Open editor** leads to that view. LabJack and EtherCAT expose their discovery settings in the map; saved discovery changes take effect after an Engine restart.
 
 Config from all over the project is pulled from modules, tasks, and plugins, and shown here. Edit in the map view, see the changes in the task. The interface is not storing the config in a separate place, its just another way to view and edit existing config.
 

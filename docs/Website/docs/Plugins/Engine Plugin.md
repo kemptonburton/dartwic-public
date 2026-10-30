@@ -1,6 +1,6 @@
 ---
 summary: Follow the Engine plugin entry point, registration flow, and SDK services.
-updated: 2026-10-27T15:01
+updated: 2026-10-29T01:24
 created: 2026-09-06T14:32
 ---
 
@@ -260,14 +260,14 @@ For example, a simulated publisher can update a channel and write a log through 
 using DARTWIC::API::ChannelField;
 dartwic->upsertChannelField("demo_temperature", ChannelField::VALUE, 23.5);
 dartwic->upsertChannelField("demo_temperature", ChannelField::UNITS, std::string("degC"));
-const bool queued = dartwic->writeLog("Setup", "Temperature source ready");
+const bool accepted = dartwic->log("Setup", "Temperature source ready");
 ```
 
-`queued` reports whether ARGUS accepted the log entry for asynchronous writing.
+`accepted` reports whether ARGUS accepted the log line for asynchronous writing. `log` appends a newline; use `writeLog` for raw text or an explicit output channel and level.
 
-Channel writes still obey authority. Ordinary updates use existing authority without acquiring it. Prepare fixed handles and device resources during configuration; explicitly acquire publishing authority on each start before ordinary sample writes. [Channels and Control](../Engine/Channels%20and%20Control.md#native-daq-with-fixed-channels) contains the proposed native DAQ walkthrough and four optional-value authority operations. That revision is under review; its new overloads and lifecycle behavior are not yet uniformly implemented in the SDK.
+Channel writes still obey authority. Ordinary updates use existing authority without acquiring it. Prepare fixed handles and device resources during configuration; explicitly acquire publishing authority on each start before ordinary sample writes. The SDK's `commandChannel`, `setChannel`, `overrideChannel`, and `freeChannel` operations accept names or retained fixed handles, with or without a value. [Channels and Control](../Engine/Channels%20and%20Control.md#native-daq-with-fixed-channels) explains the native DAQ lifecycle and atomic authority/write behavior.
 
-Accepted writes can run dependent calculations inline. Recording and telemetry follow asynchronously; device delivery belongs to your driver. Report feedback and failures separately from command acceptance. For fixed-channel preparation, use [DARTWIC Builder](../Engine/Advanced/DARTWIC%20Builder.md).
+Accepted writes can run dependent calculations inline. Recording and telemetry follow asynchronously; device delivery belongs to your driver. Report feedback and failures separately from command acceptance. For fixed-channel preparation, use [Native C++ Execution](../DCode/Native%20C%2B%2B%20Execution.md#build-and-activation).
 
 # Building and Installation
 
@@ -275,7 +275,7 @@ Use [Packaging and Installation](Packaging%20and%20Installation.md) for tools, b
 
 After installation or an update, restart the selected Engine and check that the plugin loaded. Then configure and exercise the contributions you added. If loading fails, check the Engine log for ABI, dependency, or entry-point errors; [Plugins](../Interface/Plugins.md) explains installed and loaded states.
 
-For the `echo` registration above, an already connected client can check dispatch:
+For the `echo` registration above, an already [connected Python client](../Clients/Python%20Client.md#connect) can check dispatch:
 
 ```python
 response = client.operation("example_device_plugin.echo", {"message": "hello"})
@@ -284,6 +284,10 @@ print(response.payload["echo"]["message"])  # hello
 ```
 
 This checks the registered handler. Test each task, device, or UI contribution separately before treating the whole plugin as verified.
+
+# Events and Logs
+
+Use the DCode-named SDK helpers `message`, `warning`, `error`, and `abort` to report operator events. `hold`, `releaseHold`, and the typed `promptNumerical`, `promptYesNo`, `promptString`, and `promptOptions` helpers cover operator workflows; `stop_event_firing` ends a firing occurrence. SDK holds and prompts block their calling C++ thread, so use a worker or sequence that can wait. [Events and Logs](../Engine/Events%20and%20Logs.md#engine-plugin-calls) explains argument order, graphs, results, and completion. The [event reference](Reference/Engine/Events/Overview.md) lists complete signatures. Use `log`, `log_warning`, and `log_error` for text that does not need an event lifecycle.
 
 # Reference
 

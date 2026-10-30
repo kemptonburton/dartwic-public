@@ -1,6 +1,6 @@
 ---
 summary: Connect your equipment, write control logic, and build a workspace your team can use.
-updated: 2026-10-26T21:52
+updated: 2026-10-28T23:34
 created: 2026-09-04T17:13
 ---
 
@@ -26,7 +26,7 @@ You can put that pressure on a graph, show it beside the valve on a schematic, o
 
 A **workspace** is the folder that keeps your projects and shared resources together. Each **project** holds a setup's scripts, tasks, device configuration, and schematics. For example, you could keep separate projects for test stand A and test stand B in the same workspace. An **instance** holds the local configuration that tells an Engine installation which workspace and project to open, along with its local settings and runtime data.
 
-During a run, channel history, events, and logs help explain what happened. You can review a time range and export the measurements alongside the events from that run.
+During a run, channel history, events, and logs help explain what happened. You can review a time range and export the measurements alongside the events from that run. Read more at [Configuration and Storage](../Engine/Configuration%20and%20Storage.md).
 
 # Engine subsystems
 
@@ -48,7 +48,7 @@ You can then view all channel data alongside events, logs, and labeled time rang
 
 # Example workspace
 
-The [example workspace](Example%20Workspace.md) includes a simulated test stand with sensors, valves, a fill-and-ignition sequence, and faults you can inject. Start there to see the pieces working together, then follow an exercise to change a calculation or controller.
+The [example workspace](https://github.com/kemptonburton/dartwic-example-workspace) includes a simulated test stand with sensors, valves, a fill-and-ignition sequence, and faults you can inject. Its repository contains setup instructions and walkthroughs. Start there to see the pieces working together, then follow an exercise to change a calculation or controller.
 
 For a guided setup, [First Session](First%20Session.md) walks through installing an Interface, starting a local Engine or connecting to an existing one, and setting up your first workspace. You do not need to write a hardware driver to begin.
 
@@ -63,7 +63,7 @@ Start with an existing driver and configure a project. When you need something c
 | Give operators a custom page, task editor, or schematic node | An [Interface plugin](../Plugins/Interface%20Plugin.md). |
 | Query data from another process | The [Python client](../Clients/Python%20Client.md). |
 | Build a separate web dashboard | The [React client](../Clients/React%20Client.md). |
-| Connect an external C++ node using the normal Engine transport | The [C++ TEMPEST peer guide](../Clients/C%2B%2B%20TEMPEST%20Peer.md). |
+| Connect an external C++ node using the normal Engine transport | The [C++ TEMPEST peer guide](../Clients/C%2B%2B%20Engine%20Protocol%20Peer.md). |
 | Carry peer frames over radio, serial, or another custom link | The [TEMPEST peer guide](../Engine/Networking%20and%20Peers.md). |
 
 A **plugin** is an installed package that extends DARTWIC. They can be installed directly from the interface, adding device drivers, new task types, and much more to your workspace.
@@ -86,7 +86,46 @@ Most things in DARTWIC can be augmented through Interface and Engine plugins. If
 
 [Tracking a Workspace in GitHub](Tracking%20a%20Workspace%20in%20GitHub.md) explains how to share the whole workspace, including its projects and shared resources, between machines and with your team.
 
-# Documentation, bugs and feedback
+# Updates
+
+Updates are published on [GitHub Releases](https://github.com/kemptonburton/dartwic-public/releases), with release notes and downloadable packages. You can also browse the [release history](https://kemptonburton.com/releases). The Engine and Interface have separate versions and can be updated independently; [Compatibility, Licensing, and Tiers](Compatibility%2C%20Licensing%2C%20and%20Tiers.md#versioning-and-compatibility) explains their compatibility requirements.
+
+Visit the [DARTWIC Downloads page](https://kemptonburton.com/areas/dartwic/downloads) for the latest Engine, Interface, and client releases.
+
+## Updating the Interface and Engine
+
+Open the **version menu** by clicking the Interface version number, or open **Settings → General**. Choose **Check for updates** in the version menu to refresh the available releases.
+
+![](_attachments/Pasted%20image%2020261027191838.png)
+
+Select a release in the **Interface** or **Engine** version selector. The document icon beside a release opens its notes. 
+
+![](_attachments/Pasted%20image%2020261027191957.png)
+
+You can then click the download/update action and review the confirmation and any compatibility messages.
+
+Confirm **Download and Install** for the Interface or **Download and Restart** for the Engine. DARTWIC downloads and verifies the package before applying it.
+
+| Component | What updates |
+| --- | --- |
+| Interface | The desktop app or Webserver Interface host you are using. It reloads the UI or restarts its host as required. A browser connection updates the server hosting that Interface. |
+| Engine | The connected Engine, or the selected local Engine when disconnected in the desktop Interface. A connected Engine restarts and the Interface reconnects automatically; a disconnected local Engine is restarted if it was running. |
+
+Save your work and finish time-sensitive operations before updating an Engine: the restart interrupts its running tasks and connections. Updating a connected Engine or Webserver Interface requires administrator access. Read any installation-lock or retry message if another instance is using the same Engine installation.
+
+## Update Files
+
+Updates are stored on the computer hosting the component being updated, separately from portable workspace content.
+
+| Location | Contents |
+| --- | --- |
+| `<interface>/.dartwic-updates/` | Download staging, update status, logs, and recovery files for the Interface. |
+| `<interface>/.dartwic-ui/` | Versioned UI packages used by updates that can reload without replacing the whole host. |
+| `<instance>/.dartwic-updates/` | Download staging, status, logs, and backups used when updating a connected Engine. |
+
+A disconnected local Engine update can use a temporary preparation instance instead. The resulting Engine software is installed into its Engine folder; workspace files and instance recordings remain separate from the managed software. [Configuration and Storage](../Engine/Configuration%20and%20Storage.md) explains those folders.
+
+# Documentation, Bugs and Feedback
 
 Open the Interface's version menu or General settings for **Docs**, **Report a bug**, and **Give feedback**. 
 

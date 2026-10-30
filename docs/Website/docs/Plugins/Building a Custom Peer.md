@@ -1,7 +1,7 @@
 ---
 summary: Build custom transports and bridges with the shared DARTWIC protocol API.
 created: 2026-10-27
-updated: 2026-10-27T16:08
+updated: 2026-10-28T20:05
 ---
 
 A custom peer plugin adds a connection type to Network Map. It implements the link to your application or device and uses the shared DARTWIC protocol for channels, events, logs, and commands.
@@ -63,7 +63,7 @@ Peer connects your transport internally. Use `receive(message)` for decoded DART
 
 Register the factory with `dartwic->registerPeerTransport(...)` in the plugin's `onPluginLoaded()`. When an operator connects through Network Map, the Engine calls that factory, attaches a Peer to the returned transport, and attaches EngineProtocol with its RAPID/ARGUS handlers.
 
-Your transport only moves DARTWIC messages. The remote Engine has the same three objects. For a remote C++ program, `PeerClient` creates Peer and EngineProtocol around your supplied transport, with your application handlers instead of RAPID/ARGUS. You do not create another Peer inside the transport class.
+Your transport only moves DARTWIC messages. The remote Engine has the same three objects. For a remote C++ program, `EngineProtocolPeer` creates Peer and EngineProtocol around your supplied transport, with your application handlers instead of RAPID/ARGUS. You do not create another Peer inside the transport class.
 
 ## Protocol Bridge Objects
 
@@ -98,6 +98,7 @@ void MyPlugin::onPluginLoaded() {
     dartwic->registerPeerTransport({
         .id = "radio_link",
         .name = "Radio Link",
+        // Defaults shown when the operator configures this connection.
         .default_config = {
             {"node_name", "REMOTE_ENGINE"},
             {"port", "COM7"},
@@ -106,6 +107,7 @@ void MyPlugin::onPluginLoaded() {
         .protocol_id = "tempest.engine",
         .protocol_version = DARTWIC::EngineContract::version,
         .engine_protocol = true,
+        // Construct the link when a connection is opened.
         .create = [](const nlohmann::json& config) {
             return std::make_shared<RadioTransport>(config);
         }
@@ -170,7 +172,9 @@ public:
         if (message.deadline <= std::chrono::steady_clock::now()) {
             throw std::runtime_error("Radio message deadline expired");
         }
+
         auto encoded = encodeMessage(message); // Message envelope -> wire bytes.
+
         // Queue promptly. The radio worker frames/writes the bytes; the remote
         // transport decodes them and delivers the Message to its own Peer.
         if (!radio_.tryQueue(std::move(encoded), message.deadline)) {
@@ -179,6 +183,7 @@ public:
         }
     }
 
+    // Join I/O before transport callbacks can be destroyed.
     void stop() override {
         radio_.stop();       // Cancel I/O, join worker, discard queued frames.
     }
@@ -224,14 +229,17 @@ To connect an application instead of a second Engine, reuse the same `RadioTrans
 
 ```cpp
 #include "RadioTransport.h"
-#include <dartwic/PeerClient.h>
+#include <dartwic/EngineProtocolPeer.h>
 #include <memory>
 
+// Configure the application end of the radio link.
 auto transport = std::make_shared<RadioTransport>(nlohmann::json{
     {"port", "COM4"},
     {"baud_rate", 115200}
 });
-DARTWIC::PeerClient peer({
+
+// Use the shared Engine protocol over this link.
+DARTWIC::EngineProtocolPeer peer({
     .node_name = "FLIGHT_COMPUTER",
 }, transport);
 
@@ -249,9 +257,9 @@ peer.channels().publishChannelTelemetry({
 peer.stop();
 ```
 
-This is a setup/publication/shutdown excerpt, not a complete sampling loop. Your application supplies `temperature` and its Unix-nanosecond `measuredAt`. `PeerClient` creates the shared `Peer` and `EngineProtocol` around the transport you supplied. Its `channels()`, `argus()`, and `logs()` methods expose that protocol; they do not belong to the radio transport.
+This is a setup/publication/shutdown excerpt, not a complete sampling loop. Your application supplies `temperature` and its Unix-nanosecond `measuredAt`. `EngineProtocolPeer` creates the shared `Peer` and `EngineProtocol` around the transport you supplied. Its `channels()`, `argus()`, and `logs()` methods expose that protocol; they do not belong to the radio transport.
 
-Follow the [C++ TEMPEST Peer](../Clients/C++%20TEMPEST%20Peer.md) client for handlers, snapshots, and shutdown.
+Follow the [C++ Engine Protocol Peer](../Clients/C%2B%2B%20Engine%20Protocol%20Peer.md) client for handlers, snapshots, and shutdown.
 
 # Protocol Bridge
 
@@ -268,6 +276,7 @@ Start with `engine/src/my_plugin.cpp`. `MyPlugin` is your starter's `BasePlugin`
 #include <memory>
 
 void MyPlugin::onPluginLoaded() {
+    // Register a device bridge that the Engine can instantiate.
     dartwic->registerPeer({
         .id = "device_link",
         .name = "Flight Vehicle",
@@ -279,6 +288,7 @@ void MyPlugin::onPluginLoaded() {
         .protocol_id = "tempest.engine",
         .protocol_version = DARTWIC::EngineContract::version,
         .engine_protocol = true,
+        // Use the Engine-supplied peer and protocol inside the bridge.
         .create = [](const nlohmann::json& config,
                      TEMPEST::Peer& peer, DARTWIC::EngineProtocol& protocol) {
             return std::make_shared<DeviceTransport>(config, peer, protocol);
@@ -324,18 +334,21 @@ public:
     DeviceTransport(const nlohmann::json& config,
                     TEMPEST::Peer& peer, DARTWIC::EngineProtocol& protocol)
         : vehicle_(config), peer_(peer), protocol_(protocol) {
+        // Bind message translations before device I/O starts.
         registerChannels(); // Bodies are shown under Channels, Events, and Logs.
         registerEvents();
         registerLogs();
         registerOperations();
     }
 
+    // Open the device link and report physical connection changes.
     void start() override {
         vehicle_.start([this](TEMPEST::ConnectionState state) {
             setConnected(state == TEMPEST::ConnectionState::Connected);
         });
     }
 
+    // Cancel pending commands and join I/O before releasing bridge state.
     void stop() override {
         vehicle_.cancelPending();
         vehicle_.stop(); // Join device I/O and decoder callbacks.
@@ -353,6 +366,7 @@ private:
         try {
             executeAndReply();
         } catch (const TEMPEST::RemoteError& error) {
+            // Send an explicit rejection back to the vehicle.
             vehicle_.replyRejected(request, error.code(), error.what());
         } catch (const std::exception& error) {
             // Timeout/disconnection may happen after the Engine accepted a command.
@@ -374,6 +388,7 @@ For example, this excerpt shows where bytes enter your `VehicleLink`. `driver_` 
 
 ```cpp
 void VehicleLink::start(StateHandler onState) {
+    // Decode incoming bytes, then deliver each complete channel packet.
     driver_.start(
         [this](Bytes bytes) {
             decoder_.accept(bytes, [this](VehicleChannelPacket packet) {
@@ -383,6 +398,7 @@ void VehicleLink::start(StateHandler onState) {
         std::move(onState));
 }
 
+// Store the callback invoked by the decoder above.
 void VehicleLink::onChannelTelemetry(ChannelHandler handler) {
     channelTelemetryHandler_ = std::move(handler);
 }
@@ -403,6 +419,7 @@ Channel telemetry is the main flight-data path: temperatures, pressures, voltage
 Your decoder identifies a channel packet and supplies its name, numeric value, units, and timestamp. Publish that observation into the Engine:
 
 ```cpp
+// Prepare the channel bridge handlers.
 DARTWIC::ChannelHandlers handlers;
 
 vehicle_.onChannelTelemetry([this](const VehicleChannelPacket& packet) {
@@ -427,9 +444,11 @@ Use Unix nanoseconds. If source time cannot be converted, use receive time and r
 When the Engine publishes channel observations, these handlers receive them in the plugin. Encode the data into whatever telemetry/input packet the vehicle accepts:
 
 ```cpp
+// Forward Engine updates and complete channel snapshots to the vehicle.
 handlers.channelTelemetry = [this](const DARTWIC::ChannelUpdates& updates) {
     vehicle_.writeChannelTelemetry(updates);
 };
+
 handlers.snapshotTelemetry = [this](const DARTWIC::ChannelSnapshot& snapshot) {
     vehicle_.writeChannelSnapshot(snapshot);
 };
@@ -442,6 +461,7 @@ Forward supported channels with their ownership and timestamps. Filter reflected
 A decoded vehicle request can ask the Engine to change, query, or remove Engine channels. Call the same protocol command APIs as the C++ client, then encode the Engine's reply using the vehicle's request ID:
 
 ```cpp
+// Route vehicle channel commands through the Engine protocol.
 vehicle_.onChannelCommand([this](const VehicleChannelCommand& request) {
     answerVehicleCommand(request, [&] {
         using Kind = VehicleChannelCommand::Kind;
@@ -450,11 +470,14 @@ vehicle_.onChannelCommand([this](const VehicleChannelCommand& request) {
             protocol_.channels().upsert(request.changes);
             vehicle_.replySuccess(request);
             break;
+
+        // Queries return records instead of a simple success reply.
         case Kind::Query: {
             auto result = protocol_.channels().query(request.query);
             vehicle_.replyChannels(request, result);
             break;
         }
+
         case Kind::Remove:
             protocol_.channels().remove(request.channel);
             vehicle_.replySuccess(request);
@@ -473,14 +496,18 @@ Validate and map the request into `changes`, `ChannelQuery`, or a channel name f
 Engine requests arrive through the protocol's command handlers. Translate them into vehicle commands or answer from data your adapter has retained:
 
 ```cpp
+// Validate and deliver Engine channel commands to the device.
 handlers.upsertCommand = [this](const DARTWIC::ChannelUpsertRequest& request) {
     auto packets = vehicle_.encodeChannelChanges(request); // Validate fields/ranges.
     vehicle_.writeCommands(packets);                      // Await write or throw.
 };
+
+// Answer queries and removals using the device's channel state.
 handlers.queryCommand = [this](const DARTWIC::ChannelQuery& query)
     -> DARTWIC::ChannelQueryResult {
     return vehicle_.queryChannels(query);
 };
+
 handlers.removeCommand = [this](const DARTWIC::ChannelRemoveRequest& request) {
     vehicle_.removeChannel(request.channel);
 };
@@ -493,6 +520,7 @@ Return to complete the request; throw `RemoteError` to reject it. A write confir
 A snapshot means **all channels currently shared by the vehicle**, including unchanged ones. If your decoder can produce that complete selection, publish it:
 
 ```cpp
+// Reconcile the Engine mirror with the vehicle's complete channel set.
 vehicle_.onChannelSnapshot([this](const DARTWIC::ChannelSnapshot& snapshot) {
     protocol_.channels().publishSnapshotTelemetry(snapshot);
 });
@@ -512,8 +540,10 @@ Events report vehicle conditions and support actions such as acknowledgement or 
 Map a decoded flight event into an ARGUS event and publish it into the Engine:
 
 ```cpp
+// Prepare callbacks for the event bridge.
 DARTWIC::ArgusHandlers handlers;
 
+// Forward decoded vehicle events to the Engine.
 vehicle_.onEventTelemetry([this](const VehicleEventPacket& packet) {
     protocol_.argus().publishEventTelemetry({
         .event_id = packet.eventId,
@@ -522,7 +552,7 @@ vehicle_.onEventTelemetry([this](const VehicleEventPacket& packet) {
         .description = packet.text,
         .status = packet.status,
         .timestamp = packet.timestampNs,
-        .separation_seconds = packet.separationSeconds
+        .firing_timeout_seconds = packet.separationSeconds
     });
 });
 ```
@@ -536,9 +566,11 @@ F Prime supplies the event ID, severity, arguments, and formatted text through i
 Receive Engine event updates or complete boards and encode them for a vehicle that supports that data:
 
 ```cpp
+// Forward individual Engine events and complete boards to the vehicle.
 handlers.eventTelemetry = [this](const DARTWIC::ArgusEvent& event) {
     vehicle_.writeEventTelemetry(event);
 };
+
 handlers.snapshotTelemetry = [this](const DARTWIC::ArgusBoardSnapshot& board) {
     vehicle_.writeEventSnapshot(board);
 };
@@ -551,13 +583,18 @@ Preserve source IDs and ownership and filter reflected vehicle events. These des
 A vehicle request can act on an Engine-owned event. Map its action, call the Engine, then return the action/query result over the vehicle link:
 
 ```cpp
+// Route vehicle requests to the Engine's event owner.
 vehicle_.onEventCommand([this](const VehicleEventCommand& request) {
     answerVehicleCommand(request, [&] {
         using Kind = VehicleEventCommand::Kind;
+
+        // Queries return matching events rather than an action result.
         if (request.kind == Kind::Query) {
             vehicle_.replyEvents(request, protocol_.argus().query(request.query));
             return;
         }
+
+        // Apply the requested event action.
         DARTWIC::ArgusActionResult result;
         switch (request.kind) {
         case Kind::UpdateStatus:
@@ -575,32 +612,40 @@ vehicle_.onEventCommand([this](const VehicleEventCommand& request) {
         default:
             throw TEMPEST::RemoteError("Unsupported event action", "unsupported");
         }
+
+        // Return the accepted action's result to the vehicle.
         vehicle_.replyEventAction(request, result);
     });
 });
 ```
 
-`status` is a string, such as `"acknowledged"`; `response` is a `DARTWIC::Value::Object`. The Engine validates its own lifecycle transitions. A prompt response, hold release, and removal are dedicated actions, not arbitrary status strings. See the [client event actions](../Clients/C%2B%2B%20TEMPEST%20Peer.md#event-actions) for payload examples.
+`status` is a string, such as `"acknowledged"`; `response` is a `DARTWIC::Value::Object`. The Engine validates its own lifecycle transitions. A prompt response, hold release, and removal are dedicated actions, not arbitrary status strings. See the [client event actions](../Clients/C%2B%2B%20Engine%20Protocol%20Peer.md#event-actions) for payload examples.
 
 ### Sending Event Commands
 
 Engine actions on vehicle-owned events arrive through these handlers. The adapter sends the corresponding wire request or applies an explicitly supported adapter-owned action:
 
 ```cpp
+// Let the device answer queries about its own events.
 handlers.queryCommand = [this](const DARTWIC::ArgusQuery& query) {
     return vehicle_.queryEvents(query); // ArgusQueryResult
 };
+
+// Forward operator actions to the device.
 handlers.updateStatusCommand = [this](const std::string& id, const std::string& status) {
     return vehicle_.updateEventStatus(id, status); // ArgusActionResult
 };
+
 handlers.respondToPromptCommand = [this](const std::string& id,
                                        const DARTWIC::Value::Object& response) {
     return vehicle_.respondToPrompt(id, response);
 };
+
 handlers.releaseHoldCommand = [this](const std::string& id,
                                    const DARTWIC::Value::Object& response) {
     return vehicle_.releaseHold(id, response);
 };
+
 handlers.removeCommand = [this](const std::string& id) {
     return vehicle_.removeEvent(id);
 };
@@ -613,6 +658,7 @@ Return `ArgusActionResult` with `event_id` and a result object: `updated` for a 
 If the vehicle or your adapter maintains a complete board, publish it to reconcile membership, including removals:
 
 ```cpp
+// Reconcile the Engine mirror with the vehicle's current event board.
 vehicle_.onEventSnapshot([this](const DARTWIC::ArgusBoardSnapshot& board) {
     protocol_.argus().publishSnapshotTelemetry(board);
 });
@@ -632,6 +678,7 @@ Logs are timestamped text streams. Their commands are stream listing and history
 Publish decoded vehicle text into the Engine's logs:
 
 ```cpp
+// Forward decoded vehicle log records to the Engine.
 DARTWIC::LogHandlers handlers;
 
 vehicle_.onLogTelemetry([this](const VehicleLogPacket& packet) {
@@ -663,6 +710,7 @@ Select supported streams, preserve source information, and avoid reflecting vehi
 A vehicle request can list Engine log streams or query retained entries. Return the Engine's result with the original external request ID:
 
 ```cpp
+// Answer vehicle log requests using the Engine's available history.
 vehicle_.onLogCommand([this](const VehicleLogCommand& request) {
     answerVehicleCommand(request, [&] {
         using Kind = VehicleLogCommand::Kind;
@@ -684,9 +732,11 @@ Your decoder builds `LogQuery` from the requested stream/session, filters, time 
 When the Engine asks for vehicle log history, answer from an external query or history retained by your adapter:
 
 ```cpp
+// Expose the device's retained log sources and entries to the Engine.
 handlers.listCommand = [this]() -> std::vector<DARTWIC::LogStream> {
     return vehicle_.listLogStreams();
 };
+
 handlers.queryCommand = [this](const DARTWIC::LogQuery& query)
     -> std::vector<DARTWIC::LogEntry> {
     return vehicle_.queryLogs(query);
@@ -707,12 +757,16 @@ Use `registerOperations()` for commands outside channels and events. F Prime map
 In `registerOperations()`, register each supported vehicle command on the bridge's Peer. `commandDescriptors()` is your adapter's dictionary-to-TEMPEST metadata mapping:
 
 ```cpp
+// Expose each vehicle command as a peer operation.
 for (const auto& descriptor : vehicle_.commandDescriptors()) {
+    // Capture this command's name for its handler.
     const auto commandName = descriptor.name;
     peer_.registerOperation(descriptor,
         [this, commandName](const TEMPEST::Value::Object& arguments) {
             // Validate dictionary arguments, encode the command, and await write.
             vehicle_.sendCommand(commandName, arguments);
+
+            // Report sending separately from confirmed device execution.
             return TEMPEST::Value::Object{
                 {"status", "sent"},
                 {"execution_confirmed", false}
@@ -730,10 +784,12 @@ Match device acknowledgements to pending commands. Either wait within a deadline
 If the vehicle protocol supports requests targeting Engine operations, translate them into a normal Peer call:
 
 ```cpp
+// Forward a decoded vehicle operation to the connected peer.
 vehicle_.onOperationCommand([this](const VehicleOperationCommand& request) {
     answerVehicleCommand(request, [&] {
         // request.name and arguments have been decoded and validated by the adapter.
         auto result = peer_.call(request.name, request.arguments);
+
         vehicle_.replyOperation(request, result);
     });
 });
@@ -786,7 +842,7 @@ Run Engine peer regressions, custom transport tests, and F Prime bridge tests to
 
 # Reference
 
-- [C++ TEMPEST Peer](../Clients/C%2B%2B%20TEMPEST%20Peer.md) — The same domain APIs and handlers in an application.
+- [C++ Engine Protocol Peer](../Clients/C%2B%2B%20Engine%20Protocol%20Peer.md) — The same domain APIs and handlers in an application.
 - [Device registration](Reference/Engine/TEMPEST/SDK_API-registerPeer.md) and [transport registration](Reference/Engine/TEMPEST/SDK_API-registerPeerTransport.md).
 - [Transport interface](Reference/TEMPEST/Messaging/Transport.md).
 - [Engine Protocol reference](Reference/TEMPEST/Engine%20Protocol/Overview.md).

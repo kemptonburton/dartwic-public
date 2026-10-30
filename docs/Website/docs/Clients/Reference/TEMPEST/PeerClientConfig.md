@@ -1,11 +1,13 @@
 ---
-title: "PeerClientConfig"
-summary: "Named application identity and default link settings."
+title: PeerClientConfig
+summary: Compatibility name for the Engine Protocol Peer configuration.
+created: 2026-10-27T14:08
+updated: 2026-10-27T17:53
 ---
 
 ## API
 
-Named application identity and default link settings. Custom transports own their endpoint settings. PeerClient always supplies the shared Engine contract.
+Compatibility name for the Engine Protocol Peer configuration.
 
 Namespace: `DARTWIC`.
 
@@ -16,11 +18,5 @@ Namespace: `DARTWIC`.
 ## Declaration
 
 ```cpp
-struct PeerClientConfig {
-    std::string node_name;
-    std::string host = "127.0.0.1";
-    int port = 7200;
-    std::string password = "admin";
-    std::string peer_id = "tempest.engine";
-};
+using PeerClientConfig = EngineProtocolPeerConfig;
 ```

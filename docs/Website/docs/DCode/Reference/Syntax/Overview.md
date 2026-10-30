@@ -2,7 +2,7 @@
 title: Syntax
 summary: DCode values, expressions, scope, channel paths, comments, and indentation.
 created: 2026-09-04T17:13
-updated: 2026-10-26T22:01
+updated: 2026-10-27T16:09
 ---
 
 | Feature | Family | Syntax | Available in |

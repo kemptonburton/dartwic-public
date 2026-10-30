@@ -1,6 +1,6 @@
 ---
 summary: Connect Node.js tools, read and write channels, receive telemetry, and export recorded data.
-updated: 2026-10-27T00:37
+updated: 2026-10-28T18:11
 created: 2026-09-07T17:03
 ---
 
@@ -177,7 +177,7 @@ After setting `DARTWIC_PASSWORD`, run the file from your application directory:
 node analysis.mjs
 ```
 
-Start with a known channel read, then check that a subscription reports changes. The export example needs a `tank_run` dataframe containing recorded pressure samples; inspect `pressure-history.json` after it finishes. Nanosecond timestamps are written as strings so JSON can preserve them. See [Recording and Retention](../Engine/Recording%20and%20Retention.md) for recording setup.
+Start with a known channel read, then check that a subscription reports changes. The export example needs a `tank_run` dataframe containing recorded pressure samples; inspect `pressure-history.json` after it finishes. Nanosecond timestamps are written as strings so JSON can preserve them. See [Recording and Telemetry](../Engine/Recording%20and%20Telemetry.md) for recording setup.
 
 # Reference
 

@@ -1,6 +1,6 @@
 ---
 summary: Derive channels inline when their inputs change.
-updated: 2026-10-27T03:37
+updated: 2026-10-27T20:40
 created: 2026-08-03T15:41
 ---
 
@@ -30,7 +30,7 @@ Activation installs the calculation and its dependencies; ordinary calculations 
 
 Each calculation has its own runtime block scope, but unlike a function or a callback, its variables persist between evaluations. Assignments still run each time and can overwrite previous values. To share variables between calculations in the same file, define them at file scope and declare `global` inside each calculation that uses them. See [Values and Scope](Values%20and%20Scope.md#variable-scopes).
 
-Reactivating the file/ runtime block replaces the calculation with fresh variable state; removing its declaration and reactivating removes it. Replacing or removing the calculation releases all of its channel authority after in-flight work finishes. It does not delete any channels or reset their stored values. Other controllers' claims and operator control are preserved. See [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) and the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop).
+Reactivating the file replaces the calculation with fresh variable state; removing its declaration and reactivating removes it. The [shared removal rules](../Engine/Modules%20and%20Tasks.md#removal-and-replacement) explain authority cleanup and retained channels.
 
 # Calculation Execution
 

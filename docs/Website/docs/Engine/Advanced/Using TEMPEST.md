@@ -1,356 +1,460 @@
 ---
-summary: Register raw clients and exchange operations and telemetry over ZeroMQ or HTTP/WebSocket.
+summary: Connect to Engines, call operations, receive telemetry, and build custom clients.
 created: 2026-08-04T16:25
-updated: 2026-10-26T21:52
+updated: 2026-10-28T19:58
 ---
 
-TEMPEST is the communication layer between an Engine and its connected applications. An **operation** is a request with a response, such as reading events or changing a channel. **Telemetry** delivers updates to applications watching the system.
+# Overview
 
-Most applications can use a [client library](../../Clients/Overview.md). This guide explains the raw connection for applications implementing the protocol themselves. The [operation reference](../Reference/TEMPEST/Operations/Overview.md) describes each request's application data.
+TEMPEST lets an application ask an Engine to do something (**operations**) and receive live updates (**telemetry**). The server runs inside the Engine; the Interface and your applications connect as clients.
 
-Before running a raw client, start an Engine and obtain its host, base port, and access credentials. The examples use `127.0.0.1` with base port `7000`. Use [Network Discovery](Network%20Discovery.md) when you need to find an address first.
+The application examples use the [Python client library](../../Clients/Python%20Client.md). Build your own only when needed; [Custom Client](#custom-client) covers raw transports and wire messages. [Networking and Peers](../Networking%20and%20Peers.md) covers Engine setup.
 
-# Connection endpoints
+# Available Transports
 
-An **endpoint** is an address and port where the Engine accepts a particular kind of connection. Its **base port** identifies the operation endpoint; adjacent ports serve telemetry and web connections. For a base port of 7000:
+A transport carries the messages. TEMPEST is transport agnostic; the built-in client transports share the same operations and session rules:
 
-| Endpoint | Purpose |
-| --- | --- |
-| `tcp://host:7000` | ZeroMQ request/response operations. |
-| `tcp://host:7001` | Outbound telemetry for ZeroMQ subscribers. |
-| `http://host:7002/tempest/operation` | Web operations through HTTP POST. |
-| `ws://host:7002/tempest/telemetry` | Web telemetry connection. |
-
-Host, base port, and password come from the Engine configuration. Follow your client library's connection options when using a wrapper. Configure TLS through the deployment's web infrastructure for secure browser connections.
-
-[TEMPEST Peer](../Networking%20and%20Peers.md) connects to the peer's existing base and telemetry ports. It does not bind a fresh pair of local server ports for each peer.
-
-# Network discovery
-
-[Network Discovery](Network%20Discovery.md) covers enabling discovery, UDP query/reply fields, a complete Python requester, and network limitations.
-
-# Client registration
-
-Registration creates a **session**: a client ID and permissions held by the Engine. Its **session token** authenticates later requests. Opening a socket establishes transport; the application must then register:
-
-1. Send `register_client` with an empty `clientId` and `tempestCompatibilityVersion: 2`. Supply the engine password for administrator access, or `role: "viewer"` for permitted read-only access.
-2. Check `error`, then save both `payload.clientId` and `payload.sessionToken`.
-3. Include that ID and token in every subsequent operation, including periodic `heartbeat` calls.
-4. For telemetry, connect the separate receiving socket and request any engine-specific subscriptions.
-5. Send `unregister_client` before closing a session normally.
-
-Registration uses the same operation envelope as later requests. Replace `YOUR_ENGINE_PASSWORD` and send this JSON as one ZeroMQ message or as an HTTP POST body to `/tempest/operation`. The zero timestamp is a wire-example placeholder; real clients send the current epoch milliseconds:
-
-```json
-{
-  "clientId": "",
-  "name": "register_client",
-  "payload": {
-    "serverPassword": "YOUR_ENGINE_PASSWORD",
-    "tempestCompatibilityVersion": 2,
-    "username": "raw-socket-example"
-  },
-  "timestamp": 0
-}
-```
-
-Registration must include `tempestCompatibilityVersion` matching the server; the current protocol value is `2`. A missing or mismatched value is rejected with `tempest_version_mismatch`. The client libraries supply this value themselves.
-
-Use the exact key **`serverPassword`** inside `payload`. `username` is optional display metadata, not a separate account login. Other registration fields are retained as client metadata; the password is excluded. Supply only metadata intended to describe your client.
-
-A successful registration returns the assigned ID and token:
-
-```json
-{
-  "clientId": "SERVER_ASSIGNED_ID",
-  "name": "register_client",
-  "error": false,
-  "payload": {
-    "clientId": "SERVER_ASSIGNED_ID",
-    "node_name": "PRIMARY_NODE",
-    "instance_number": 1,
-    "role": "admin",
-    "sessionToken": "SERVER_ASSIGNED_TOKEN"
-  },
-  "timestamp": 0
-}
-```
-
-Both `clientId` fields contain the assigned ID. `node_name` identifies the server's engine; `instance_number` distinguishes clients with the same username. An incorrect password returns `error: true` and an error message in `payload.error`. Do not continue with an empty ID.
-
-For subsequent calls, put the assigned ID and token in the outer envelope:
-
-```json
-{
-  "clientId": "SERVER_ASSIGNED_ID",
-  "sessionToken": "SERVER_ASSIGNED_TOKEN",
-  "name": "argus/get-active-events",
-  "payload": { "limit": 100, "offset": 0 },
-  "timestamp": 0
-}
-```
-
-The password is needed at registration; subsequent operations authenticate with the session token. A ZeroMQ routing identity and the JSON `clientId` serve different purposes: ZeroMQ routes a reply to a socket, while TEMPEST uses `clientId` and `sessionToken` to authenticate the registered session. Do not invent the TEMPEST ID or substitute the socket identity.
-
-For a viewer, register with `payload: {"role": "viewer", "tempestCompatibilityVersion": 2}`. No username or password is required, but the server must have `allow_viewers` enabled. Viewers receive their own session token and can call only viewer-enabled operations. An attempted mutation returns `permission_denied`; disabled viewer access returns `viewer_access_disabled`.
-
-## Session keepalive and reconnect
-
-A **heartbeat** is a lightweight operation that tells the Engine the client is still active. Send it periodically while waiting for telemetry or user input:
-
-| Operation name | Payload | Result |
+| Transport | Operations | Telemetry |
 | --- | --- | --- |
-| `register_client` | `{ "serverPassword": "...", "username": "...", "tempestCompatibilityVersion": 2 }` | Allocates a new client ID. |
-| `heartbeat` | `{}` | Returns `{ "status": "ok" }`. |
-| `unregister_client` | `{}` | Removes the session and cancels its detached jobs; success has an empty payload. |
+| ZeroMQ/TCP | `tcp://host:7000` | `tcp://host:7001` |
+| HTTP/WebSocket | `http://host:7002/tempest/operation` | `ws://host:7002/tempest/telemetry` |
 
-Use the saved ID and token for heartbeat and unregister operations. The server expires a client after **15 seconds without an operation**, checked roughly once per second. Send a heartbeat every **5 seconds**, allowing margin for latency. Receiving telemetry or sending WebSocket telemetry does not refresh that operation timer.
+Adding custom transports for Clients is currently not supported, but might be added in the future. If custom transport is needed, Plugins can add [custom peer transports](../../Plugins/Building%20a%20Custom%20Peer.md#custom-transport-objects) for Peers. 
 
-The server authenticates heartbeats as well as ordinary operations. If a call returns `authentication_required` because the session is invalid or expired, register again and restore subscriptions with the new ID and token. Re-register after a server restart as well; sessions and subscriptions are not durable across restarts. Avoid registering repeatedly while a working session is already active.
+# Network Discovery
 
-# ZeroMQ connections
+Discovery helps the Interface find Engines without entering their addresses. Enable it in [Engine settings](../Networking%20and%20Peers.md#discovery-configuration). The Python client connects to a known host and does not currently include a discovery API. The [UDP query format](#custom-network-discovery) is covered under Custom Discovery.
 
-**ZeroMQ** is the messaging library used on the base and telemetry ports. A **frame** is one part of its message. Use an implementation such as pyzmq: these sockets require ZeroMQ framing, not newline-delimited JSON over plain TCP. The HTTP/WebSocket path below uses standard web transports.
+## Network Scope and Fallback
 
-| Connection | Client socket | Frames visible to application code |
-| --- | --- | --- |
-| Base port, e.g. 7000 | `DEALER` connecting to the server's `ROUTER` | Send one UTF-8 JSON request frame; receive one JSON response frame. |
-| Base port + 1, e.g. 7001 | `SUB` connecting to the server's `PUB` | Receive two frames: topic string, then JSON telemetry envelope. |
+Discovery covers local IPv4 networks; routers and firewalls can block it. Keep a manual address option. DARTWIC's web Interface scans from its web host.
 
-Use `DEALER`, not `REQ`: the server's reply does not include the empty delimiter required by REQ/REP framing. ZeroMQ adds its routing identity internally; do not add an identity or empty delimiter to the application message.
+# Client Registration
 
-Keep at most one outstanding operation per DEALER socket. The server can execute requests concurrently and return replies out of order, and the operation envelope has no unique per-request correlation ID. If a request times out, close that socket before issuing another call so a late reply cannot be mistaken for the next result. Multiple independently owned sockets may use the same registered `clientId`; keep heartbeat traffic separate when a long-running operation could otherwise delay it.
+A client is an application connected to the Engine's TEMPEST server. The Python library handles registration, compatibility checks, and session credentials when you connect.
 
-## Python ZeroMQ example
-
-Install `pyzmq` with `python -m pip install pyzmq`. Set `DARTWIC_PASSWORD`, then run this against an engine on base port 7000. It registers, requests a live diagnostic channel, receives updates for ten seconds, sends heartbeats, and unregisters. It only reads engine data.
+Install it using [Python Client](../../Clients/Python%20Client.md#download-and-install-locally), then set your Engine password in the environment. Run the following application examples inside this connected scope:
 
 ```python
-import json
 import os
-import time
-import zmq
+from dartwic_client import DartwicClient
 
-host, base_port = "127.0.0.1", 7000
-password = os.environ["DARTWIC_PASSWORD"]
-channel = "engine_dartwic_cpu_usage_percent"
-context = zmq.Context()
-client_id = ""
-session_token = ""
-subscriber = context.socket(zmq.SUB)
-subscriber.setsockopt(zmq.LINGER, 0)
-subscriber.setsockopt_string(zmq.SUBSCRIBE, "rapid/channels/snapshot")
-subscriber.connect(f"tcp://{host}:{base_port + 1}")
-
-
-def operation(name, payload):
-    # A fresh socket per call also isolates replies arriving after a timeout.
-    socket = context.socket(zmq.DEALER)
-    socket.setsockopt(zmq.LINGER, 0)
-    socket.setsockopt(zmq.SNDTIMEO, 3000)
-    try:
-        socket.connect(f"tcp://{host}:{base_port}")
-        socket.send_json({
-            "clientId": client_id,
-            "sessionToken": session_token,
-            "name": name,
-            "payload": payload,
-            "timestamp": time.time_ns() // 1_000_000,
-        })
-        if not socket.poll(3000, zmq.POLLIN):
-            raise TimeoutError(f"No response to {name}")
-        response = socket.recv_json()
-        if response["error"]:
-            raise RuntimeError(response["payload"]["error"])
-        return response["payload"]
-    finally:
-        socket.close()
-
-
-try:
-    registration = operation("register_client", {
-        "serverPassword": password,
-        "tempestCompatibilityVersion": 2,
-        "username": "raw-socket-example",
-    })
-    client_id = registration["clientId"]
-    session_token = registration["sessionToken"]
-    if not client_id:
-        raise RuntimeError("Registration returned no client ID")
-    initial = operation("dartwic/add-channel-to-telemetry", {
-        "channel_name": channel,
-    })
-    print("Initial snapshot:", initial["snapshot"])
-
-    deadline = time.monotonic() + 10
-    next_heartbeat = time.monotonic() + 5
-    while time.monotonic() < deadline:
-        if time.monotonic() >= next_heartbeat:
-            operation("heartbeat", {})
-            next_heartbeat = time.monotonic() + 5
-        if subscriber.poll(100, zmq.POLLIN):
-            topic, body = subscriber.recv_multipart()
-            message = json.loads(body)
-            if topic.decode() == "rapid/channels/snapshot" and not message["error"]:
-                payload = message["payload"]
-                if payload.get("client_id") == client_id:
-                    record = payload["channels"].get(channel)
-                    if record is not None:
-                        print(record)
-finally:
-    try:
-        if client_id:
-            operation("unregister_client", {})
-    finally:
-        subscriber.close()
-        context.term()
+# Connect; leaving this scope disconnects the client.
+with DartwicClient() as client:
+    client.connect("127.0.0.1", 7000, os.environ["DARTWIC_PASSWORD"])
+    # Put the following examples here.
 ```
 
-The program prints an initial snapshot, then channel records for about ten seconds. Check that records belong to your `client_id` and that source timestamps advance. The `finally` path unregisters the session and closes sockets even when a read fails.
+## Viewer Access
 
-There are **two subscriptions** involved: `SUBSCRIBE` filters topic prefixes in your local ZeroMQ socket; `dartwic/add-channel-to-telemetry` asks the engine to include a channel in your session's snapshots. One does not replace the other. The operation returns `snapshot` so you can initialize your display immediately. At 5 Hz, `rapid/channels/snapshot` carries complete current records for the subscribed set, including unchanged values. ZeroMQ subscription setup is asynchronous; PUB/SUB has no replay of missed updates.
+The Engine can permit read-only viewer sessions. These Python examples use the Engine password; viewer registration fields for custom clients are shown below.
 
-Use [add-channels-to-telemetry](../Reference/TEMPEST/Operations/dartwic/add-channels-to-telemetry.md) with `channel_names` for a batch. Subscriptions are reference-counted: pair each add with [remove-channel-from-telemetry](../Reference/TEMPEST/Operations/dartwic/remove-channel-from-telemetry.md), or unregister when finished. ZeroMQ topic filters match prefixes, so compare the received topic when you need an exact match. The broadcast PUB socket can carry snapshots for other clients; check `payload.client_id` before processing the channel set. This recipient label is not encryption or a transport access boundary.
+## Session Keepalive and Reconnect
 
-# HTTP and WebSocket connections
-
-HTTP carries individual operation requests and responses. WebSocket keeps a connection open for telemetry updates. Register over HTTP before attaching its telemetry socket.
-
-HTTP uses the **same registration and operation JSON**. POST to `http://host:7002/tempest/operation` with `Content-Type: application/json`. `serverPassword` goes in the administrator registration payload; later operation requests carry `clientId` and `sessionToken` in their JSON body. A successful operation returns HTTP 200; an operation error returns HTTP 400 with the JSON error envelope. Read the error body instead of discarding it.
-
-## Python HTTP example
-
-Save this as a Python script, set `DARTWIC_PASSWORD`, and use an Engine with base port `7000`. The HTTP endpoint is then port `7002`. This variation uses only the standard library to register, read ARGUS events, and unregister:
-
-```python
-import json
-import os
-import time
-from urllib.error import HTTPError
-from urllib.request import Request, urlopen
-
-url = "http://127.0.0.1:7002/tempest/operation"
-client_id = ""
-session_token = ""
-
-
-def operation(name, payload):
-    request = Request(url, method="POST", headers={
-        "Content-Type": "application/json",
-    }, data=json.dumps({
-        "clientId": client_id, "sessionToken": session_token,
-        "name": name, "payload": payload,
-        "timestamp": time.time_ns() // 1_000_000,
-    }).encode())
-    try:
-        stream = urlopen(request, timeout=3)
-    except HTTPError as error:
-        stream = error  # TEMPEST supplies its error envelope in the HTTP body.
-    with stream:
-        response = json.load(stream)
-    if response["error"]:
-        raise RuntimeError(response["payload"]["error"])
-    return response["payload"]
-
-
-try:
-    registration = operation("register_client", {
-        "serverPassword": os.environ["DARTWIC_PASSWORD"],
-        "tempestCompatibilityVersion": 2,
-        "username": "raw-http-example",
-    })
-    client_id = registration["clientId"]
-    session_token = registration["sessionToken"]
-    print(operation("argus/get-active-events", {"limit": 1, "offset": 0}))
-finally:
-    if client_id:
-        operation("unregister_client", {})
-```
-
-The script prints the active-event response, which can contain an empty event list. It sends the same operation envelope and checks the same error field as the ZeroMQ example; only the transport wrapper changes.
-
-For a longer-lived HTTP application, send the same heartbeat operation periodically. Browser applications can use `fetch` with this envelope; use `https` and `wss` when your deployment provides TLS.
-
-## Attach a WebSocket telemetry connection
-
-Register through HTTP first, then open `ws://host:7002/tempest/telemetry`. This socket carries telemetry JSON, not operation requests. Each incoming text message is one complete telemetry envelope; there is no separate topic frame.
-
-The web transport authenticates the socket from the `sender` and `sessionToken` in its first telemetry message. This association is needed for telemetry routed to selected clients, including live channels. Use an empty topic for this initial identification, as the web client does:
-
-```json
-{
-  "sender": "SERVER_ASSIGNED_ID",
-  "sessionToken": "SERVER_ASSIGNED_TOKEN",
-  "topic": "",
-  "error": false,
-  "payload": {},
-  "timestamp": 0
-}
-```
-
-Send this message after the WebSocket opens, then request `dartwic/add-channel-to-telemetry` over HTTP with the same ID and token. Process `rapid/channels/snapshot` messages through `payload.channels`, keyed by channel name. Keep HTTP heartbeats running; the identification message does not keep the session alive. Later client-to-server telemetry messages also require the session token and the appropriate role permission.
-
-Closing the last identified WebSocket for a client unregisters that client in the current server, even if your HTTP code still has its ID. On a new session, register again, identify the new socket, and restore channel subscriptions. During graceful shutdown, stop heartbeat work, unregister, then close your sockets.
+The Python library sends authenticated heartbeats automatically. Its connection state changes when it detects session loss; detection is not instantaneous. It does not reconnect automatically: disconnect, connect again, and recreate your subscriptions. The context manager handles final cleanup.
 
 # Operations
 
-When using a [connected Python client](../../Clients/Python%20Client.md) rather than raw transport code, the same event query is shorter:
+An operation asks a question or requests an action. For example, read active events through the Python library:
 
 ```python
-response = client.operation("argus/get-active-events", {
-    "limit": 100,
-    "offset": 0,
-})
+response = client.operation("argus/get-active-events", {"limit": 1, "offset": 0})
 response.raise_for_error()
-for event in response.payload["events"]:
-    print(event)
+print(response.payload["events"])
 ```
 
-Each printed object is a matching active event. The client supplies its session credentials and raises on an operation error; your application still needs to decide how to handle that failure.
+The [operation reference](../Reference/TEMPEST/Operations/Overview.md) lists operation names, arguments, and results. The library constructs the request envelope and supplies session credentials.
 
-The client supplies connection and transport fields. Application code supplies the operation name and its payload. [Operation reference pages](../Reference/TEMPEST/Operations/Overview.md) describe the object inside `payload`, not an extra envelope you should nest around it.
+## Responses and Errors
 
-# Responses and errors
-
-A successful wire response has this shape:
-
-```json
-{
-  "clientId": "client-identifier",
-  "name": "argus/get-active-events",
-  "error": false,
-  "payload": { "events": [], "count": 0, "total_count": 0 },
-  "timestamp": 0
-}
-```
-
-Check `error` before reading the success payload. On failure it is `true`, and `payload.error` contains the server message; authentication and role rejections also include a `code`. There is no universal `success` field. Raw requests contain `clientId`, `sessionToken`, `name`, `payload`, and `timestamp`; your implementation supplies these fields when you bypass a client library.
-
-A timeout can occur without any response. It does not prove that the engine never accepted the operation. Inspect resulting state before retrying a command whose effects must not repeat.
+Check the response before using its payload. The error check above raises an exception when the Engine rejects the request. A timeout does not prove a command was never accepted; inspect state before retrying an action with side effects.
 
 # Telemetry
 
-A **topic** names a stream of telemetry, such as channel snapshots. The message **envelope** holds routing and status fields around its application `payload`. Server envelopes contain `sender`, `topic`, `error`, `payload`, and `timestamp`; client-to-server web telemetry also includes `sessionToken`. Topic names and operation names belong to separate namespaces.
+Telemetry keeps a dashboard updated without repeatedly asking for each value. The Python library manages the Engine subscription and calls your function for the initial record and later updates.
 
-Channel snapshots use `rapid/channels/snapshot` with a `sequence`, destination `client_id`, and full `channels` map. Each record separates `exists` from `available`: a cached offline peer can exist without being available for commands. The 5 Hz cadence is display delivery, not acquisition or recording frequency.
+## Channel Subscriptions
 
-For live channels, request the engine's channel subscription and register the client-side topic handler; the [React guide](../../Clients/React%20Client.md) shows the wrapper's subscription helper. Merely reading a local store does not subscribe it to new values.
+This monitor keeps receiving the Engine CPU measurement until disconnected or interrupted:
 
-The raw ZeroMQ telemetry endpoint is outbound-only. To send data to the engine, use an operation or the bidirectional web telemetry transport. TEMPEST peer's frame operation and topic implement peer exchange; their transport name contains `v2`, independently of the TEMPEST peer protocol's current codec version.
+```python
+import time
 
-Telemetry envelope timestamps use Unix-epoch milliseconds; recorded RAPID sample timestamps use **nanoseconds**. Use sample timestamps for exact history joins. The channel-range query accepts integer epoch milliseconds, microseconds, or nanoseconds and normalizes by magnitude; other operations have their own documented units.
+# Keep callbacks short; later updates arrive on the telemetry thread.
+def receive(snapshot):
+    if snapshot["exists"] and snapshot.get("available", True):
+        print(snapshot["channel_data"]["value"])
 
-# Detached jobs
+stop = client.subscribe_channel("engine_dartwic_cpu_usage_percent", receive)
+try:
+    while client.is_connected():
+        time.sleep(1)
+except KeyboardInterrupt:
+    pass
+finally:
+    stop()
+```
 
-A **detached job** continues after its start operation returns, such as a large history query or export. Follow one job from admission to completion: keep the returned job ID, poll its status, and read the result only when its state is `completed`. Handle `failed` and `canceled` as terminal outcomes too.
+The returned stop function removes the subscription. The library handles topic filtering and message framing. Snapshots arrive at 5 Hz, including unchanged records; this is display delivery, not acquisition frequency. See [Python subscriptions](../../Clients/Python%20Client.md#subscribe-and-receive-telemetry) for callback behavior and the [telemetry reference](../Reference/TEMPEST/Telemetry/Overview.md) for topic fields.
 
-| Operation | Action |
-| --- | --- |
-| [tempest/job-status](../Reference/TEMPEST/Operations/tempest/job-status.md) | Supply `job_id`; inspect `state`, progress, and the final `result`. |
-| [tempest/job-cancel](../Reference/TEMPEST/Operations/tempest/job-cancel.md) | Request cancellation of a job owned by this client. |
+# Detached Jobs
 
-States are `queued`, `running`, `completed`, `failed`, and `canceled`. Poll status at an interval appropriate to the job, stop at a terminal state, and handle `error` on failure. Cancellation is a request; inspect the final state before assuming work stopped. Jobs are scoped to the connected client that owns them.
+A long operation, such as an export, returns a job ID while work continues. Use the same Python client to check progress and collect the result. Replace the ID with one returned by your start operation:
 
-When downloading a web job result, supply the `client_id` query parameter and authenticate with `Authorization: Bearer <sessionToken>` or `X-TEMPEST-Session`. Ordinary operation POSTs still use the JSON session token.
+```python
+import time
 
-See [Recording and Retention](../Recording%20and%20Retention.md) for recording and query choices, [Execution and Timing](../Execution%20and%20Timing.md) for scheduling boundaries, and the [telemetry reference](../Reference/TEMPEST/Telemetry/Overview.md) for topic payloads.
+job_id = "JOB_ID_FROM_START_RESPONSE"
+while True:
+    response = client.operation("tempest/job-status", {"job_id": job_id})
+    response.raise_for_error()
+    job = response.payload
+    print(job["progress_percent"])
+    if job["state"] not in ("queued", "running"):
+        break
+    time.sleep(0.5)
+
+if job["state"] != "completed":
+    raise RuntimeError(job.get("error") or job["state"])
+print(job["result"])
+```
+
+To request cancellation, then keep checking until the job reaches a final state:
+
+```python
+response = client.operation("tempest/job-cancel", {"job_id": job_id})
+response.raise_for_error()
+```
+
+Jobs belong to their session; a new registration cannot resume its old jobs. See [job status](../Reference/TEMPEST/Operations/tempest/job-status.md) for result fields.
+
+# Custom Client
+
+A **custom client** connects your own application to the Engine so it can request data, send commands, and receive live updates, just like the DARTWIC Interface. You can build one when the available [client libraries](../../Clients/Overview.md) do not support your language or environment.
+
+These walkthroughs connect a dashboard, request active events, and continuously receive a channel's live values. Choose one transport and put its snippets in order in a single JavaScript module. Each step shows one part of the connection; recovery behavior is explained at the end.
+
+## ZeroMQ
+
+Use this for a native Node.js application. Install the ZeroMQ dependency:
+
+```sh
+npm install zeromq
+```
+
+**1. Send operations.** This helper supplies the session credentials, operation name, arguments, and current epoch milliseconds. It checks the reply for an error and returns the response payload. Each call uses a fresh DEALER socket so a late reply cannot be mistaken for another request's response.
+
+```javascript
+// Load the operation and telemetry socket types.
+import {Dealer, Subscriber} from "zeromq";
+
+// Engine address and session credentials.
+const host = "127.0.0.1", port = 7000;
+let session = {};
+
+// Send one operation and return its payload.
+async function rawOperation(name, payload = {}) {
+  // Use a separate socket for this request.
+  const socket = new Dealer({linger: 0, sendTimeout: 3000, receiveTimeout: 3000});
+
+  try {
+    // Connect and send the authenticated request.
+    socket.connect(`tcp://${host}:${port}`);
+    await socket.send(JSON.stringify({...session, name, payload, timestamp: Date.now()}));
+
+    // Read the reply and report Engine errors.
+    const [body] = await socket.receive();
+    const response = JSON.parse(body);
+    if (response.error) throw new Error(response.payload.error);
+    return response.payload;
+  } finally {
+    // Always release the request socket.
+    socket.close();
+  }
+}
+```
+
+Use DEALER, not REQ: TEMPEST does not supply the empty reply delimiter REQ expects.
+
+**2. Register and send an operation.** Replace the password, save the session credentials, then request active events:
+
+```javascript
+// Register this application.
+const registered = await rawOperation("register_client", {
+  serverPassword: "YOUR_ENGINE_PASSWORD", tempestCompatibilityVersion: 3,
+});
+
+// Save the credentials used by later requests.
+session = {clientId: registered.clientId, sessionToken: registered.sessionToken};
+
+// Call an operation and display its result.
+console.log(await rawOperation("argus/get-active-events", {limit: 1, offset: 0}));
+```
+
+For read-only access, if the Engine permits viewers, use this registration payload instead:
+
+```json
+{
+  "role": "viewer",
+  "tempestCompatibilityVersion": 3
+}
+```
+
+**3. Receive live updates.** The SUB socket receives a topic frame and a JSON frame. Filter for this client and use each received record to update your dashboard:
+
+```javascript
+// Listen for channel snapshots on the telemetry port.
+const channel = "engine_dartwic_cpu_usage_percent";
+const subscriber = new Subscriber({linger: 0});
+subscriber.subscribe("rapid/channels/snapshot");
+subscriber.connect(`tcp://${host}:${port + 1}`);
+
+// Deliver only snapshots addressed to this client.
+async function rawTelemetry(topic, receive) {
+  for await (const [name, body] of subscriber) {
+    const message = JSON.parse(body);
+    if (name.toString() === topic && !message.error
+        && message.payload.client_id === session.clientId) receive(message.payload);
+  }
+}
+
+// Keep updating the dashboard as messages arrive.
+const receiving = rawTelemetry("rapid/channels/snapshot", snapshot => {
+  console.log(snapshot.channels[channel]); // Update your dashboard here.
+});
+
+// Ask the Engine to publish this channel.
+await rawOperation("dartwic/add-channel-to-telemetry", {channel_name: channel});
+```
+
+**4. Keep the session alive.** This sends a heartbeat every five seconds while the receive loop keeps running:
+
+```javascript
+// Keep the registered session alive while receiving telemetry.
+const heartbeat = setInterval(() => {
+  rawOperation("heartbeat").catch(error => {
+    console.error(error);
+    close().catch(console.error);
+  });
+}, 5000);
+```
+
+**5. Close or reconnect.** Stop the timer, unregister, and close the subscriber. Ctrl+C closes this Node.js example; a receive error also triggers cleanup.
+
+```javascript
+// Stop once, even if several events request cleanup.
+let closed = false;
+
+async function close() {
+  if (closed) return;
+  closed = true;
+  clearInterval(heartbeat);
+
+  // Unregister, then release the transport even if that fails.
+  try { await rawOperation("unregister_client"); }
+  finally { subscriber.close(); }
+}
+
+// Clean up on Ctrl+C or a receive error.
+process.once("SIGINT", () => close().catch(console.error));
+receiving.catch(error => { console.error(error); close().catch(console.error); });
+```
+
+If the session or connection is lost, register again and restore the channel subscription before restarting the receive loop. Do not automatically retry application commands.
+
+## HTTP and WebSocket
+
+Use HTTP for requests and WebSocket for continuous dashboard updates. These snippets work in Node.js 22 or a browser module. Use HTTPS/WSS for secure pages; cross-origin requests need deployment support or a same-origin proxy.
+
+**1. Send operations.** Supply the session credentials, operation name, arguments, and current epoch milliseconds. Read the JSON error body even when HTTP returns an error status:
+
+```javascript
+// Engine endpoint and session credentials.
+const url = "http://127.0.0.1:7002/tempest/operation";
+let session = {};
+
+// Send an operation through HTTP.
+async function rawOperation(name, payload = {}) {
+  const response = await fetch(url, {
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({...session, name, payload, timestamp: Date.now()}),
+    signal: AbortSignal.timeout(3000),
+  });
+
+  // HTTP error responses also contain a TEMPEST error body.
+  const result = await response.json();
+  if (result.error) throw new Error(result.payload.error);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return result.payload;
+}
+```
+
+**2. Register and ask a question.** The session works the same way as ZeroMQ:
+
+```javascript
+// Register this application.
+const registered = await rawOperation("register_client", {
+  serverPassword: "YOUR_ENGINE_PASSWORD", tempestCompatibilityVersion: 3,
+});
+
+// Save the credentials used by later requests.
+session = {clientId: registered.clientId, sessionToken: registered.sessionToken};
+
+// Call an operation and display its result.
+console.log(await rawOperation("argus/get-active-events", {limit: 1, offset: 0}));
+```
+
+For read-only access, if the Engine permits viewers, use this registration payload instead:
+
+```json
+{
+  "role": "viewer",
+  "tempestCompatibilityVersion": 3
+}
+```
+
+**3. Receive live updates.** Open the WebSocket and identify it using the registered session:
+
+```javascript
+// Open the telemetry connection.
+const socket = new WebSocket("ws://127.0.0.1:7002/tempest/telemetry");
+await new Promise((resolve, reject) => {
+  socket.onopen = resolve;
+  socket.onerror = reject;
+});
+
+// Associate this socket with the registered client.
+socket.send(JSON.stringify({sender: session.clientId, sessionToken: session.sessionToken,
+  topic: "", error: false, payload: {}, timestamp: Date.now()}));
+```
+
+Each message event is another iteration of the browser's receive loop. Attach a callback, then request the channel:
+
+```javascript
+// Read incoming snapshots for this client.
+const channel = "engine_dartwic_cpu_usage_percent";
+
+function rawTelemetry(topic, receive) {
+  socket.onmessage = ({data}) => {
+    const message = JSON.parse(data);
+    if (message.topic === topic && !message.error
+        && message.payload.client_id === session.clientId) receive(message.payload);
+  };
+}
+
+// Update the dashboard for every matching message.
+rawTelemetry("rapid/channels/snapshot", snapshot => {
+  console.log(snapshot.channels[channel]); // Update your dashboard here.
+});
+
+// Enable the channel stream on the Engine.
+await rawOperation("dartwic/add-channel-to-telemetry", {channel_name: channel});
+```
+
+**4. Keep the session alive.** WebSocket traffic does not replace the heartbeat operation:
+
+```javascript
+// Keep the registered session alive while receiving telemetry.
+const heartbeat = setInterval(() => {
+  rawOperation("heartbeat").catch(error => {
+    console.error(error);
+    close().catch(console.error);
+  });
+}, 5000);
+```
+
+**5. Close or reconnect.** Call close when the dashboard view exits. Node.js also closes on Ctrl+C:
+
+```javascript
+// Stop once, even if several events request cleanup.
+let closed = false;
+
+async function close() {
+  if (closed) return;
+  closed = true;
+  clearInterval(heartbeat);
+
+  // Unregister, then release the transport even if that fails.
+  try { await rawOperation("unregister_client"); }
+  finally { socket.close(); }
+}
+
+// Clean up on disconnect or Node.js shutdown.
+socket.onclose = () => close().catch(console.error);
+if (typeof process !== "undefined") {
+  process.once("SIGINT", () => close().catch(console.error));
+}
+```
+
+Closing the last WebSocket unregisters its client. To reconnect, register a new session, identify the new socket, and restore subscriptions. Keep your application's recovery policy separate from the message examples.
+
+# Custom Network Discovery
+
+Custom discovery lets your application find Engine addresses through UDP before connecting as a client. It is separate from the ZeroMQ and HTTP/WebSocket operation transports.
+
+From each relevant local IPv4 adapter, send this UTF-8 JSON to multicast group **239.255.77.77**, UDP port **47600** (or the configured port). Use an ephemeral source port and multicast TTL 1:
+
+```json
+{"type":"tempest.discover","version":1,"nonce":"random-round-id"}
+```
+
+Each reply returns to the same socket and echoes your round ID:
+
+```json
+{
+  "type": "tempest.server",
+  "version": 1,
+  "nonce": "random-round-id",
+  "instance_id": "123456789-987654321",
+  "node_name": "Example",
+  "workspace_name": "example-workspace",
+  "port": 7000,
+  "address": ""
+}
+```
+
+Use the advertised address, or the packet's source IP when it is empty, with the returned connection base port. Collect replies briefly, validate their fields and nonce, and deduplicate by instance ID. Queries are limited to 256 bytes and the nonce to 64 bytes; each Engine allows 64 replies per second.
+
+## Python Example
+
+This standard-library script prints the Engines that reply within 1.2 seconds. It searches this computer by default; for a LAN search, replace the interface address with your computer's Ethernet/Wi-Fi IPv4 address.
+
+```python
+import json
+import secrets
+import socket
+import time
+
+# Choose the local adapter and identify this discovery round.
+interface = "127.0.0.1"
+nonce = secrets.token_hex(8)
+query = json.dumps({"type": "tempest.discover", "version": 1, "nonce": nonce})
+
+with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+    # Send the query; replies return to this socket's temporary port.
+    sock.bind((interface, 0))
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, socket.inet_aton(interface))
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 1)
+    sock.sendto(query.encode(), ("239.255.77.77", 47600))
+
+    # Collect matching replies until the discovery window ends.
+    deadline = time.monotonic() + 1.2
+    while (remaining := deadline - time.monotonic()) > 0:
+        sock.settimeout(remaining)
+        try:
+            data, sender = sock.recvfrom(2048)
+            reply = json.loads(data)
+        except socket.timeout:
+            break
+        except (ValueError, UnicodeError):
+            continue
+
+        # Use the advertised address, or the reply's source IP.
+        if isinstance(reply, dict) and (
+            reply.get("type"), reply.get("version"), reply.get("nonce")
+        ) == ("tempest.server", 1, nonce):
+            address = reply.get("address") or sender[0]
+            print(reply["node_name"], address, reply["port"])
+```
+
+Save it as `discover.py` and run `python discover.py`. Change UDP port `47600` if your Engines use another discovery port. The output gives a node name, IP, and connection base port to use with the [Python client](../../Clients/Python%20Client.md#connect); discovery itself does not log in.

@@ -1,41 +1,43 @@
 ---
 summary: Edit scripts, understand saved versus active code, and find runtime errors.
 created: 2026-10-24
-updated: 2026-10-26T21:52
+updated: 2026-10-29T18:28
 ---
 
-Open **Scripts** to edit a project's DCode files. The editor connects source code to the tasks, calculations, events, and callbacks it creates. For the language itself, start with the [DCode overview](../DCode/Overview.md).
+**DCode** is DARTWIC's automation language. A script can convert a sensor reading into engineering units, control a tank fill, or run a test procedure. Open **Scripts** to write and apply that automation. This guide covers using the editor; the [DCode overview](../DCode/Overview.md) introduces the language and examples.
 
-# Open and edit a script
+# Open and Edit a Script
 
-Choose a script from the resource list or follow a source link from Tasks, Channels, or an event. Source links can jump to the declaration line.
+Choose a saved script, or right-click the resource list and choose **Create Resource**. The toolbar's execution mode chooses how the Engine runs it: **DCode · Lua** interprets the script, while native execution compiles it into C++. Start with Lua for the language examples; native execution needs [Builder setup](../DCode/Native%20C%2B%2B%20Execution.md).
 
-The editor provides completion, hover documentation, and error markers. Use the channel references and runtime markers to inspect related signals or open the resulting runtime view. Check the resource's save/synchronization state when working from several Interfaces.
+![The editor's loaded-code indicator and runtime-block gutter icons.](../DCode/_attachments/Pasted%20image%2020261026135823.png)
 
-# Save, activate, and run
+Use completion, hover help, and error markers while editing. Icons beside the line numbers open the work defined by that part of the script; source links elsewhere in the Interface bring you back to its definition. Check the save/synchronization state before leaving the file.
 
-| Action | What changes |
-| --- | --- |
-| Edit and save | The project's source file. Loaded runtime behavior can still be from the previous activation. |
-| Run script / Ctrl+R | Saves the current script, then asks the Engine to activate it. |
-| Start a declared task | Begins that task's execution through its runtime controls. |
-| Change execution mode | Selects the backend used for the next activation. |
+# Activation and Replacement
 
-Run can execute top-level code and register or reconfigure runtime declarations. A task declaration does not imply that every task starts immediately; script logic and startup controls determine that. Inspect the action result and runtime state before assuming new behavior is running.
+You can edit a controller while the Engine is still using the version you last activated. This gives you time to finish the changes before applying them. Activation is the step that asks the Engine to use the edited file.
 
-For YAML template parameters, Run saves the YAML and activates its dependent scripts. Review which scripts are affected. [Templates and Configuration](../DCode/Templates%20and%20Configuration.md) explains this relationship.
+Sections that define Engine-managed work, such as a task or calculation, are called **runtime blocks**. Activation makes their definitions available to the Engine; starting a task begins its procedure.
 
-# Script and activation errors
+Use **Run script** or **Ctrl+R** to save and activate the file. Wait for the result, then inspect its runtime blocks. A task defined by the script may still need **Start** in [Tasks](Modules%20and%20Tasks.md#task-controls); loops start on activation.
 
-Fix reported DCode errors before activation. Checking code helps find problems; activation can still fail during configuration, native compilation, or dependency binding.
+Saving alone does not replace loaded behavior. Run activates the whole file, including unchanged declarations; [Activation and Replacement](../DCode/Runtime%20Blocks%20and%20Activation.md#activation-and-replacement) explains what is replaced and restarted.
 
-Read the activation detail and its **DARTWIC BUILDER** output. Follow file and line locations back to the source. The editor's loaded-code and binding indicators help distinguish the file you are editing from what is loaded in Engine memory.
+## Template Activation
 
-| Problem | Next check |
-| --- | --- |
-| Edited code has no effect | Save/activation result and loaded-code state. |
-| Task exists but does not execute | Running/held state in [Modules and Tasks](Modules%20and%20Tasks.md). |
-| Native activation fails | Compiler output, toolchain, and reported bindings. |
-| Output write is rejected | [Channel authority](../Engine/Channels%20and%20Control.md#policies). |
+Several similar valves can share one script, with their names and settings listed in a **YAML** file, a text file holding configuration values. A **template** uses those entries to generate work for each valve. When you change the list, the Engine needs to activate the script again to update that generated work.
 
-Saving or closing an editor does not stop existing runtime work. Use its task controls when changing execution. For activation and replacement semantics, see [Runtime Blocks and Activation](../DCode/Runtime%20Blocks%20and%20Activation.md); for native setup, see [Native C++ Execution](../DCode/Native%20C%2B%2B%20Execution.md).
+When a script uses YAML parameters, edit those alongside the script. The YAML editor's **Run** saves it and activates its dependent scripts.
+
+![A script and its YAML parameters with loaded-code indicators.](../DCode/_attachments/Pasted%20image%2020261026140141.png)
+
+See [Templates and Configuration](../DCode/Templates%20and%20Configuration.md) for parameter files and generated declarations.
+
+# Script and Activation Errors
+
+An error can occur while applying a script or later while its automation runs. The activation result tells you whether applying the file succeeded; events and logs help explain failures during execution. **Builder** is the tool that compiles native DCode, so its output is useful for compilation errors.
+
+Read activation details and the node's events/logs, then follow reported file/line links. For native failures, open **Project → Builder logs** and inspect **DARTWIC BUILDER** output alongside the action result.
+
+After correcting and reactivating the script, check the affected task and channels. Closing the editor does not stop runtime work. Export retained failure output through [recorded logs](Events%20and%20Logs.md#recorded-logs) when sharing a diagnosis.

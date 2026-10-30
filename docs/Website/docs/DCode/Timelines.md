@@ -1,7 +1,7 @@
 ---
 summary: Schedule countdown buckets, hold mission time at checkpoints, and inspect progress.
 created: 2026-10-25
-updated: 2026-10-27T03:06
+updated: 2026-10-28T19:10
 ---
 
 A timeline schedules actions before and after **T0**, the reference time for a procedure. Its **mission time** counts toward T0 and continues afterward: `T-10s` is ten seconds before it, and `T+30s` is thirty seconds after it.
@@ -42,7 +42,7 @@ Handlers let you add actions for holding, resuming, stopping, or aborting a proc
 
 Activation registers the timeline; starting it begins the clock and bucket execution. Completing one bucket does not release the timeline's channel claims. The timeline stops when all buckets complete.
 
-Stopping, removing, or replacing the timeline finishes active work and applicable lifecycle handling, then releases all authority held by the timeline. Channels and their last stored values remain. See the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop) for policies and overrides.
+Stopping uses the [shared task cleanup](../Engine/Modules%20and%20Tasks.md#stop-and-cleanup): authority is released after active work and lifecycle handling, while channel values remain.
 
 Hold a running timeline before reactivating its file. An interrupted run can leave in-progress buckets uncertain; inspect recovery state before resetting or replaying them. [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) covers replacement.
 
@@ -129,7 +129,7 @@ task_timeline docs_demo_prompt:
 
     at T-5s (approval):
         execute:
-            approved = promptYesNo("Demo approval", "Continue the demo?", [], "", 0, 0)
+            approved = promptYesNo("Demo approval", "Continue the demo?", [], "", 0)
             if approved == 1:
                 |docs_demo_approved| = 1
 

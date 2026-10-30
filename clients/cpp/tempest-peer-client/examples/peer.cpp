@@ -1,11 +1,11 @@
-#include <dartwic/PeerClient.h>
+#include <dartwic/EngineProtocolPeer.h>
 #include <iostream>
 int main(int argc, char** argv) {
-    DARTWIC::PeerClientConfig config{.node_name="example"};
+    DARTWIC::EngineProtocolPeerConfig config{.node_name="example"};
     if (argc > 1) config.host = argv[1];
     if (argc > 2) config.port = std::stoi(argv[2]);
     if (argc > 3) config.password = argv[3];
-    DARTWIC::PeerClient peer(config);
+    DARTWIC::EngineProtocolPeer peer(config);
     peer.channels().setHandlers({.upsertCommand=[](const DARTWIC::ChannelUpsertRequest& command) {
         for (const auto& change : command.changes) std::cout << "Command: " << change.channel << '\n';
     }});

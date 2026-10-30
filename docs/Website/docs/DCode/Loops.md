@@ -1,7 +1,7 @@
 ---
 summary: Run lightweight repeated work on activation and inspect its state and timing.
 created: 2026-10-26
-updated: 2026-10-27T03:06
+updated: 2026-10-27T20:40
 ---
 
 A loop is lightweight work that repeats at a requested frequency and starts when its file is activated. Use it for simple background automation. Use a [task](Tasks.md) when an operator needs explicit start, hold, and stop controls.
@@ -23,7 +23,7 @@ loop docs_demo_poll 10 disable_warnings:
 
 Activating the file starts the loop. Closing the editor does not stop it. Reactivation replaces the loop; removing its declaration and reactivating removes it. See [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) for replacement, failures, and backend limits.
 
-Completed removal or replacement waits for active work and applicable cleanup, then releases **all channel authority held by the loop**. It does not delete channels or reset their stored values. Other controllers' claims and operator control follow the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop).
+Removal releases the loop's authority and retains its channels and values; see [shared artifact cleanup](../Engine/Modules%20and%20Tasks.md#removal-and-replacement).
 
 # Loop Execution
 

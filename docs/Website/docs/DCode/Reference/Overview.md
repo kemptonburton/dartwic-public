@@ -2,7 +2,7 @@
 title: DCode Reference
 summary: Shared language reference for DCode with Lua and Native C++ execution.
 created: 2026-08-04T17:38
-updated: 2026-10-26T22:01
+updated: 2026-10-28T19:18
 ---
 
 Use the [DCode guides](../Overview.md) for tutorials and examples, or choose a category below when you already know what you need.
@@ -20,5 +20,5 @@ Lua and Native C++ use this single feature catalog. [Values and Scope](../Values
 | [Directives](Directives/Overview.md) | Compile-time and module-level forms that import code, define parameters, or expand templates. | 3 |
 | [Syntax](Syntax/Overview.md) | DCode values, expressions, scope, channel paths, comments, and indentation. | 9 |
 | [Context Variables](Context%20Variables/Overview.md) | Values supplied by the engine only in the runtime blocks and handlers where they are meaningful. | 10 |
-| [DCode Functions](DCode%20Functions/Overview.md) | Functions supplied by DARTWIC for channels, prompting, logging, timing, and other runtime behavior. | 37 |
+| [DCode Functions](DCode%20Functions/Overview.md) | Functions supplied by DARTWIC for channels, prompting, logging, timing, and other runtime behavior. | 38 |
 | [Lua Base](Lua%20Base/Overview.md) | Lua keywords, literals, base functions, and standard libraries available to DCode scripts. | 42 |

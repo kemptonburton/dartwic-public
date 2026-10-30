@@ -2,7 +2,7 @@
 title: task_group
 summary: Order existing CAESAR tasks or loops whenever their own absolute monotonic releases are due.
 created: 2026-10-04T18:31
-updated: 2026-10-26T22:01
+updated: 2026-10-27T16:09
 ---
 
 ## Syntax

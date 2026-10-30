@@ -1,6 +1,8 @@
 ---
-title: "Fields"
-summary: "Named configuration values inside their owning runtime block or bucket."
+title: Fields
+summary: Named configuration values inside their owning runtime block or bucket.
+created: 2026-10-27T16:09
+updated: 2026-10-28T19:18
 ---
 
 | Feature | Family | Syntax | Available in |
@@ -11,10 +13,10 @@ summary: "Named configuration values inside their owning runtime block or bucket
 | [clock_t0](field-timeline_clock_t0.md) | Timeline | `clock_t0: <ISO-8601 timestamp>` | A mission-time task_timeline declaration |
 | [depends_on](field-depends_on.md) | Calculation | `depends_on: <channel>, ...` | A channel_calculation declaration |
 | [description](event-metadata-description.md) | ARGUS | `description: "<text>"` | An event declaration |
+| [firing_timeout_seconds](event-metadata-firing_timeout_seconds.md) | ARGUS | `firing_timeout_seconds: <seconds>` | An event declaration |
 | [hold_at](field-bucket_hold_at.md) | Timeline | `hold_at: <T-/T+ time or next_bucket>` | A timeline at bucket |
 | [resolution](event-metadata-resolution.md) | ARGUS | `resolution: "<instructions>"` | An event declaration |
 | [run](field-run.md) | Task Group | `run: <task-or-loop-name>` | A task_group declaration |
-| [separation_seconds](event-metadata-separation_seconds.md) | ARGUS | `separation_seconds: <seconds>` | An event declaration |
 | [states](field-states.md) | State Machine | `states:` | A task_state_machine declaration |
 | [subsystem](event-metadata-subsystem.md) | ARGUS | `subsystem: "<subsystem>"` | An event declaration |
 | [system](event-metadata-system.md) | ARGUS | `system: "<system>"` | An event declaration |

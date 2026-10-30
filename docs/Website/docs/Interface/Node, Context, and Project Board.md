@@ -1,50 +1,46 @@
 ---
 summary: Inspect node output, selection details, references, and project changes.
 created: 2026-09-06T14:39
-updated: 2026-10-26T21:52
+updated: 2026-10-29T18:30
 ---
 
-These panels keep supporting information beside your work. Open the **Node Board** for node output, **Context** for the current selection, and **Project** for references and project actions.
+These panels keep node activity, selection details, and project changes beside your main tab. Open **Node Board**, **Context**, or **Project** using the buttons near the bottom of the left sidebar; hover an icon for its name.
 
-# Node, Context, and Project panels
+# Node Activity
 
-| Panel | Use it for |
-| --- | --- |
-| Node Board | Node-scoped events, prompts, holds, and logs. |
-| Context | Properties and configuration for the selected channel, schematic node, or resource. |
-| Project | References, reviewed actions, progress, and Builder logs. |
+The Node Board gives you a place to watch an Engine's messages while working in another view. For example, you can keep its logs visible while changing a device connection and see the result without switching tabs. It also shows events that need acknowledgement, prompts asking for an answer, and holds waiting for release. The bottom activity bar opens node output and shortcuts to aborts, holds, and prompts.
 
-The context panel follows your selection. Selecting a resource in Project shows its runtime state and available source alongside it. A runtime identity and its authored file can be opened independently.
+![Node logs open below the main workspace.](../Getting%20Started/_attachments/Pasted%20image%2020261024203349.png)
 
-# Node activity
+Keep logs open while starting a device task to catch errors without leaving its editor. For filters, history, and downloading records, follow [Events and Logs](Events%20and%20Logs.md).
 
-Use the Node Board to monitor output without replacing your main resource tab. Open an event for its description and actions, or choose the node's log stream.
+# Context
 
-[Events](Events.md) explains acknowledgement, prompts, and holds. [Logs](Logs.md) explains stream, session, and time filters.
+Context lets you inspect or configure an item without leaving the view you are working in. Select an event to read its description and use its actions, or select a schematic item to change its properties and connected channels. The panel follows your selection. Use source buttons to open the related task, module, or script.
 
-# Project actions and references
+![A selected event's details, related graphs, and actions.](../Engine/_attachments/Pasted%20image%2020261028143012.png)
 
-**Find references** shows ownership and uses in scripts, tasks, modules, and schematics. Inspect the listed files and declarations before renaming or deleting a resource. Creation or last-writer history alone does not establish current ownership.
+# Project Actions and References
 
-**Apply** refreshes the evidence and runs the requested action, including needed operator authority and task stops. Warnings and incomplete scans require review; they do not automatically prevent an administrator from applying a change. Viewers cannot apply actions.
+A pressure channel might be read by a controller and displayed on several schematics. Renaming or deleting it can affect all of those places. Project helps you find those uses and review the changes together before applying them:
 
-| Action | Review before applying |
-| --- | --- |
-| Channel Cleanup | Channels without current owners or references. Retained control authority shows a warning and starts unselected. |
-| Delete a channel | Affected tasks stop; surviving work stays stopped for reference repair. |
-| Delete a task or module | Linked tasks, owned-channel cleanup, task-group releases, configuration removal, and snapshot saving. Read-only inputs are not automatically deletion candidates. |
-| Rename a channel | Supported reference repairs, stopped work, unsupported references, and native bindings. Conflicting destination names are not overwritten. |
+1. Right-click a channel and choose **Find references**.
+2. Select a result to preview its runtime state and authored source, where available.
+3. Choose the rename or delete action, then review affected resources, task stops, and warnings.
+4. **Apply**, wait for the result, and inspect failed steps before continuing.
 
-After a rename, ordinary tasks restart only once bindings and authority are restored. Timelines stay stopped because their elapsed position cannot be preserved. Parameter-derived DCode references may require editing YAML or the template and reactivating it.
+For **Channel Cleanup**, start from the Channels toolbar and select the candidates you intend to remove. An incomplete scan does not establish that a channel is unused. Publishers and retained scripts can recreate deleted resources.
 
-A saved peer connection owns its cached channels while offline. A publisher can recreate a deleted channel, and retained DCode source can recreate deleted runtime resources. Incomplete scans are not proof that a channel is unused.
+Deletion can leave affected tasks stopped; check them afterward. [Stop and Cleanup](../Engine/Modules%20and%20Tasks.md#stop-and-cleanup) and [Removal and Replacement](../Engine/Modules%20and%20Tasks.md#removal-and-replacement) explain resource lifetime.
 
-## Cancellation and retry
+## Cancellation and Retry
 
-Actions run one at a time. **Cancel action** removes queued work immediately or stops running work between steps. Completed deletions remain deleted. A cancelled rename attempts recovery.
+A project change can involve several steps, such as stopping tasks and updating files. If it fails partway through, some steps may already be complete. Review the result so you know what remains before retrying.
 
-Failed steps show their concrete errors while independent steps can continue. **Retry** attempts the remainder. Recovery and snapshot-save failures still need attention even if some runtime changes succeeded.
+Closing the panel does not cancel submitted work. **Cancel action** stops remaining steps; completed changes remain. Use **Retry** for failed steps, or **Reload actions** after failed preparation. Review partial results before repeating an action.
 
-When deleting a module, a linked task's failed removal keeps the module in place, including when only that task's saved file remains. Resolve the file error and retry the action to finish removing both.
+# Builder Logs
 
-For Engine lifecycle and cleanup responsibilities, see [Modules and Tasks](../Engine/Modules%20and%20Tasks.md).
+Native DCode needs to be compiled before the Engine can run it. **Builder** performs that preparation; its logs explain problems such as code that could not compile, which may prevent your edited automation from loading.
+
+**Project → Builder logs** shows **DARTWIC BUILDER** output. Read it alongside the script's activation result and follow file/line links to the [editor](DCode%20Editor.md). To download saved output, select the Builder stream in [ARGUS Logs](Events%20and%20Logs.md#recorded-logs) and export its time range.

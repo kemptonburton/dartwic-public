@@ -2,7 +2,7 @@
 title: Lua Base
 summary: Lua keywords, literals, base functions, and standard libraries available to DCode scripts.
 created: 2026-08-04T17:39
-updated: 2026-10-26T22:01
+updated: 2026-10-27T16:09
 ---
 
 | Feature | Family | Syntax | Available in |

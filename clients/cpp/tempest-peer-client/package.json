@@ -2,7 +2,7 @@
   "name": "@dartwic/tempest-peer",
   "version": "3.0.0",
   "private": true,
-  "description": "Optional TEMPEST peer transport for C++ applications",
+  "description": "Engine Protocol and TEMPEST Protocol peers for C++ applications",
   "dartwic": {
     "minEngineVersion": "2.1.0"
   }

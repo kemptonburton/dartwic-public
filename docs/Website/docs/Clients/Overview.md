@@ -1,6 +1,6 @@
 ---
 summary: Choose a client for analysis, dashboards, or external C++ nodes.
-updated: 2026-10-26T21:44
+updated: 2026-10-27T17:53
 created: 2026-09-06T14:47
 ---
 
@@ -14,7 +14,8 @@ Choose the library for your application below. To add features inside DARTWIC it
 | A Node service, dashboard backend, or data export tool | [Node.js Client](Node.js%20Client.md) |
 | A native application that reads and writes Engine data | [C++ Client](C%2B%2B%20Client.md) |
 | A browser dashboard with live React components | [React Client](React%20Client.md) |
-| A separate node that owns channels and accepts commands | [C++ TEMPEST Peer](C%2B%2B%20TEMPEST%20Peer.md) |
+| A named node with custom operations and telemetry | [C++ TEMPEST Protocol Peer](C%2B%2B%20TEMPEST%20Protocol%20Peer.md) |
+| A separate node that owns channels, events, and logs | [C++ Engine Protocol Peer](C%2B%2B%20Engine%20Protocol%20Peer.md) |
 
 # Download and install locally
 

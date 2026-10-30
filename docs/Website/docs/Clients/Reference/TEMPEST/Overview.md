@@ -2,12 +2,12 @@
 title: TEMPEST Peer Reference
 summary: Optional peer messaging for external applications.
 created: 2026-10-04T18:31
-updated: 2026-10-27T14:08
+updated: 2026-10-27T17:53
 ---
 
-C++20 target: `DARTWIC::PeerClient` assembles the standard DARTWIC peer and protocol with ZeroMQ or a supplied Transport.
+C++20 targets: `DARTWIC::EngineProtocolPeer` adds channels, events and logs; `TEMPEST::Peer` supplies custom operations and telemetry over TEMPEST TCP. `DARTWIC::PeerClient` remains a compatibility target and C++ name.
 
-The Engine uses the same Transport, Peer and EngineProtocol libraries. Lower-level TEMPEST APIs remain available for custom operations and transports.
+The Engine and C++ applications use the same EngineProtocolPeer class. The Engine attaches it to its server-owned Peer, preserving existing sockets and lifecycle; standalone applications can use the supplied TCP transport or a custom Transport.
 
 | API | Description |
 | --- | --- |
@@ -28,5 +28,7 @@ The Engine uses the same Transport, Peer and EngineProtocol libraries. Lower-lev
 | [PeerDeclaration](PeerDeclaration.md) | Explicit connection contract declared before an incoming peer is constructed. |
 | [makeZmqTransport](makeZmqTransport.md) | Create the optional standalone ZeroMQ transport with four socket roles and JSON encoding. |
 | [ZmqPeerHub](ZmqPeerHub.md) | Reuse an engine server ROUTER/PUB and own one shared SUB plus one DEALER per logical peer connection. |
-| [PeerClientConfig](PeerClientConfig.md) | Named application identity and default link settings. |
-| [PeerClient](PeerClient.md) | A Peer and EngineProtocol with optional default ZeroMQ transport. |
+| [EngineProtocolPeerConfig](EngineProtocolPeerConfig.md) | Named application identity and default link settings. |
+| [EngineProtocolPeer](EngineProtocolPeer.md) | Shared EngineProtocol + TEMPEST Peer composition used by the Engine and C++ applications. |
+| [PeerClientConfig](PeerClientConfig.md) | Compatibility name for the Engine Protocol Peer configuration. |
+| [PeerClient](PeerClient.md) | Compatibility name for EngineProtocolPeer. |

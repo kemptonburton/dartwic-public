@@ -1,18 +1,12 @@
 ---
 summary: Choose periodic, state-machine, or sequence tasks and use their shared lifecycle.
 created: 2026-10-26
-updated: 2026-10-27T03:06
+updated: 2026-10-27T21:02
 ---
 
-Tasks are named pieces of automation that operators can start, hold, inspect, and stop.
+Declare automation with `task_periodic`, `task_state_machine`, or `task_sequence`. These work in Lua and Native C++. [Engine task structures](../Engine/Modules%20and%20Tasks.md#task-structures) explains when to choose each; the syntax and examples are below.
 
-| Task kind | Use it for |
-| --- | --- |
-| Periodic | Sampling or control logic that repeats at a requested frequency. |
-| State machine | Named stages with transitions accepted by your script. |
-| Sequence | Ordered steps that run once per start, including waits. |
-
-These three kinds work in Lua and Native C++. Use [Timelines](Timelines.md) for countdown buckets or [Loops](Loops.md) for lightweight work that starts on activation.
+Use [Timelines](Timelines.md) for countdown buckets or [Loops](Loops.md) for lightweight work that starts on activation.
 
 # Task Configuration
 
@@ -34,16 +28,7 @@ Frequency and priority are scheduling requests, not deadline guarantees. [Execut
 
 # Task Lifecycle
 
-Activation installs a definition. Each start begins a task execution, which can contain many iterations before it stops or completes.
-
-| Phase | Behavior |
-| --- | --- |
-| Activation | Register the task and its control channels. |
-| Configuration | Prepare task resources; plugin task types expose this through `on_configure`. |
-| Start | Create fresh working variables and run `start:` once. |
-| Execution | Repeat `task:`, run the current `state:`, or advance a sequence body. |
-| Hold / Resume | Pause and continue the same execution, keeping variables and authority. |
-| Completed stop | Finish active work and `end:`, then remove the task's channel claims. |
+DCode runtime sections supply the code for each phase of the [shared task lifecycle](../Engine/Modules%20and%20Tasks.md#lifecycle).
 
 ## Activation
 
@@ -53,15 +38,9 @@ Save and activate the `.dcode` file, then start the task in **Tasks**. Activatio
 
 The image above shows a state machine task running. By clicking the task icon in the DCode editor gutter, you can go to the Tasks page and start the task.
 
-## Configuration
-
-Plugin tasks use `on_configure` to prepare handles, buffers, and module bindings during configuration or reconfiguration, not every restart. Per-run setup belongs in `on_start`. See [Modules and Tasks](../Engine/Modules%20and%20Tasks.md) and [Building a Hardware Driver](../Plugins/Building%20a%20Hardware%20Driver.md).
-
-DCode has no `configure:` section; its declaration supplies setup and `start:` initializes each run.
-
 ## Start
 
-Initialize working variables in `start:` or before their first read. They persist across the run's sections and iterations, then reset on the next start. File globals have a separate lifetime; see [Values and Scope](Values%20and%20Scope.md).
+DCode has no `configure:` section. Initialize working variables in `start:` or before their first read. They persist across the run's sections and iterations, then reset on the next start. File globals have a separate lifetime; see [Values and Scope](Values%20and%20Scope.md).
 
 Starting does not grant channel authority. Value-free `command` or `set` in `start:` can acquire an available claim without changing the stored value.
 
@@ -71,23 +50,13 @@ A rejected authority operation warns and leaves that channel unchanged; it does 
 
 ## Hold and Resume
 
-Hold pauses supported execution and managed waits while preserving working variables, channel authority, and output values. Resume continues the same execution without repeating `start:`. A hold request does not guarantee that an already executing callback has finished.
+Resume continues the same run without repeating `start:` or resetting working variables. See the [shared runtime behavior](../Engine/Modules%20and%20Tasks.md#runtime) for holds and in-flight execution.
 
 ## Stop and Cleanup
 
-**Completed stop releases all channel authority held by the task**, after active work and applicable `end:` handling finish. Natural sequence completion uses the same cleanup.
+Put intentional final commands in `end:`. Stopping a task during a managed wait skips the remaining statements in its current handler. Natural sequence completion also runs end handling. The [shared stop and cleanup rules](../Engine/Modules%20and%20Tasks.md#stop-and-cleanup) explain authority release and retained channel values.
 
-| Channel control before stop | Result |
-| --- | --- |
-| Task owns `automatic` through `command`, with no override | Channel becomes `free`; owner and active controller are cleared. |
-| Task publishes `observe_only` through `set`, with no override | Publisher and active controller are cleared; the channel stays `observe_only`. |
-| Task owns the underlying claim beneath another controller's override | Task's claim is removed; the other controller's override stays. |
-| Task holds the current `automatic_override` | Task's override is removed; the remaining underlying owner and policy take over. |
-| Operator holds `manual_override` | Task's claims are removed; operator control stays. The stopped task is not restored when manual control ends. |
-
-Put intentional final commands in end:. Stopping a task during a managed wait skips the remaining statements in its current handler. See the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop) for policy and override behavior.
-
-Removing a task declaration and reactivating stops and removes that task using the same cleanup. Its channels and last stored values remain. Reactivation rebuilds even unchanged definitions with fresh state and restarts previously running tasks. See [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md).
+Removing a declaration and reactivating removes the task. Reactivation rebuilds even unchanged definitions with fresh state and restarts previously running tasks; see [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md).
 
 # Task Execution
 
@@ -190,20 +159,9 @@ This example uses the shared [wait functions](Common%20Syntax%20and%20Functions.
 
 # Task Controls and Diagnostics
 
-Tasks create common channels for diagnostic and control purposes:
+Use the [shared task control and diagnostic channels](../Engine/Modules%20and%20Tasks.md#task-channels), with your task's name as the prefix, such as `tasks_noise_filter_running`. Change frequency through `_target_frequency` or Tasks, then compare `_actual_frequency` with the target.
 
-| Channel suffix | Purpose |
-| --- | --- |
-| `_running` | Write 1 to start or 0 to stop. |
-| `_hold` | Write 1 to hold and 0 to resume. |
-| `_failed_cycles` | Counted callback failures. |
-| `_target_frequency`, `_actual_frequency` | Requested and measured Hz for periodic/state-machine tasks. |
-| `_execution_time`, `_missed_cycles` | Timing diagnostics for periodic/state-machine tasks. |
-| `_current_line` | Current sequence source line; zero after completion. |
-
-Use your task's name as the prefix, such as `tasks_noise_filter_running`. Change periodic or state-machine task frequency through `_target_frequency` or Tasks, then compare `_actual_frequency` with the target.
-
-Start, hold, and stop writes request a change; confirm the resulting task state. For automatic Engine startup, configure startup value `1` on `<name>_running`; see [startup behavior](../Engine/Modules%20and%20Tasks.md#startup-and-stop).
+For a sequence, `<name>_current_line` identifies its active source line and becomes zero after completion. [Startup behavior](../Engine/Modules%20and%20Tasks.md#configuration-and-registration) covers automatic Engine startup.
 
 ## Missed Releases
 
@@ -223,7 +181,7 @@ Members retain their frequency, diagnostics, and enabled state. A slow member de
 
 ## Task Group Lifecycle
 
-Activation installs the group's scheduling arrangement. Removing the group releases that arrangement; its members keep their definitions, running state, and authority. Members replaced or removed in the same activation still follow their own [stop and cleanup](#stop-and-cleanup) rules. The group has no separate channel authority to release.
+Activation installs the group's scheduling arrangement. Removing its declaration releases the grouping rather than removing its members. See [shared removal behavior](../Engine/Modules%20and%20Tasks.md#removal-and-replacement) for member state and authority.
 
 # Reference
 

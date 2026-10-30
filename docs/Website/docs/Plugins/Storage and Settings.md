@@ -1,6 +1,6 @@
 ---
 summary: Choose where settings, private device configuration, runtime files, and shared assets belong.
-updated: 2026-10-27T00:11
+updated: 2026-10-28T18:11
 created: 2026-10-05T15:38
 ---
 
@@ -40,7 +40,7 @@ Under `engine/instances/<instance>/`, project data uses three directories:
 | `runtime/<project>/` | Recordings, logs, resume values, and dataframe state. |
 | `cache/<project>/` | Regenerable files, such as native builds and temporary export parts. |
 
-Only cache data should be disposable. Keep needed recordings and private settings when clearing generated files. [Configuration and Storage](../Engine/Configuration%20and%20Storage.md#file-ownership) has the Engine paths; [Tracking a Workspace in GitHub](../Getting%20Started/Tracking%20a%20Workspace%20in%20GitHub.md) covers sharing the complete workspace.
+Only cache data should be disposable. Keep needed recordings and private settings when clearing generated files. [Configuration and Storage](../Engine/Configuration%20and%20Storage.md#instance-data) has the Engine paths; [Tracking a Workspace in GitHub](../Getting%20Started/Tracking%20a%20Workspace%20in%20GitHub.md) covers sharing the complete workspace.
 
 # Module configuration and private values
 
@@ -128,7 +128,7 @@ Read back with your defaults after saving to check the effective value; the writ
 
 Saving a setting makes it persistent, but does not automatically change running code. At load time, the Engine merges plugin settings into the configuration passed to the factory without rewriting `plugin.json`. For later changes, your plugin must reread and safely apply them, or require a restart. Keep file reads and JSON parsing outside high-frequency task loops.
 
-Core policies also have their own timing; for example, [recording configuration](../Engine/Advanced/Recording%20and%20Delivery%20Tuning.md#recording-queues) requires an Engine restart.
+Core policies also have their own timing; for example, [recording configuration](../Engine/Recording%20and%20Telemetry.md#recording-capacity) requires an Engine restart.
 
 ## Autosaved settings panels
 

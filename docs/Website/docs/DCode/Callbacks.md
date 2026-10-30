@@ -1,6 +1,6 @@
 ---
 summary: Expose ordinary DCode functions to schematic controls and other callers.
-updated: 2026-10-27T03:53
+updated: 2026-10-27T20:40
 created: 2026-10-04
 ---
 
@@ -41,7 +41,7 @@ Activating the file registers its callbacks without executing their bodies. Reac
 
 Calls already executing keep their captured version and file-global environment until they finish. Removal prevents new calls, invalidates saved captures, and stops independent background work before cleanup completes. See [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md).
 
-The registration owns no channel authority: calls use their caller's authority. Returning or removing a registration does not release the caller's claims or delete channels and stored values. Independent background calls do not inherit task authority and can continue after their caller stops. See the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop).
+Calls use caller authority, not registration-owned authority; see [shared artifact cleanup](../Engine/Modules%20and%20Tasks.md#removal-and-replacement). Independent background calls can continue after their caller stops and do not inherit its task authority.
 
 # Callback Execution
 

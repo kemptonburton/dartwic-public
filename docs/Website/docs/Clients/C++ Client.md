@@ -1,12 +1,12 @@
 ---
 summary: Build a native application with live channels, telemetry, and history queries.
-updated: 2026-10-26T21:52
+updated: 2026-10-28T18:11
 created: 2026-09-07T17:03
 ---
 
 The C++ client connects a native application to a running DARTWIC Engine. It provides channel reads and writes, live subscriptions, and recorded-data queries through `DARTWIC::Client::DartwicClient`.
 
-Use this client for applications that call an Engine. If your application is a separate node that owns channels and accepts incoming commands, use the [C++ TEMPEST peer](C%2B%2B%20TEMPEST%20Peer.md).
+Use this client for applications that call an Engine. If your application is a separate node that owns channels and accepts incoming commands, use the [C++ TEMPEST peer](C%2B%2B%20Engine%20Protocol%20Peer.md).
 
 # Build and install
 
@@ -115,7 +115,7 @@ for (const auto& [channel, value] : readings.items())
     client.upsertChannel(channel, value);
 ```
 
-Each call is an acknowledged write, not an atomic batch. Earlier writes remain applied if a later call fails. Engine authority applies. Use the [TEMPEST peer client](C%2B%2B%20TEMPEST%20Peer.md) when your application owns remote channels, receives commands, or sends timestamped telemetry batches.
+Each call is an acknowledged write, not an atomic batch. Earlier writes remain applied if a later call fails. Engine authority applies. Use the [TEMPEST peer client](C%2B%2B%20Engine%20Protocol%20Peer.md) when your application owns remote channels, receives commands, or sends timestamped telemetry batches.
 
 ## Subscribe and receive telemetry
 
@@ -208,7 +208,7 @@ cmake --build build --config Release
 
 Replace the prefix with your client install directory and include dependency prefixes if needed. Set `DARTWIC_PASSWORD` and run the generated `analysis` executable (`build/Release/analysis.exe` with a Windows multi-configuration build).
 
-Begin with a known channel read. For a subscription, confirm that values change, then press Enter to release it. The history example requires recorded samples; [Recording and Retention](../Engine/Recording%20and%20Retention.md) explains their setup.
+Begin with a known channel read. For a subscription, confirm that values change, then press Enter to release it. The history example requires recorded samples; [Recording and Telemetry](../Engine/Recording%20and%20Telemetry.md) explains their setup.
 
 # Reference
 

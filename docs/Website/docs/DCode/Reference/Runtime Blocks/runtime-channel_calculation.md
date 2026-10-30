@@ -2,7 +2,7 @@
 title: channel_calculation
 summary: Define a reactive calculation for a RAPID channel.
 created: 2026-08-04T17:38
-updated: 2026-10-26T22:01
+updated: 2026-10-27T16:09
 ---
 
 ## Syntax

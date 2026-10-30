@@ -1,6 +1,6 @@
 ---
 summary: Create several controllers or warnings from one DCode definition and a YAML file.
-updated: 2026-10-27T04:42
+updated: 2026-10-28T19:07
 created: 2026-10-14T15:04
 ---
 
@@ -32,7 +32,7 @@ params = yaml "./sensor_limits.yaml#sensors"
 template(params) event docs_limit_{params.name}:
     title: "{params.name} above limit"
     type: warning
-    separation_seconds: 0
+    firing_timeout_seconds: 0
     channels: |{params.channel}|
     trigger:
         if |{params.channel}| > {params.high}:
@@ -64,7 +64,7 @@ Reactivation replaces all runtime definitions in each consuming file, including 
 
 In the photo above, the YAML that drives the templated loops has been changed, which requires the script to be ran again.
 
-Channels, stored values, and history remain. Authority cleanup follows the generated block's lifecycle and the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop). [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) covers replacement and backend limits.
+Generated definitions follow the [shared artifact cleanup rules](../Engine/Modules%20and%20Tasks.md#removal-and-replacement). [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) covers file replacement and backend limits.
 
 # Example workspace templates
 

@@ -1,6 +1,6 @@
 ---
 summary: Connect, query, write, and subscribe; then turn recorded channels into an analysis plot.
-updated: 2026-10-27T00:19
+updated: 2026-10-28T18:11
 created: 2026-08-03T15:41
 ---
 
@@ -215,7 +215,7 @@ Save the connection example as `analysis.py`, place the task snippets you need i
 
 On macOS/Linux, use `./.venv/bin/python analysis.py`.
 
-Begin with a read of a known channel, then check that a subscription follows its changes. For the plot, recording must already contain samples in the selected dataframe's range. [Recording and Retention](../Engine/Recording%20and%20Retention.md) explains how those samples are collected. Stop subscriptions before disconnecting.
+Begin with a read of a known channel, then check that a subscription follows its changes. For the plot, recording must already contain samples in the selected dataframe's range. [Recording and Telemetry](../Engine/Recording%20and%20Telemetry.md) explains how those samples are collected. Stop subscriptions before disconnecting.
 
 # Reference
 

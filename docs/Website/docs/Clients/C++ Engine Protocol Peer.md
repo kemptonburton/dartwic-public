@@ -1,6 +1,6 @@
 ---
 summary: Use the C++ peer API for channels, events, logs, and custom operations.
-updated: 2026-10-27T14:45
+updated: 2026-10-28T20:05
 created: 2026-09-06T14:49
 ---
 
@@ -8,7 +8,7 @@ Connect your C++ application as a named node to publish measurements, handle com
 
 Use the ordinary [C++ client](C%2B%2B%20Client.md) if your program only accesses Engine data and does not expose its own channels or handlers.
 
-`DARTWIC::PeerClient` assembles the protocol, peer, and default ZeroMQ transport. The same shared libraries run on the Engine side:
+`DARTWIC::EngineProtocolPeer` assembles the protocol, peer, and default ZeroMQ transport. The Engine uses this exact `DARTWIC::EngineProtocolPeer` class too:
 
 ```text
 Application data and handlers ↔ EngineProtocol ↔ TEMPEST::Peer
@@ -34,59 +34,20 @@ project(peer_demo LANGUAGES CXX)
 
 add_subdirectory(vendor/dartwic-peer)
 add_executable(peer_demo main.cpp)
-target_link_libraries(peer_demo PRIVATE DARTWIC::PeerClient)
+target_link_libraries(peer_demo PRIVATE DARTWIC::EngineProtocolPeer)
 ```
 
 Use a C++20 compiler and provide ZeroMQ dependencies through your CMake toolchain. Use package version 3.0.0 with Engine 2.1.0 or newer.
 
-# Transport Setup
+Choose **Engine Protocol Peer — TEMPEST TCP** in Network Map. This is TEMPEST over ZeroMQ/TCP with the Engine protocol for channels, events, and logs, plus custom operations and telemetry. If you only need your own operations and telemetry, use [C++ TEMPEST Protocol Peer](C%2B%2B%20TEMPEST%20Protocol%20Peer.md).
 
-The default link needs no custom plugin. A custom link needs both an application transport and an Engine plugin registering the matching transport.
+Installed consumers use `find_package(DARTWICPeerClient CONFIG REQUIRED)` and link `DARTWIC::EngineProtocolPeer`. The package name stays the same. Existing `<dartwic/PeerClient.h>`, `DARTWIC::PeerClient`, `PeerClientConfig`, and the old CMake target remain compatibility aliases.
 
-## Application Transport
+## Engine Socket Reuse
 
-Implement `TEMPEST::Transport` in your application. These declarations show the boundary; they are not a functioning network implementation:
+The Engine attaches `EngineProtocolPeer` to its existing server-owned `TEMPEST::Peer`. This constructor retains that peer and adds the Engine protocol without opening another transport. The ZeroMQ hub continues to reuse the Engine's bound ROUTER/PUB sockets and shared subscription socket; each peer keeps its own outbound DEALER connection.
 
-```cpp
-#include <tempest/Transport.h>
-
-class MyTransport : public TEMPEST::Transport {
-public:
-    void start() override;
-    void send(TEMPEST::Message message) override;
-    void stop() override;
-};
-```
-
-| Method | Your implementation supplies |
-| --- | --- |
-| `start` | Open the configured link and start I/O. Report physical availability through `setConnected(...)`; deliver decoded DARTWIC messages through `receive(message)`. Registration still determines peer readiness. |
-| `send` | Queue a message promptly in a bounded queue; encode and transmit on your I/O worker. Preserve message kind, request ID, name, payload, and errors. Honor local deadlines without transmitting monotonic-clock values or replaying accepted commands. |
-| `stop` | Stop delivery, join I/O, and release callbacks before returning. The transport destructor should stop it too. |
-
-Then supply an instance to the client, using the standard DARTWIC peer identity:
-
-```cpp
-#include <dartwic/PeerClient.h>
-#include <memory>
-
-auto transport = std::make_shared<MyTransport>();
-DARTWIC::PeerClient peer({
-    .node_name = "LAB_APP"
-}, transport);
-
-// Register channel/event/log handlers before starting; see the sections below.
-peer.start();
-peer.waitUntilReady();
-```
-
-Your class owns endpoint settings and framing. `PeerClient` supplies the DARTWIC protocol/version. The Engine selects the registered `transport_id`; the application keeps the standard DARTWIC peer identity. Domain APIs stay unchanged. Follow the [transport implementation workflow](../Plugins/Building%20a%20Custom%20Peer.md#transport-interface) for queue, encoder, and decoder details.
-
-## Engine Transport or Protocol Bridge
-
-On the Engine side, follow [Building a Custom Peer — Custom Transport](../Plugins/Building%20a%20Custom%20Peer.md#custom-transport). Register the link with `registerPeerTransport` and provide its transport factory. The Engine uses the standard DARTWIC peer and protocol automatically. Install the plugin and select its connection type in Network Map with the matching node and endpoints. The Engine constructs its peer and binds RAPID/ARGUS handlers; the plugin supplies the link.
-
-If the external device speaks its own protocol, follow [Protocol Bridge](../Plugins/Building%20a%20Custom%20Peer.md#protocol-bridge) instead. Register that device with `registerPeer`. The Engine supplies Peer and EngineProtocol to its transport factory, which translates external packets, commands, and supported queries. The device does not need this C++ client. F Prime CCSDS is the example. The linked guide uses the same channel, event, and log APIs.
+The standalone application constructor creates its own transport and stops its peer on destruction. The adopted-peer constructor leaves start/stop ownership with the server. In either case, stop and join the peer before destroying state captured by handlers. The Engine and application share the same implementation; their data handlers and socket ownership differ.
 
 # Peer Setup
 
@@ -95,12 +56,13 @@ Construct the client with your node name and Engine connection settings. Registe
 The following `main.cpp` is a small publisher. It takes a simulated temperature reading every 200 ms and sends its complete shared channel selection for ten seconds:
 
 ```cpp
-#include <dartwic/PeerClient.h>
+#include <dartwic/EngineProtocolPeer.h>
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
 #include <thread>
 
+// Timestamp measurements using Unix-epoch nanoseconds.
 uint64_t nowNs() {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::system_clock::now().time_since_epoch()).count();
@@ -108,13 +70,15 @@ uint64_t nowNs() {
 
 int main() {
     try {
+        // Read credentials before constructing the connection.
         const char* password = std::getenv("DARTWIC_PASSWORD");
         if (!password) {
             std::cerr << "Set DARTWIC_PASSWORD before starting.\n";
             return 1;
         }
 
-        DARTWIC::PeerClient peer({
+        // Give the application a node name and the Engine endpoint.
+        DARTWIC::EngineProtocolPeer peer({
             .node_name = "LAB_APP",
             .host = "127.0.0.1",
             .port = 7400,
@@ -125,10 +89,12 @@ int main() {
         peer.start();
         peer.waitUntilReady();
 
+        // Publish successive measurements from the application.
         for (int sample = 0; sample < 50; ++sample) {
             const double temperature = 24.0 + sample * 0.1;
             const auto measuredAt = nowNs();
 
+            // Send a complete shared-channel snapshot only while ready.
             if (peer.ready()) {
                 peer.channels().publishSnapshotTelemetry({
                     .channels = {{
@@ -144,6 +110,7 @@ int main() {
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
 
+        // Stop I/O before application state is destroyed.
         peer.stop();
     } catch (const std::exception& error) {
         std::cerr << error.what() << '\n';
@@ -153,6 +120,20 @@ int main() {
 ```
 
 In Network Map, look for `LAB_APP`. Its measurement appears as `LAB_APP:temperature`. After the program stops, a retained value is an earlier observation, not a fresh measurement.
+
+## Connecting Across Machines
+
+The short constructor uses loopback endpoints for the application's receiving sockets. When the Engine is on another machine, supply the same built-in transport with an address that the Engine can reach:
+
+```cpp
+auto transport = TEMPEST::makeZmqTransport({
+    .host = "192.168.1.10", .port = 7200, .password = password,
+    .bind_host = "0.0.0.0", .advertised_host = "192.168.1.20"
+});
+DARTWIC::EngineProtocolPeer peer({.node_name = "LAB_APP"}, transport);
+```
+
+Here `.10` is the Engine and `.20` is this application. The supplied transport owns endpoint settings; the wrapper supplies the Engine protocol identity. Set `operations_port` and `telemetry_port` in `ZmqPeerConfig` when you need fixed application ports for firewall rules; zero chooses available ports. This uses the standard TEMPEST transport and needs no transport implementation or Engine plugin.
 
 ## Connection Lifecycle
 
@@ -174,10 +155,12 @@ Later blocks are optional excerpts. `controller`, `eventManager`, `logger`, and 
 Commands address the connected node. Upsert changes only supplied fields; the owner decides whether a change or creation is allowed:
 
 ```cpp
+// Request changes on the channel owner.
 peer.channels().upsert("target_temperature", {.value = 30.0, .units = "degC"});
 peer.channels().upsert(writes);  // Batch of channel changes.
 peer.channels().remove("temporary_channel");
 
+// Query selected channels or the complete shared set.
 auto selected = peer.channels().query({"temperature", "target_temperature"});
 auto all = peer.channels().query();
 ```
@@ -197,17 +180,22 @@ A timestamp accompanies a value, not an independent measurement-time change. A b
 `ChannelHandlers` holds the callbacks. The upsert and removal callbacks complete normally on success or throw `TEMPEST::RemoteError(message, code)` on rejection; queries return records:
 
 ```cpp
+// Route incoming channel commands to the local controller.
 DARTWIC::ChannelHandlers handlers;
+
 handlers.upsertCommand = [&](const DARTWIC::ChannelUpsertRequest& request) {
     controller.applyChannelChanges(request);
 };
+
 handlers.queryCommand = [&](const DARTWIC::ChannelQuery& query)
     -> DARTWIC::ChannelQueryResult {
     return controller.queryChannels(query);
 };
+
 handlers.removeCommand = [&](const DARTWIC::ChannelRemoveRequest& request) {
     controller.removeChannel(request.channel);
 };
+
 // Add any telemetry callbacks below to this same object.
 peer.channels().setHandlers(std::move(handlers));
 ```
@@ -243,9 +231,12 @@ Include unchanged channels with their original measurement timestamps. Missing c
 Add these callbacks to the channel handler object before registering it:
 
 ```cpp
+// Apply incremental updates to the display.
 handlers.channelTelemetry = [&](const DARTWIC::ChannelUpdates& updates) {
     display.applyChannelUpdates(updates);
 };
+
+// Reconcile the complete shared-channel set from a snapshot.
 handlers.snapshotTelemetry = [&](const DARTWIC::ChannelSnapshot& snapshot) {
     display.replaceSharedChannels(snapshot);
 };
@@ -264,7 +255,7 @@ auto eventId = peer.argus().publishEventTelemetry({
     .type = DARTWIC::EventType::Warning,
     .title = "High temperature",
     .description = "Temperature exceeded the configured limit.",
-    .separation_seconds = 2.0
+    .firing_timeout_seconds = 2.0
 });
 ```
 
@@ -275,7 +266,7 @@ auto eventId = peer.argus().publishEventTelemetry({
 | `title`, `description` | Human-readable condition and explanation. |
 | `status` | A string such as `"new"` or `"acknowledged"`; see the status table below. |
 | `timestamp`, `channels`, `details` | Unix-nanosecond event time, related channel references, and extra key/value data. |
-| `separation_seconds` | Required finite, nonnegative firing separation: positive groups nearby reports; zero needs an explicit owner-side stop. |
+| `firing_timeout_seconds` | Required finite, nonnegative firing separation: positive groups nearby reports; zero needs an explicit owner-side stop. |
 
 Your application owns event lifecycle. Publishing neither stores events nor executes timers, aborts, or holds. The returned ID is not delivery confirmation.
 
@@ -284,10 +275,14 @@ Your application owns event lifecycle. Publishing neither stores events nor exec
 Commands operate on an event owned by the connected node and return an `ArgusActionResult`:
 
 ```cpp
+// Acknowledge the event, then answer an operator prompt.
 auto result = peer.argus().updateStatus(eventId, "acknowledged");
+
 peer.argus().respondToPrompt(promptId, {
     {"prompt_type", "string"}, {"prompt_response", "continue"}
 });
+
+// Release a hold or remove an event through its owner.
 peer.argus().releaseHold(holdId);  // Optional response object defaults to {}.
 peer.argus().remove(eventId);
 ```
@@ -310,7 +305,9 @@ A prompt response is a `DARTWIC::Value::Object` (a string-keyed map of values). 
 The status callback makes the input and output concrete. In this excerpt, your `eventManager.updateStatus` applies and validates a transition and returns a Boolean:
 
 ```cpp
+// Let the local event manager validate incoming status changes.
 DARTWIC::ArgusHandlers handlers;
+
 handlers.updateStatusCommand = [&](const std::string& id, const std::string& status)
     -> DARTWIC::ArgusActionResult {
     if (!eventManager.updateStatus(id, status)) {
@@ -318,6 +315,7 @@ handlers.updateStatusCommand = [&](const std::string& id, const std::string& sta
     }
     return {id, {{"updated", true}, {"status", status}}};
 };
+
 // Add other actions and telemetry callbacks, then register once.
 peer.argus().setHandlers(std::move(handlers));
 ```
@@ -355,9 +353,12 @@ peer.argus().publishSnapshotTelemetry(eventManager.currentBoard());
 Add receive callbacks to the ARGUS handler object before registering:
 
 ```cpp
+// Update one event when an individual observation arrives.
 handlers.eventTelemetry = [&](const DARTWIC::ArgusEvent& event) {
     display.updateEvent(event);
 };
+
+// Reconcile the complete board, including removed events.
 handlers.snapshotTelemetry = [&](const DARTWIC::ArgusBoardSnapshot& snapshot) {
     display.replaceEventBoard(snapshot);
 };
@@ -374,12 +375,14 @@ Logs are chronological text entries grouped by source stream and process session
 `publishLogTelemetry` accepts one `LogEntry` or a batch; the receive callback always gets a batch:
 
 ```cpp
+// Publish a local log entry or an existing batch.
 peer.logs().publishLogTelemetry({
     .stream = "Device", .level = "info",
     .text = "Device connected.", .timestamp_ns = nowNs()
 });
 peer.logs().publishLogTelemetry(entries);
 
+// Receive remote log batches for the application display.
 peer.logs().setHandlers({
     .logTelemetry = [](const std::vector<DARTWIC::LogEntry>& entries) {
         for (const auto& entry : entries) std::cout << entry.text << '\n';
@@ -401,14 +404,18 @@ For new local entries, the client supplies source/sequence bookkeeping. If your 
 Add history handlers only if your application retains logs. `listCommand` takes no arguments and returns `std::vector<LogStream>`; `queryCommand` receives a `LogQuery` and returns `std::vector<LogEntry>`:
 
 ```cpp
+// Expose the application's retained log streams and entries.
 DARTWIC::LogHandlers handlers;
+
 handlers.listCommand = [&]() -> std::vector<DARTWIC::LogStream> {
     return logger.listStreams();
 };
+
 handlers.queryCommand = [&](const DARTWIC::LogQuery& query)
     -> std::vector<DARTWIC::LogEntry> {
     return logger.query(query);
 };
+
 // Include logTelemetry here as well if needed.
 peer.logs().setHandlers(std::move(handlers));
 ```
@@ -416,9 +423,12 @@ peer.logs().setHandlers(std::move(handlers));
 A `LogStream` contains `owner_node`, `session`, and `stream`. Use those fields to query a remote source:
 
 ```cpp
+// Discover a retained source stream.
 auto streams = peer.logs().list();
 if (!streams.empty()) {
     const auto& source = streams.front();
+
+    // Query recent entries using that source's identifiers.
     auto entries = peer.logs().query({
         .owner_node = source.owner_node, .session = source.session,
         .stream = source.stream, .limit = 50
@@ -448,6 +458,76 @@ auto reply = peer.call("lab/echo", {{"message", "hello"}});
 
 That node must register `lab/echo`; registering it locally only lets the other node call your implementation. A response confirms the remote handler's result, not an arbitrary physical outcome.
 
+## Sending and Receiving Custom Telemetry
+
+Custom topics use the same low-level messaging methods as the TEMPEST-only peer:
+
+```cpp
+peer.onTelemetry("peer_demo.status", [](const TEMPEST::Value::Object& payload) {
+    // Consume the connected application's observation.
+});
+peer.publish("lab/reading", {{"temperature", 24.5}});
+```
+
+Register the receive handler before starting. Publish after readiness; telemetry is best effort and has no command acknowledgement. For a runnable exchange covering commands and telemetry in both directions, including the Engine plugin handlers, see [C++ TEMPEST Protocol Peer](C%2B%2B%20TEMPEST%20Protocol%20Peer.md#engine-handlers).
+
+# Transport Setup
+
+The default link needs no custom plugin. A custom link needs both an application transport and an Engine plugin registering the matching transport.
+
+## Application Transport
+
+Implement `TEMPEST::Transport` in your application. These declarations show the boundary; they are not a functioning network implementation:
+
+```cpp
+#include <tempest/Transport.h>
+
+class MyTransport : public TEMPEST::Transport {
+public:
+    // Open the link and report its physical availability.
+    void start() override;
+
+    // Queue messages for the link's I/O worker.
+    void send(TEMPEST::Message message) override;
+
+    // Finish I/O and release callbacks before returning.
+    void stop() override;
+};
+```
+
+| Method | Your implementation supplies |
+| --- | --- |
+| `start` | Open the configured link and start I/O. Report physical availability through `setConnected(...)`; deliver decoded DARTWIC messages through `receive(message)`. Registration still determines peer readiness. |
+| `send` | Queue a message promptly in a bounded queue; encode and transmit on your I/O worker. Preserve message kind, request ID, name, payload, and errors. Honor local deadlines without transmitting monotonic-clock values or replaying accepted commands. |
+| `stop` | Stop delivery, join I/O, and release callbacks before returning. The transport destructor should stop it too. |
+
+Then supply an instance to the client, using the standard DARTWIC peer identity:
+
+```cpp
+#include <dartwic/EngineProtocolPeer.h>
+#include <memory>
+
+// Supply the application's physical link.
+auto transport = std::make_shared<MyTransport>();
+
+// Attach the shared Engine protocol to that transport.
+DARTWIC::EngineProtocolPeer peer({
+    .node_name = "LAB_APP"
+}, transport);
+
+// Register the channel/event/log handlers shown earlier before starting.
+peer.start();
+peer.waitUntilReady();
+```
+
+Your class owns endpoint settings and framing. `EngineProtocolPeer` supplies the DARTWIC protocol/version. The Engine selects the registered `transport_id`; the application keeps the standard DARTWIC peer identity. Domain APIs stay unchanged. Follow the [transport implementation workflow](../Plugins/Building%20a%20Custom%20Peer.md#transport-interface) for queue, encoder, and decoder details.
+
+## Engine Transport or Protocol Bridge
+
+On the Engine side, follow [Building a Custom Peer — Custom Transport](../Plugins/Building%20a%20Custom%20Peer.md#custom-transport). Register the link with `registerPeerTransport` and provide its transport factory. The Engine uses the standard DARTWIC peer and protocol automatically. Install the plugin and select its connection type in Network Map with the matching node and endpoints. The Engine constructs its peer and binds RAPID/ARGUS handlers; the plugin supplies the link.
+
+If the external device speaks its own protocol, follow [Protocol Bridge](../Plugins/Building%20a%20Custom%20Peer.md#protocol-bridge) instead. Register that device with `registerPeer`. The Engine supplies Peer and EngineProtocol to its transport factory, which translates external packets, commands, and supported queries. The device does not need this C++ client. F Prime CCSDS is the example. The linked guide uses the same channel, event, and log APIs.
+
 # Building and Running
 
 Build the publisher with your dependency toolchain:
@@ -459,7 +539,7 @@ cmake --build build --config Release
 
 Start the Engine, set `DARTWIC_PASSWORD`, and run `peer_demo`. Check `LAB_APP:temperature` in Channels. Keep runtime libraries beside the executable or on the library search path.
 
-The [flight-computer example](https://github.com/kemptonburton/dartwic-example-workspace/tree/main/flight-computer) still uses the existing API and will need migration.
+The [flight-computer example](https://github.com/kemptonburton/dartwic-example-workspace/tree/main/flight-computer) also demonstrates channel handlers and telemetry using the compatible `PeerClient` name.
 
 # Reference
 

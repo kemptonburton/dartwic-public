@@ -1,55 +1,52 @@
 ---
 summary: Install drivers and Interface tools, and understand their update status.
 created: 2026-08-03T15:41
-updated: 2026-10-26T21:52
+updated: 2026-10-29T18:30
 ---
 
-Plugins add drivers, task types, editors, schematic nodes, and other tools. Open **Settings → Plugins** to inspect installed extensions or browse new ones.
+Plugins are packages that add capabilities to DARTWIC. For example, installing a device driver lets the Engine communicate with that hardware and can add forms for configuring it in the Interface. Other plugins add tools or display elements.
 
-![Settings lists the installed engine and interface sides separately.](../_attachments/plugins.jpg)
+A plugin can have an **Engine side** that performs the work and an **Interface side** that provides its controls, or only one of those. Each side's installation and load status is shown separately.
 
-A plugin can have an **Engine side**, an **Interface side**, or both. A driver needs its Engine code loaded; a custom editor needs its Interface bundle in the current host.
+# Install from the Plugin Browser
 
-# Install a plugin
+Connect to the Engine you want to extend, then open **Settings → Plugins → Browse plugins**.
 
-1. Connect to the Engine you intend to extend.
-2. Browse or search for a plugin and read its README, release version, and minimum host versions.
-3. Choose **Install** and inspect the result for each side.
-4. Restart the selected Engine when offered to load native code. The Interface side loads immediately.
+![Opening the plugin browser from Settings.](../Plugins/_attachments/Pasted%20image%2020261025232743.png)
 
-The browser selects compatible published releases. A source repository or platform badge alone does not establish that a compatible package is available. **Open plugin from GitHub** previews an unlisted repository through the same checks.
+Search for the driver or tool and select its card. Read the README and minimum host versions, then choose **Install**. The browser selects compatible published packages.
 
-# Installation status
+![The selected plugin's README, requirements, and Install button.](../Plugins/_attachments/Pasted%20image%2020261025233048.png)
 
-| Status | What to do |
+The Interface side loads immediately. Engine code requires a restart; accept the prompt when you are ready to interrupt running work. After reconnection, check that the sides you need show **Installed** and **Loaded**.
+
+![Restarting the Engine after installing a native plugin.](../Plugins/_attachments/Pasted%20image%2020261025233703.png)
+
+## Install an Unlisted GitHub Plugin
+
+Your team may use a plugin that is published on GitHub but has not been added to the catalog. You can open its repository directly and still review its requirements before installation.
+
+Choose **Open plugin from GitHub** in the catalog toolbar, enter its repository URL, and **Load plugin**. Review its details and install through the same workflow. For manual installation and package requirements, see [Packaging and Installation](../Plugins/Packaging%20and%20Installation.md).
+
+# Installation Status
+
+After installing a driver, you might still be waiting for an Engine restart before its module types become available. The status badges distinguish files that have been installed from code that has loaded and is ready to use. Check each side before configuring its features.
+
+![Installed Engine and Interface sides with load status and registered contributions.](../Getting%20Started/_attachments/Pasted%20image%2020261026225922.png)
+
+| Status | Next step |
 | --- | --- |
-| Installed · Loaded | Use the contributions registered by that host. |
-| Installed · Not loaded · Restart required | Restart the selected Engine when ready. |
-| Update or removal queued | The existing Engine code continues running until restart applies the change. |
-| Installation incomplete | Read the missing-file error and reinstall that side. |
-| Load failed | Read the runtime error and check manifest/dependencies. |
-| Status unavailable | Retry the status request; unavailable evidence does not establish missing files. |
-| Unmanaged | Installed outside the browser; inspect its version and layout before changing it. |
+| Installed · Loaded | Use the registered features. |
+| Restart required / queued | Restart the selected Engine to apply the change. |
+| Installation incomplete / Load failed | Read the error and check the package or dependencies. |
+| Status unavailable | Retry the status request. |
 
-Installed, loaded, and queued versions can differ. Plugin settings that call Engine operations become available after that Engine side loads. Catalog availability warnings are separate from installation errors.
+Registration badges identify module/task types, editors, settings, and schematic nodes. A driver still needs [module and task configuration](Modules%20and%20Tasks.md) before it can communicate with a device.
 
-# Plugin updates and removal
+# Plugin Updates and Removal
 
-Engine installations share their plugin directory across workspaces. Updates and removals queue while native code is running, then apply when the selected Engine restarts. If another Engine holds a native file, the selected Engine returns with its previous plugin and reports the locked path. Stop the Engine holding it and explicitly retry.
+You can update a plugin when its author publishes fixes or remove it when the installation no longer needs it. A device driver may be used by several projects, so check where it is used before removing it.
 
-Interface changes apply immediately. Replacements are staged and validated before swapping files; a failed replacement retains or restores the previous version. Interface-only changes do not request an Engine restart. Cancelling a queued Engine replacement keeps the existing installation.
+Use the update or remove control beside the installed side and read its result. Native changes queue until restart; Interface changes apply immediately. Check which version loaded afterward.
 
-Workspace setup retains installed versions by default. Recorded dependency versions do not force a downgrade or block startup; installation still checks host compatibility.
-
-# Plugin contributions
-
-| Contribution | Next step |
-| --- | --- |
-| Module or task type | Configure it in [Modules and Tasks](Modules%20and%20Tasks.md). |
-| Resource or editor | Open it from resource navigation. |
-| Schematic node | Add it from the [node palette](Schematics.md). |
-| Settings | Open that plugin's settings page. |
-
-Installing a driver does not configure or connect every device. Follow its documentation for parameters, mappings, and timing. Contribution badges describe registered features, not device readiness.
-
-For manual installation paths and package layout, see [Packaging and Installation](../Plugins/Packaging%20and%20Installation.md#install-locally-during-development). To build an extension, start with [Plugin Development](../Plugins/Overview.md).
+Engine installations share plugins across workspaces. If another Engine locks a file, stop the holder and retry. See [Packaging and Installation](../Plugins/Packaging%20and%20Installation.md#install-from-the-plugin-browser) for installation details.

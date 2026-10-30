@@ -1,82 +1,83 @@
 ---
 summary: Save runs, browse recorded data, and choose what to export or delete.
 created: 2026-08-03T15:41
-updated: 2026-10-26T21:52
+updated: 2026-10-29T18:30
 ---
 
-Open **Data** to review recordings on the connected Engine. **Databases** browse the underlying history. **Dataframes** save named time ranges and filters so you can return to a test or export it later.
+Open **Data** to browse the connected Engine's recordings, save a named run, or download its measurements, events, and logs. A dataframe saves a time range and filters; it does not copy the underlying recordings.
 
-# Databases
+# Recorded Data
 
-| Database | Contains |
+After a test, you might want to see how pressure changed, when a warning appeared, or what a driver reported. The **Databases** tab gives you a starting point for each kind of recorded information:
+
+| Database | Contents |
 | --- | --- |
-| RAPID Channels | Recorded numeric samples and timestamps. |
-| ARGUS Events | Event records and occurrences. |
-| ARGUS Logs | Text output grouped by stream and process session. |
+| RAPID Channels | Numeric samples and timestamps. |
+| ARGUS Events | Warnings, prompts, and other events, including when they were active and how operators responded. |
+| ARGUS Logs | Output by stream and Engine session. |
 
-Choose a database, set a calendar range, and filter by source or text as needed. Channel rows show sample counts and oldest/newest timestamps. **Review selected channels** opens [Telemetry Graphs](Telemetry%20Graphs.md).
+![The database catalog with recorded events open beside it.](../Engine/_attachments/Pasted%20image%2020261029010108.png)
 
-Event and log viewers load pages. The calendar separates the selected query range, loaded coverage, and currently visible rows. Scrolling does not change your query dates. These views read this Engine's retained history, including remote data recorded here; they do not query another node's complete archive.
+# Historical Queries
 
-# Live run dataframes
+To investigate yesterday's test, ask for the saved records from that period rather than watching incoming values. Choosing a time range and filters limits the request, called a **query**, to the information you want to review.
 
-1. Open **Data → Dataframes → New dataframe**.
-2. Choose **Start now**, name the run, and optionally choose channels.
-3. Select events and logs: **All**, **Related channels**, or **Off**. Optionally narrow the node or log stream.
-4. Choose **Start dataframe**, then **Stop dataframe** when the run ends.
+Open a database, choose the calendar range, and apply channel, node, stream, or session filters. Select results to inspect them; **Review selected channels** opens a graph. These views read history saved on this Engine, including remote data recorded here.
 
-Start and Stop mark the range; recording policies and running tasks continue independently. A dataframe interrupted by an Engine restart ends at its saved checkpoint and appears as **Interrupted**.
+Recorded data can be exported while the Engine is running. A live value may arrive before it is saved; if recent history is missing, check [Recording and Delivery Loss](../Engine/Recording%20and%20Telemetry.md#recording-and-delivery-loss).
 
-A script can mark the same range inside a sequence or timeline bucket:
+# Dataframes
 
-```dcode
-local run = startDataFrame("Tank fill", {"channels": ["tank_pressure"], "events": "related", "logs": "off"})
-# Run the test sequence here.
-stopDataFrame(run)
-```
+If you run several fill tests in an afternoon, finding each one by its timestamps can become tedious. A dataframe lets you name a run and keep its time range, channels, and filters together, so you can reopen or export that test later.
 
-# Dataframes from recorded history
+## Live Run Dataframes
 
-Choose **From history**, enter a name and time range, and select channels and filters. A dataframe is a saved view; it does not copy or tag samples. An empty channel list includes all recorded channels in its range. Overlapping frames can show the same records.
+When you are about to run a test, mark its beginning and end as you go:
 
-**Related channels** matches explicit channel references against a nonempty selected list. It does not search message text for similar words. Node and stream filters narrow the saved selection further.
+1. Open **Data → Dataframes → New dataframe** and choose **Start now**.
+2. Name the run, optionally select channels, and set events/logs to **All**, **Related channels**, or **Off**.
+3. Choose **Start dataframe**, run the procedure, then **Stop dataframe**.
 
-Open a frame to review its graph, channels, events, and logs. Add checked channels to the plot or drag them onto it. **Select all channels** includes off-screen matching rows; in the dataframe list, **Select visible dataframes** checks only on-screen frames. Selections survive scrolling and search changes; **Clear selection** clears them.
+Start and Stop mark the range; they do not start tasks or change recording policies. Open the saved frame to check its range and contents. A frame interrupted by an Engine restart shows **Interrupted**.
 
-# Export formats
+## Dataframes from Recorded History
 
-| Starting point | Scope and files |
+If the test has already happened, you can create the same saved view by selecting its recorded time range.
+
+Choose **New dataframe → From history**, set the name, range, channels, and filters, then **Create dataframe**. An empty channel list includes all channels; **Related channels** includes event/log records explicitly linked to the selected channel names.
+
+![A dataframe's channel list, traces, events, and logs.](../Engine/_attachments/Pasted%20image%2020261029010151.png)
+
+Open the frame and check or drag channels to plot them. Narrow the graph to inspect a transition, or export the frame to share the complete saved range.
+
+# Export Formats
+
+Choose where to export based on what you want to share: a database selection, the transition you are inspecting on a graph, or an entire named test.
+
+Channel CSV files hold rows of timestamped numbers you can open in a spreadsheet. Event and log JSON Lines files (`.jsonl`) hold one structured record per line for analysis tools. A ZIP bundles the files from a dataframe into one download.
+
+| Starting point | Action and output |
 | --- | --- |
-| Database → Export selected range | Calendar dates and current filters. Channels use checked rows, or all matching channels if none are checked. Raw CSV for channels; JSON Lines (`.jsonl`) for events/logs. |
-| Paused graph → Export telemetry | Its full visible range and selected data types. See below. |
-| Dataframes → Export selected dataframes | One ZIP per frame with channel CSV, events, logs, and a manifest under its saved filters. |
+| Database | **Export selected range** uses its calendar range and filters. Channels use raw CSV; events/logs use JSON Lines (`.jsonl`). Checked channels are exported, or all matching channels if none are checked. |
+| Paused telemetry graph | **Export telemetry → Export visible range** uses its full X-axis range and selected data types. |
+| Dataframe list | Select frames, then **Export selected dataframes** for a ZIP per frame with channel CSV, events, logs, and a manifest. |
 
-Exports include matching history beyond the currently loaded pages. An active frame's export end is frozen when the job starts. A frame export failure is reported while remaining selected frames continue. An open frame can also export an optional channel subset.
+Exports include matching history that has not loaded into the preview. You can export an active dataframe; its end time is fixed when export starts.
 
-## Export a visible range
+## Export a Visible Range
 
-Pause the graph and open **Export telemetry**. Check **Channels**, **Logs**, and/or **Events**, then choose **Export visible range**. Export is disabled while live. The menu captures the full visible X-axis range when opened, including intervals with no preview points.
+If you have zoomed in on a pressure spike and want to share just that part of the test, use the graph's current time range for the export.
 
-Channels include plotted series and checked channels in the open dataframe list, with duplicates removed. Logs and events use the displayed range and saved-frame filters. Preview bucketing does not reduce raw export samples.
+Pause the graph, open **Export telemetry**, check **Channels**, **Events**, and/or **Logs**, then **Export visible range**. Preview bucketing does not reduce raw exports. CSV leaves missing samples empty rather than filling them with zeros.
 
-CSV rows use recorded timestamps, leaving cells empty when a channel has no sample at that timestamp. Repeated samples for the same channel and timestamp use the last recorded value. A multichannel CSV is not necessarily a complete acquisition grid.
+Keep the view and connection open until the download completes. **Cancel export** stops remaining work; files already downloaded remain. Read any error before retrying.
 
-## Progress and cancellation
+# Retention and Deletion
 
-Large exports need time and temporary disk space. Channel jobs read bounded batches and sort raw samples; datapoint counts can differ from CSV row counts because timestamps are merged. Progress estimates work, rather than time remaining.
+Recordings accumulate as you operate the system. **Retention** settings limit how much history the Engine keeps by age or storage size, so you can manage disk use. Export runs you need to keep before their underlying recordings are removed.
 
-**Cancel export** or **X** stops remaining work; files already handed to the browser are kept. Cancellation may take time to settle. Outside clicks and Escape leave the popup open. Multiple data types can require browser permission for multiple downloads.
+Removing a dataframe keeps its recordings. Deleting recordings removes underlying history and can affect several frames. Frames do not protect history from automatic cleanup.
 
-Reloading, leaving the exporting view, disconnecting, or switching clients stops export; reconnection does not resume it. Read download errors before retrying. When HTTP download is unavailable, an error can include the Engine's local output path.
+![Separate channel, event, and log retention settings.](../Engine/_attachments/Pasted%20image%2020261029010240.png)
 
-# Retention and deletion
-
-| Action | Effect |
-| --- | --- |
-| Remove a dataframe | Deletes the saved view and keeps its recordings. |
-| Delete recordings | Removes selected underlying history on this Engine. Review the preview and affected frames. |
-| Automatic cleanup | Applies the configured age and storage limits to each database. |
-
-A saved frame does not protect history from automatic retention. It shows whatever remains available. Deletion previews identify recordings shared with other frames; including those records affects those views too. Live channels and a remote source's original archive remain separate. Disk-space reclamation can finish after the logical removal.
-
-Configure cleanup under **Settings → Engine → History and recording**. Frame size is an estimate, not exclusive disk use or final ZIP size: shared records count in each frame, and output overhead/compression differs. [Recording and Retention](../Engine/Recording%20and%20Retention.md) explains recording policies, timestamps, and loss.
+Configure limits in **Settings → Engine → History and recording**. For recording policies, storage, and cleanup behavior, see [Recording and Telemetry](../Engine/Recording%20and%20Telemetry.md#dataframes-retention-and-deletion).

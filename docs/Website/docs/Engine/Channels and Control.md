@@ -1,11 +1,13 @@
 ---
 summary: Understand RAPID channels, fields, storage, authority, and native or DCode publishing.
 created: 2026-09-04T17:13
-updated: 2026-10-26T21:37
+updated: 2026-10-28T18:11
 document_kind: walkthrough
 ---
 
 A channel is a named signal: a measurement, command, task status, or calculated value. RAPID stores its current value and enforces who may change it. Drivers, automation, and operators work with the same channel state.
+
+![](_attachments/Pasted%20image%2020261027191002.png)
 
 For the Interface workflow, see [Channels](../Interface/Channels.md).
 
@@ -56,7 +58,7 @@ Fields describe the value, its source, and its control. For example, `value = 12
 
 A steady number may be a new measurement or an old sample. Check its timestamp and freshness threshold; retransmitting an old sample does not refresh it.
 
-[Channel Calculations](../DCode/Channel%20Calculations.md) derive values during writes. [Recording and Retention](Recording%20and%20Retention.md) covers samples and history, separate from the current live value.
+[Channel Calculations](../DCode/Channel%20Calculations.md) derive values during writes. [Recording and Telemetry](Recording%20and%20Telemetry.md) covers samples and history, separate from the current live value.
 
 ## Fixed and dynamic channels
 

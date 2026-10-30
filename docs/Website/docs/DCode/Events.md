@@ -1,6 +1,6 @@
 ---
 summary: Declare stable ARGUS events and react synchronously to firing conditions.
-updated: 2026-10-27T04:26
+updated: 2026-10-29T02:03
 created: 2026-09-04T17:13
 ---
 
@@ -22,7 +22,7 @@ event docs_demo_pressure_abort:
     resolution: "Inspect the cause and verify the system before restarting."
     system: "DEMO"
     subsystem: "PRESSURE"
-    separation_seconds: 0
+    firing_timeout_seconds: 0
     channels: |docs_demo_pressure|, |docs_demo_pressure_limit|
 
     trigger:
@@ -53,7 +53,7 @@ Activation installs the trigger and reactions and evaluates the trigger once. Su
 
 Trigger and reaction calculations share the event's authority. Clearing a condition, acknowledging, or silencing does not automatically release channel claims; use `free` in the reaction when control should end.
 
-Removing the declaration and reactivating disables its handlers. Removal or replacement releases its claims after active work finishes. Generated channels, stored values, existing board records, and history remain. See the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop) and [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md).
+Removing the declaration and reactivating disables its handlers. Existing ARGUS board records and history remain. See [shared artifact cleanup](../Engine/Modules%20and%20Tasks.md#removal-and-replacement) for authority and channel retention, and [Runtime Blocks and Activation](Runtime%20Blocks%20and%20Activation.md) for file replacement.
 
 # Event Execution
 
@@ -61,28 +61,29 @@ Triggers and reactions run **synchronously**: the writing code waits for them to
 
 ## Maintained conditions
 
-Return numeric `1` from `trigger:` for active and `0` for inactive. A rising edge fires the event. Staying at 1 does not repeatedly report it.
+Return numeric `1` from `trigger:` for active and `0` for inactive. Every evaluation returning 1 adds a detection and refreshes the configured inactivity deadline. Repeated detections during one continuous firing aggregate into one occurrence. Returning 0 ends the declaration's firing and runs its falling reaction once.
 
 Static pipe reads establish dependencies. Runtime-built channel names need explicit static inputs to trigger reevaluation; template-generated names are detected after expansion. See [Channel Calculations](Channel%20Calculations.md#dependencies).
 
 ## Trigger a one-shot event
 
-An empty `trigger:` creates a writable pulse input:
+The `trigger` keyword reports a detection directly; no `trigger:` section is required:
 
 ```dcode
 event docs_demo_checkpoint:
     title: "Checkpoint reached"
     type: message
-    separation_seconds: 5
-    trigger:
+    firing_timeout_seconds: 5
 
 task_sequence docs_demo_checkpoint_run:
     trigger docs_demo_checkpoint
 ```
 
-Activate and start **docs_demo_checkpoint_run**. The `trigger` statement asserts firing for five seconds after the latest pulse. Writing 1 to `_trigger` also pulses it; that input resets to 0 automatically. Writing 0 does not cancel a pulse or clear a maintained condition.
+Activate and start **docs_demo_checkpoint_run**. Each `trigger` requests one detection directly. This example's configured timeout keeps firing active for five seconds after the latest detection.
 
-The statement also works without a `trigger:` section. If maintained and pulse triggers are both used, firing stays active until both are inactive.
+Add an empty `trigger:` section if you also want the writable pulse input `docs_demo_checkpoint_trigger`. Writing `1` requests a detection, then the Engine resets `_trigger` to `0`. Calculated assertions also reset. That reset, or a direct write of `0`, does not stop firing. Observe `_firing` for the maintained state.
+
+The keyword also works with a non-empty `trigger:` body. There is no independent pulse duration; the declaration's timeout, condition transitions and explicit stops determine when firing ends.
 
 ## Event reactions
 
@@ -102,11 +103,11 @@ For a report without generated channels, call a reporting function from an execu
 warning("Pressure high", "Inspect the sensor", [], "", 0, 5)
 ```
 
-The final 5 is its quiet interval. These calls return a numeric result, normally 1, without waiting for an operator or returning an event ID. `error(...)` reports an event rather than raising an exception; `abort(...)` does not automatically stop tasks. Reporting the same event does not grant its declaration's authority.
+The final 5 is its firing timeout; omitting it also uses five seconds. These calls return a numeric result, normally 1, without waiting for an operator or returning an event ID. Successful `error(...)` reporting lets execution continue; invalid arguments or host failures can still raise errors. `abort(...)` does not automatically stop tasks. Reporting the same identity through a generic function does not renew a declaration's firing deadline, invoke its reactions or grant its authority.
 
 # Event State
 
-ARGUS tracks firing separately from presence on the operator board. Acknowledgement does not clear a condition; resolution requires firing to stop. Later triggers reopen or refresh the same keyed event. See [Interface Events](../Interface/Events.md) for operator controls.
+ARGUS tracks firing separately from presence on the operator board. Acknowledgement does not clear a condition; resolution requires firing to stop. Later triggers reopen or refresh the same keyed event. See [Events in the Interface](../Interface/Events%20and%20Logs.md#events) for operator controls.
 
 ## Generated channels
 
@@ -114,20 +115,22 @@ For the limit example:
 
 | Channel | Meaning |
 | --- | --- |
-| `docs_demo_pressure_abort_firing` | Observe-only: 1 while a maintained condition or unexpired pulse is active. |
+| `docs_demo_pressure_abort_firing` | Observe-only: 1 while the declaration is firing. |
 | `docs_demo_pressure_abort` | Observe-only: 1 while present on the active ARGUS board; 0 when silenced. |
 | `docs_demo_pressure_abort_trigger` | Writable pulse input, created by `trigger:`. Assertions reset to 0, including calculated assertions; it does not display the maintained firing state. |
 
-## ARGUS quiet expiry
+## Firing timeout and explicit stop
 
-`separation_seconds` controls occurrence expiry, independently of the five-second pulse window:
+`firing_timeout_seconds` controls inactivity expiry for the declaration and its generated firing channel:
 
 | Setting | Behavior |
 | --- | --- |
-| `0` | Disables automatic expiry. Use for maintained conditions. |
-| Positive interval | Can expire the occurrence while `_firing` remains 1; does not change pulse duration. |
+| `0` | Default for declarations. Requires a false trigger condition or explicit stop. |
+| Positive interval | Ends firing after that many seconds without a declaration detection, even if the last trigger evaluation returned 1. |
 
-When neither a maintained condition nor an unexpired pulse is active, DCode stops the occurrence, even with separation 0. A maintained true condition does not repeatedly report, so a positive quiet interval can expire its occurrence before the condition clears.
+Use `stop_event_firing("Pressure limit exceeded", "DEMO", "PRESSURE")` to end the matching locally owned firing. System/subsystem default to `SOFTWARE`/`DCODE`. It returns whether firing ended; an absent or repeated stop is harmless. The event remains on the board with its history and operator status. A later detection starts another occurrence.
+
+Condition transitions and explicit stops run reactions synchronously. Inactivity expiry runs asynchronously. Holds and prompts have no firing-timeout argument: release or response ends their firing and wait. Stopping their firing alone does not complete the workflow.
 
 # Reference
 

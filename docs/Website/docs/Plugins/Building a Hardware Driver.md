@@ -1,6 +1,6 @@
 ---
 summary: Build a driver that reads device values into observe-only channels and writes channel commands back to the device.
-updated: 2026-10-27T00:16
+updated: 2026-10-28T23:34
 created: 2026-10-04T18:31
 ---
 
@@ -266,7 +266,7 @@ This registration code belongs inside `onPluginLoaded()`. Include `<modules/Task
 
 The `1` allows one configured read task per module. A write task has its own slot. Stopped configured tasks still occupy their slots; use `0` for no such limit. Failed preparation preserves the previous association, reconfiguration transfers it, and deletion releases it. Do not replace the configure/cleanup callbacks installed by `bind`.
 
-`upsertChannel(handle, value)` publishes under the authority already established by `setChannel`; it does not acquire authority itself. That is why the loop uses **upsert after set**, rather than treating them as interchangeable calls. The SDK's `setChannel` overload accepts a name; `upsertChannel` supplies the retained- handle numeric write used here. If authority no longer permits the publication, the write fails instead of taking authority back.
+`upsertChannel(handle, value)` publishes under the authority already established by `setChannel`; it does not acquire authority itself. This example acquires authority by name in `on_start` and reuses the retained handle for sample writes. Both SDK functions also accept fixed handles. If authority no longer permits the publication, the write fails instead of taking authority back.
 
 A failed device read must not become a fresh zero measurement. Leave the last real value in place and expose failure/freshness through diagnostics or the channel's stale timeout. The sample uses a one-second stale timeout; choose one appropriate to your sample rate. It throws on read/publication failure; add task-specific diagnostics where your driver needs finer detail.
 
@@ -365,12 +365,12 @@ write.on_task = [api = dartwic](const auto&, TaskRuntime& runtime, double) {
     // Device I/O uses the same module connection/mutex as the read task.
     {
         std::scoped_lock lock(state->module->mutex);
-        // Publish readbacks after device I/O; retain the observe-only authority.
-    for (size_t i = 0; i < state->bindings.size(); ++i) {
+        for (size_t i = 0; i < state->bindings.size(); ++i) {
             state->module->device.writeValue(state->bindings[i].field, state->commands[i]);
             state->readbacks[i] = state->module->device.readValue(state->bindings[i].field);
         }
     }
+    // Publish readbacks after releasing the device mutex; retain observe-only authority.
     for (size_t i = 0; i < state->bindings.size(); ++i)
         if (!api->upsertChannel(state->bindings[i].readback, state->readbacks[i]))
             throw std::runtime_error("Readback publication was rejected.");
@@ -398,15 +398,12 @@ void DeviceModule::monitorConnection() {
     }
     dartwic->setChannel(connected_channel,
         DARTWIC::API::ChannelValue{connected ? 1.0 : 0.0});
-    if (!connected) dartwic->recordEvent({
-        {"type", "error"}, {"title", "Device connection unavailable"},
-        {"description", failure.empty() ? "The device did not respond." : failure},
-        {"system", event_system}, {"subsystem", event_subsystem},
-        {"channels", {connected_channel}},
-        {"correlation_key", "bench_driver:connection:" + instance_name},
-        {"resolution", "Check device power, connection, and endpoint settings."},
-        {"separation_seconds", 10.0}
-    });
+    if (!connected) dartwic->error(
+        "Device connection unavailable [" + instance_name + "]",
+        failure.empty() ? "The device did not respond." : failure,
+        {connected_channel},
+        "Check device power, connection, and endpoint settings.",
+        0, 10.0, event_system, event_subsystem);
 }
 
 // In onPluginLoaded():
@@ -423,7 +420,7 @@ dartwic->registerLoop("connection_monitor", "Device connection monitor", {
 
 The loop owns the observe-only connection channel and publishes a heartbeat each pass. `probe()` should use the configured timeout and bounded reconnect backoff; it should check device responsiveness, not merely whether a socket is open. Keep connection health separate from whether a particular read/write succeeded.
 
-The stable ARGUS correlation key refreshes the same event. The finite quiet interval allows its firing condition to end after reports stop. Event admission is synchronous; recording and Interface delivery are separate asynchronous paths. An event describes the failure; it does not itself command a safe state. See [Events and Logs](../Engine/Events%20and%20Logs.md).
+ARGUS identifies the event by node, title, system, and subsystem. Including `instance_name` in the title gives each module its own connection error; repeated reports from that module refresh the same event. A custom correlation key does not separate events that share this identity. The ten-second quiet interval ends firing after reports stop. Reporting is synchronous; recording and Interface delivery are separate asynchronous paths. Reporting the error does not command equipment or stop tasks. See [Events and Logs](../Engine/Events%20and%20Logs.md) for the matching DCode and SDK helpers, and use `recordEvent` when you need richer metadata or the accepted JSON record.
 
 # Discovery Loop
 
@@ -447,14 +444,9 @@ dartwic->registerLoop("device_discovery", "Device discovery", {
     .on_loop = [api = dartwic, finder]() {
         try { finder->tick(); }
         catch (const std::exception& error) {
-            api->recordEvent({
-                {"type", "error"}, {"title", "Device discovery failed"},
-                {"description", error.what()}, {"system", "HARDWARE"},
-                {"subsystem", "DISCOVERY"},
-                {"correlation_key", "bench_driver:discovery"},
-                {"resolution", "Check discovery settings and device-library availability."},
-                {"separation_seconds", 10.0}
-            });
+            api->error("Device discovery failed [bench_driver]", error.what(), {},
+                "Check discovery settings and device-library availability.",
+                0, 10.0, "HARDWARE", "DISCOVERY");
         }
     },
     .target_frequency_hz = 1.0,
@@ -606,7 +598,7 @@ Keep task-created channels on their task descriptor. Discovery and shared connec
 
 ## Verify the configured device
 
-Accept an offer in the [example workspace](../Getting%20Started/Example%20Workspace.md), then inspect the module endpoint and each task's module selection and mappings. Start with reads and check expected values before enabling outputs. Successful provisioning establishes configuration creation; verify connection, task health, and device readings separately. Exercise disappearance/return, an already configured endpoint, mute/unmute, and cancellation.
+In a test workspace, accept a setup offer from your plugin, then inspect the module endpoint and each task's module selection and mappings. Start with reads and check expected values before enabling outputs. Successful provisioning establishes configuration creation; verify connection, task health, and device readings separately. Exercise disappearance/return, an already configured endpoint, mute/unmute, and cancellation. The [example workspace and walkthroughs](https://github.com/kemptonburton/dartwic-example-workspace) provide a simulated-device project for comparison.
 
 # UI
 

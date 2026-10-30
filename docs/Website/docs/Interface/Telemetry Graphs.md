@@ -1,55 +1,41 @@
 ---
 summary: Plot signals, navigate live and recorded ranges, and compare events and logs.
 created: 2026-10-24
-updated: 2026-10-26T21:52
+updated: 2026-10-29T18:29
 ---
 
-Telemetry graphs help you compare signals over time. Open **Telemetry**, or send selected channels from Channels, a dataframe, or a supported schematic graph.
+If you want to see how pressure rose during a test, a graph is more useful than a single current number. Telemetry graphs plot **channels**, the named signals holding measurements or commands, against time. You can compare them with events and logs from the same period. Open **Telemetry**, or select channels in Channels and use their graph action.
 
-![Telemetry resource with time-range and channel controls.](../_attachments/telemetry-exporter.jpg)
+![A recorded run with channel traces, event intervals, and log output.](../Engine/_attachments/Pasted%20image%2020261029010151.png)
 
-# Add and compare signals
+# Live Telemetry
 
-Add a channel series, such as `|tank_pressure|`. Use separate Y axes when signals have different units or scales, and show or hide series to focus on a change.
+While filling a tank, you might graph pressure beside valve position to watch how the system responds. Keeping related signals together makes it easier to spot a change and compare when it happened.
 
-The **live/realtime** view follows a moving window. Pause to inspect a fixed range, then zoom or change the time window. A historical query needs recorded samples: a signal can be available live with no history for your chosen dates.
+Add the signals you want to compare. Each channel's plotted trace is a **series**. The vertical **Y axis** gives its numerical scale; use separate axes for pressure and valve position so their different units and ranges remain readable. Show or hide series and hover the plot to compare values at one time.
 
-# Review recorded history
+**Realtime** follows a moving window. Pause to inspect a transition; return to realtime to follow incoming readings again. Pausing the graph does not stop acquisition or recording. For the difference between live snapshots and recorded measurements, see [Live Telemetry](../Engine/Recording%20and%20Telemetry.md#live-telemetry).
 
-1. Add the channels you want to compare.
-2. Set the date range and start/end times.
-3. Select a dataframe filter if you want a saved run.
-4. Run or refresh the query, then zoom into the transition you need.
+## Side-panel and Schematic Graph Controls
 
-| Preview setting | Effect |
-| --- | --- |
-| Bucketing: Auto | Chooses a point budget for the graph width. |
-| Bucketing: Off | Requests raw points for the preview. |
-| Bucketing: Custom | Uses your chosen preview point cap. |
-| Timeout Seconds | Limits how long the query waits. |
-| Display Format | Chooses the node, channel, and field labels. |
+When a graph is embedded in a channel panel or schematic, you may want to scroll the surrounding view without accidentally changing the plot. These smaller graphs start with panning and wheel zoom locked for that reason. Click the lock icon to unlock navigation, then drag to pan or scroll to zoom. Lock it again to scroll the surrounding panel normally.
 
-Bucketing reduces the preview. [CSV export](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-a-visible-range) uses raw recorded samples in the selected range.
+# Historical Queries
 
-# Signal status and data gaps
+If a warning appeared during the fill, return to that period to inspect the pressure rise and nearby activity. Recorded history lets you review the transition at your own pace while the system continues running.
 
-Lines retain their series colors. Legend values show stale or unavailable status and can retain the last known number. Recorded gaps remain visible; a missing sample is not a new zero measurement.
+1. Add channels, pause the graph, and choose the dates and start/end times.
+2. Optionally select a saved dataframe for the run.
+3. Refresh the query and zoom into the transition.
 
-The display update rate does not change acquisition, task scheduling, or recording. Check [Channels](Channels.md#channel-states) for freshness and [Recording and Retention](../Engine/Recording%20and%20Retention.md) for what reaches history.
+Enable **Events** or **Logs** to review activity in the same range; this pauses a live graph. Moving or zooming updates those panels. Select an event for details or read the nearby log lines.
 
-# Compare events and logs
+Long recordings can contain more samples than a graph can usefully draw. **Bucketing** summarizes them into fewer plotted points to keep the preview manageable. **Auto** fits the preview to the graph; **Off** requests raw points, and **Custom** sets a point cap. This affects the preview, not the raw export. See [Historical Queries](../Engine/Recording%20and%20Telemetry.md#historical-queries).
 
-Enable **Events** or **Logs** to open history beside the plot. Doing this while live freezes the graph at that range. Moving or zooming the graph updates the history selection.
+A signal can retain its last number after its source stops updating. **Stale** means it has passed its configured freshness timeout; an unavailable source cannot supply a current reading. Gaps in the graph are missing samples, not zeros. Check dates, filters, recording policy, and [recording diagnostics](../Engine/Diagnostics%20and%20Troubleshooting.md#rapid) if expected history is missing.
 
-Select an item in the activity strip to inspect its details. Blue spans identify the history pages currently covered; they do not mean a record exists at every instant. See [Events](Events.md) and [Logs](Logs.md) for their controls.
+# Saved Ranges and Exports
 
-# Saved ranges and exports
+Once the graph is paused, choose **Export telemetry**, check **Channels**, **Events**, and/or **Logs**, then **Export visible range**. This exports recorded history across the full X-axis range, including records not yet loaded into the preview. Channels use CSV; events and logs use `.jsonl`.
 
-Use a [dataframe](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#dataframes-from-recorded-history) to retain the range and filters. Pause and open **Export telemetry** to download the visible range; the [data guide](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-a-visible-range) owns selection and file-format details.
-
-| Problem | Check |
-| --- | --- |
-| Live value but no history | Recording policy, dates, and dataframe filters. |
-| Missing recent samples | Recording backlog or loss in Engine diagnostics. |
-| Slow query or too many points | Narrow the time range or channels; use Auto preview bucketing. |
-| Missing remote history | Which Engine holds the recordings you are querying. |
+To keep the whole run for later review, save its range and filters as a [dataframe](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#dataframes-from-recorded-history). The [data guide](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-formats) covers export selection, formats, and cancellation.

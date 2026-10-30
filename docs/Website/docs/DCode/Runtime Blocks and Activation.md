@@ -1,6 +1,6 @@
 ---
 summary: Understand what Run replaces, how templates create runtime blocks, and what remains after activation.
-updated: 2026-10-27T03:06
+updated: 2026-10-27T20:40
 created: 2026-10-04
 ---
 Runtime blocks are blocks in DCode that register something with the engine when run. Activation installs the Engine-managed work declared by a `.dcode` file: tasks, loops, calculations, task groups, events, and callback registrations.
@@ -49,7 +49,7 @@ Replacement creates fresh task, loop, calculation, and file-global state. An unc
 
 Starting the replacement does not grant authority: reacquire available claims with `command` or `set` in `start:` or beside writes. Configured channel startup values apply only at Engine startup, not script reactivation.
 
-Accepted callback calls finish on their captured version; new calls use the replacement registration. Callbacks use their caller's authority; replacing or removing their registration does not release the caller's claims. [Callbacks](Callbacks.md) covers their per-call scope.
+Accepted callback calls finish on their captured version; new calls use the replacement registration. [Callbacks](Callbacks.md) covers per-call scope and caller authority.
 
 # Template Activation
 
@@ -72,11 +72,7 @@ The YAML editor's **Run** button saves the YAML and reruns the scripts that use 
 
 # Cleanup and Retained Data
 
-Removing or replacing a runtime stops or retires its active work before cleanup completes.
-
-Tasks, loops, calculations, and events release all of their channel claims after active work and applicable lifecycle handling finish. Other controllers' claims and operator control are preserved. See the [channel cleanup rules](../Engine/Channels%20and%20Control.md#stop) for each policy and override.
-
-Functions and callbacks use their caller's authority; removing a callback registration does not release the caller's claims. Independent background callbacks have no inherited task authority. Task groups own scheduling arrangements, not channel claims; removing a group releases the grouping rather than removing its members.
+Tasks, loops, calculations, events, callbacks, and task groups follow the [shared removal and cleanup rules](../Engine/Modules%20and%20Tasks.md#removal-and-replacement). Runtime removal retains channels and their stored data.
 
 Runtime replacement is not a general cleanup of obsolete RAPID channels. Application channels such as `valves_valve_5`, `valves_valve_5_open`, and `valves_valve_5_state` can remain after the valve's loop is removed. Loop diagnostic channels can remain too. After a while, this can leave behind a lot of orphaned channels. See how to preform a Channel Cleanup in [Node, Context, and Project Board](../Interface/Node,%20Context,%20and%20Project%20Board.md).
 
