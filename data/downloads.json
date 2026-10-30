@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:59:17.937Z",
+  "generatedAt": "2026-10-30T21:59:31.378Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -109,6 +109,40 @@
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.0.1/SHA256SUMS.txt",
             "size": 252,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "v2.1.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.1.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:59:25Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/zipball/v2.1.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/tarball/v2.1.0",
+        "assets": [
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.1.0/plugin-win32-x64.zip",
+            "size": 3722357,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.1.0/plugin.json",
+            "size": 547,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-ethercat-plugin-2.1.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.1.0/release-manifest-ethercat-plugin-2.1.0.json",
+            "size": 898,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.1.0/SHA256SUMS.txt",
+            "size": 165,
             "state": "uploaded"
           }
         ]
