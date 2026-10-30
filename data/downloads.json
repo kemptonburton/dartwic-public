@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:59:31.378Z",
+  "generatedAt": "2026-10-30T21:59:43.852Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -2056,6 +2056,40 @@
             "name": "release-manifest.json",
             "browser_download_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/download/v2.0.2/release-manifest.json",
             "size": 415,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "v2.1.0",
+        "html_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/tag/v2.1.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:59:38Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/fprime-dartwic-plugin/zipball/v2.1.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/fprime-dartwic-plugin/tarball/v2.1.0",
+        "assets": [
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/download/v2.1.0/plugin-win32-x64.zip",
+            "size": 3131120,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/download/v2.1.0/plugin.json",
+            "size": 312,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-fprime-plugin-2.1.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/download/v2.1.0/release-manifest-fprime-plugin-2.1.0.json",
+            "size": 891,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/download/v2.1.0/SHA256SUMS.txt",
+            "size": 165,
             "state": "uploaded"
           }
         ]
