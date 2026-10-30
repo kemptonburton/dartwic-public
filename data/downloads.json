@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:57:20.737Z",
+  "generatedAt": "2026-10-30T21:57:36.898Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -1224,6 +1224,34 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-sdk-v2.0.0/SHA256SUMS.txt",
+            "size": 97,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-sdk-v2.1.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-sdk-v2.1.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:57:30Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-sdk-v2.1.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-sdk-v2.1.0",
+        "assets": [
+          {
+            "name": "interface-plugin-sdk-2.1.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-sdk-v2.1.0/interface-plugin-sdk-2.1.0.zip",
+            "size": 54416,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-sdk-2.1.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-sdk-v2.1.0/release-manifest-interface-sdk-2.1.0.json",
+            "size": 1027,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-sdk-v2.1.0/SHA256SUMS.txt",
             "size": 97,
             "state": "uploaded"
           }
