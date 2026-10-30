@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:57:36.898Z",
+  "generatedAt": "2026-10-30T21:57:52.238Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -529,6 +529,34 @@
             "name": "tempest-peer-protocol-2.0.0.zip",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/dartwic-peer-protocol-sdk-v2.0.0/tempest-peer-protocol-2.0.0.zip",
             "size": 32485,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "dartwic-peer-protocol-sdk-v3.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/dartwic-peer-protocol-sdk-v3.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:57:46Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/dartwic-peer-protocol-sdk-v3.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/dartwic-peer-protocol-sdk-v3.0.0",
+        "assets": [
+          {
+            "name": "release-manifest-dartwic-peer-protocol-sdk-3.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/dartwic-peer-protocol-sdk-v3.0.0/release-manifest-dartwic-peer-protocol-sdk-3.0.0.json",
+            "size": 1058,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/dartwic-peer-protocol-sdk-v3.0.0/SHA256SUMS.txt",
+            "size": 98,
+            "state": "uploaded"
+          },
+          {
+            "name": "tempest-peer-protocol-3.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/dartwic-peer-protocol-sdk-v3.0.0/tempest-peer-protocol-3.0.0.zip",
+            "size": 35304,
             "state": "uploaded"
           }
         ]
