@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:56:47.868Z",
+  "generatedAt": "2026-10-30T21:57:03.943Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -473,6 +473,34 @@
             "name": "tempest-peer-client-2.0.0.zip",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-peer-client-v2.0.0/tempest-peer-client-2.0.0.zip",
             "size": 31216,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "cpp-peer-client-v3.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/cpp-peer-client-v3.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:56:58Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/cpp-peer-client-v3.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/cpp-peer-client-v3.0.0",
+        "assets": [
+          {
+            "name": "release-manifest-cpp-peer-client-3.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-peer-client-v3.0.0/release-manifest-cpp-peer-client-3.0.0.json",
+            "size": 1017,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-peer-client-v3.0.0/SHA256SUMS.txt",
+            "size": 96,
+            "state": "uploaded"
+          },
+          {
+            "name": "tempest-peer-client-3.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/cpp-peer-client-v3.0.0/tempest-peer-client-3.0.0.zip",
+            "size": 53027,
             "state": "uploaded"
           }
         ]
