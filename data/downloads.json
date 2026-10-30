@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:57:52.238Z",
+  "generatedAt": "2026-10-30T21:58:08.587Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -253,6 +253,15 @@
         "published_at": "2026-10-25T02:02:14Z",
         "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/zipball/v2.0.5",
         "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/tarball/v2.0.5",
+        "assets": []
+      },
+      {
+        "tag_name": "v2.1.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-example-workspace/releases/tag/v2.1.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:58:02Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/zipball/v2.1.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-example-workspace/tarball/v2.1.0",
         "assets": []
       }
     ],
