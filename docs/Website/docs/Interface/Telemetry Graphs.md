@@ -20,7 +20,7 @@ Add the signals you want to compare. Each channel's plotted trace is a **series*
 
 If a command changed unexpectedly, knowing which task or operator wrote that particular point can help explain it. This is separate from who has control of the channel now.
 
-In the telemetry resource, enable the **BY** button (**Show commanded by**) to include the writer in realtime and historical graph tooltips. Attribution belongs to the selected point, so an older point keeps its original writer after another task writes the channel. Missing attribution is shown as **Unavailable**. This identifies the recorded writer, not current control ownership; for periodic snapshots it is the writer associated with the cached value.
+In the telemetry resource, enable the fingerprint icon (**Show commanded by**) to include the writer in realtime and historical graph tooltips. The writer appears on a muted **COMMANDED BY** line below each value. Attribution belongs to the selected point, so an older point keeps its original writer after another task writes the channel. Missing attribution is shown as **Unavailable**. This identifies the recorded writer, not current control ownership; for periodic snapshots it is the writer associated with the cached value.
 
 The button starts off. Its setting is remembered globally within this Interface and shared by its telemetry resources. It does not change schematic or channel-panel tooltips.
 
