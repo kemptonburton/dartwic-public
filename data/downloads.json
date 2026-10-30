@@ -1,7 +1,37 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-27T01:25:51.131Z",
+  "generatedAt": "2026-10-30T21:55:47.164Z",
   "repositories": {
+    "kemptonburton/dartwic-checklists-plugin": [
+      {
+        "tag_name": "v2.0.6",
+        "html_url": "https://github.com/kemptonburton/dartwic-checklists-plugin/releases/tag/v2.0.6",
+        "prerelease": false,
+        "published_at": "2026-10-24T21:29:10Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-checklists-plugin/zipball/v2.0.6",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-checklists-plugin/tarball/v2.0.6",
+        "assets": [
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-checklists-plugin/releases/download/v2.0.6/plugin.json",
+            "size": 331,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-checklists-plugin/releases/download/v2.0.6/plugin.zip",
+            "size": 10794,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-checklists-plugin/releases/download/v2.0.6/release-manifest.json",
+            "size": 361,
+            "state": "uploaded"
+          }
+        ]
+      }
+    ],
     "kemptonburton/dartwic-ethercat-plugin": [
       {
         "tag_name": "v2.0.0",
@@ -706,6 +736,34 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.0.6/SHA256SUMS.txt",
+            "size": 89,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.1.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.1.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:55:41Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.1.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.1.0",
+        "assets": [
+          {
+            "name": "engine-2.1.0-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.1.0/engine-2.1.0-win64.zip",
+            "size": 18272107,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.1.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.1.0/release-manifest-engine-2.1.0.json",
+            "size": 1723,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.1.0/SHA256SUMS.txt",
             "size": 89,
             "state": "uploaded"
           }
@@ -1543,6 +1601,36 @@
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/react-client-v2.0.1/SHA256SUMS.txt",
             "size": 97,
+            "state": "uploaded"
+          }
+        ]
+      }
+    ],
+    "kemptonburton/fprime-dartwic-plugin": [
+      {
+        "tag_name": "v2.0.2",
+        "html_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/tag/v2.0.2",
+        "prerelease": false,
+        "published_at": "2026-10-24T21:29:11Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/fprime-dartwic-plugin/zipball/v2.0.2",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/fprime-dartwic-plugin/tarball/v2.0.2",
+        "assets": [
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/download/v2.0.2/plugin-win32-x64.zip",
+            "size": 2887543,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/download/v2.0.2/plugin.json",
+            "size": 312,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest.json",
+            "browser_download_url": "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/download/v2.0.2/release-manifest.json",
+            "size": 415,
             "state": "uploaded"
           }
         ]
