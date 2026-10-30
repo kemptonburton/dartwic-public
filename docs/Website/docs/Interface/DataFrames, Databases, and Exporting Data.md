@@ -1,14 +1,16 @@
 ---
 summary: Save runs, browse recorded data, and choose what to export or delete.
 created: 2026-08-03T15:41
-updated: 2026-10-29T18:30
+updated: 2026-10-30T16:04
 ---
 
-Open **Data** to browse the connected Engine's recordings, save a named run, or download its measurements, events, and logs. A dataframe saves a time range and filters; it does not copy the underlying recordings.
+Open **Data** in the left sidebar to browse recordings under **Databases**, or create and reopen named runs under **Dataframes**. You can graph, export, and delete recorded data here; other resources also provide exports.
+
+![](_attachments/Pasted%20image%2020261030155612.png)
 
 # Recorded Data
 
-After a test, you might want to see how pressure changed, when a warning appeared, or what a driver reported. The **Databases** tab gives you a starting point for each kind of recorded information:
+Choose a database for the information you want to review:
 
 | Database | Contents |
 | --- | --- |
@@ -18,68 +20,69 @@ After a test, you might want to see how pressure changed, when a warning appeare
 
 ![The database catalog with recorded events open beside it.](../Engine/_attachments/Pasted%20image%2020261029010108.png)
 
+The Engine populates these databases automatically. Check [channel recording settings](../Engine/Recording%20and%20Telemetry.md#channel-recording) before a test; starting a dataframe does not enable recording. [Events and logs](../Engine/Recording%20and%20Telemetry.md#event-and-log-recording) have their own recording paths.
+
 # Historical Queries
 
-To investigate yesterday's test, ask for the saved records from that period rather than watching incoming values. Choosing a time range and filters limits the request, called a **query**, to the information you want to review.
+Open a database, choose its calendar range and filters, and select a result. For measurements, check channels and choose **Review selected channels** to open a graph. Events and logs also offer Engine-session ranges where available.
 
-Open a database, choose the calendar range, and apply channel, node, stream, or session filters. Select results to inspect them; **Review selected channels** opens a graph. These views read history saved on this Engine, including remote data recorded here.
+![](_attachments/Pasted%20image%2020261030155727.png)
 
-Recorded data can be exported while the Engine is running. A live value may arrive before it is saved; if recent history is missing, check [Recording and Delivery Loss](../Engine/Recording%20and%20Telemetry.md#recording-and-delivery-loss).
+Queries read recordings saved on the connected Engine, including remote data recorded here. You can query and export while it runs. See [Historical Queries](../Engine/Recording%20and%20Telemetry.md#historical-queries) for recording and preview behavior.
 
 # Dataframes
 
-If you run several fill tests in an afternoon, finding each one by its timestamps can become tedious. A dataframe lets you name a run and keep its time range, channels, and filters together, so you can reopen or export that test later.
+A **dataframe** names a run and saves its time range, channels, and filters for later review or export. It references existing recordings rather than copying them.
 
 ## Live Run Dataframes
 
-When you are about to run a test, mark its beginning and end as you go:
+Choose **New dataframe → Start now**, name the run, select channels, and set events/logs to **All**, **Related channels**, or **Off**. Choose **Start dataframe**, run your procedure, then **Stop dataframe**. These controls mark the range without starting tasks or changing recording settings.
 
-1. Open **Data → Dataframes → New dataframe** and choose **Start now**.
-2. Name the run, optionally select channels, and set events/logs to **All**, **Related channels**, or **Off**.
-3. Choose **Start dataframe**, run the procedure, then **Stop dataframe**.
-
-Start and Stop mark the range; they do not start tasks or change recording policies. Open the saved frame to check its range and contents. A frame interrupted by an Engine restart shows **Interrupted**.
+![](_attachments/Pasted%20image%2020261030160420.png)
 
 ## Dataframes from Recorded History
 
-If the test has already happened, you can create the same saved view by selecting its recorded time range.
+Choose **New dataframe → From history**, set the name, range, channels, and filters, then **Create dataframe**. An empty channel list includes all channels; **Related channels** matches events/logs explicitly linked to those channels.
 
-Choose **New dataframe → From history**, set the name, range, channels, and filters, then **Create dataframe**. An empty channel list includes all channels; **Related channels** includes event/log records explicitly linked to the selected channel names.
+Click a dataframe to open its saved range in the **Telemetry** resource. Check or drag channels to plot them, then use [Export telemetry](Telemetry%20Graphs.md#export-data) to export channels, events, and logs for the range you are viewing. Use **Fit to dataframe** first to include the whole run.
 
-![A dataframe's channel list, traces, events, and logs.](../Engine/_attachments/Pasted%20image%2020261029010151.png)
+![](_attachments/Pasted%20image%2020261030160345.png)
 
-Open the frame and check or drag channels to plot them. Narrow the graph to inspect a transition, or export the frame to share the complete saved range.
+## Start a Dataframe from DCode
+
+To mark a run from automation, create a script in [DCode Editor](DCode%20Editor.md), activate it, then start **dataframe_demo** in Tasks. This example saves a ten-second range:
+
+```dcode
+task_sequence dataframe_demo:
+    frame_id = startDataFrame("Example run", {})
+    wait(10)
+    stopDataFrame(frame_id)
+```
+
+After completion, find **Example run** under **Data → Dataframes**. In your own procedure, start the frame before the work and stop it afterward using the returned ID. See [startDataFrame](../DCode/Reference/DCode%20Functions/function-startDataFrame.md) for channel and event/log filters, and [stopDataFrame](../DCode/Reference/DCode%20Functions/function-stopDataFrame.md) for closing it.
 
 # Export Formats
 
-Choose where to export based on what you want to share: a database selection, the transition you are inspecting on a graph, or an entire named test.
-
-Channel CSV files hold rows of timestamped numbers you can open in a spreadsheet. Event and log JSON Lines files (`.jsonl`) hold one structured record per line for analysis tools. A ZIP bundles the files from a dataframe into one download.
+Exports are available in **Data**, **Telemetry**, **Events**, **Logs**, and **Node Board**. Channel samples use CSV; events and logs use JSON Lines (`.jsonl`). Dataframes bundle their contents in a ZIP.
 
 | Starting point | Action and output |
 | --- | --- |
-| Database | **Export selected range** uses its calendar range and filters. Channels use raw CSV; events/logs use JSON Lines (`.jsonl`). Checked channels are exported, or all matching channels if none are checked. |
-| Paused telemetry graph | **Export telemetry → Export visible range** uses its full X-axis range and selected data types. |
-| Dataframe list | Select frames, then **Export selected dataframes** for a ZIP per frame with channel CSV, events, logs, and a manifest. |
+| Data → Databases | Apply a calendar range, then use the download menu's **Selected range**, **Loaded range**, or **Visible range**. Checked channels are exported, or all matching channels if none are checked. |
+| [Telemetry](Telemetry%20Graphs.md#export-data) | Pause, choose **Export telemetry**, check **Channels**, **Events**, and/or **Logs**, then **Export visible range**. |
+| [Events](Events%20and%20Logs.md#export-events) / [Logs](Events%20and%20Logs.md#export-logs) | Apply a calendar range, then export **Selected range**, **Loaded range**, or **Visible range** from that resource. |
+| Node Board | Export a **Current board** snapshot or **Selected events**. |
+| Data → Dataframes | Select frames and choose **Export selected dataframes** for a ZIP per frame containing channel CSV, events, logs, and a manifest. |
 
-Exports include matching history that has not loaded into the preview. You can export an active dataframe; its end time is fixed when export starts.
+Range exports include matching history beyond the loaded preview. Board snapshots contain the current items. An active dataframe can be exported; its end time is fixed when export starts.
 
 ## Export a Visible Range
 
-If you have zoomed in on a pressure spike and want to share just that part of the test, use the graph's current time range for the export.
-
-Pause the graph, open **Export telemetry**, check **Channels**, **Events**, and/or **Logs**, then **Export visible range**. Preview bucketing does not reduce raw exports. CSV leaves missing samples empty rather than filling them with zeros.
-
-Telemetry exports offer **Include commanded by**, off by default. Enabling it adds a `<series label>.commanded_by` column beside each value column, using the attribution stored with that sample. Unknown writers remain empty. Samples sharing a channel and timestamp are retained as separate rows when attribution is enabled. With the option off, the existing CSV format and last-sample handling of duplicate timestamps remain unchanged. This preference is independent of the telemetry tooltip toggle and is remembered globally within the Interface. Database and whole-dataframe export controls are unchanged.
-
-Keep the view and connection open until the download completes. **Cancel export** stops remaining work; files already downloaded remain. Read any error before retrying.
+The [telemetry export](Telemetry%20Graphs.md#export-data) uses the graph's full X-axis range and raw recordings, regardless of preview bucketing. **Include commanded by** adds sample writers to its CSV. Keep the view connected until completion; **Cancel export** stops remaining work.
 
 # Retention and Deletion
 
-Recordings accumulate as you operate the system. **Retention** settings limit how much history the Engine keeps by age or storage size, so you can manage disk use. Export runs you need to keep before their underlying recordings are removed.
-
-Removing a dataframe keeps its recordings. Deleting recordings removes underlying history and can affect several frames. Frames do not protect history from automatic cleanup.
+**Retention** limits recordings by age or size. Removing a dataframe keeps its recordings; deleting recordings can affect several frames. Frames do not protect history from cleanup, so export runs you need to keep.
 
 ![Separate channel, event, and log retention settings.](../Engine/_attachments/Pasted%20image%2020261029010240.png)
 
-Configure limits in **Settings → Engine → History and recording**. For recording policies, storage, and cleanup behavior, see [Recording and Telemetry](../Engine/Recording%20and%20Telemetry.md#dataframes-retention-and-deletion).
+Configure **Settings → Engine → History and recording**; see [Recording and Telemetry](../Engine/Recording%20and%20Telemetry.md#dataframes-retention-and-deletion) for storage and cleanup details.

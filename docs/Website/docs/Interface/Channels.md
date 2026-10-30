@@ -1,7 +1,7 @@
 ---
 summary: Find signals, understand their status, and inspect or change their values.
 created: 2026-09-04T17:13
-updated: 2026-10-27T21:40
+updated: 2026-10-30T03:44
 ---
 
 A channel is a named signal: a measurement, command, task status, or calculated value. Open **Channels** to find it and see where they come from and what is controlling them.
@@ -105,7 +105,7 @@ To edit a channel that is being controlled, you would need to set `control_polic
 
 You can then update it, and then release it back to automation by clicking the red release button.
 
-The channel is yellow because it is connected to a warning event that is thrown by RAPID when it notices a control rejection occurs.
+The channel is yellow because it is connected to a warning event reported when RAPID rejects a control attempt. The warning stops firing after five seconds without another rejection for that channel, though it can remain visible until an operator handles it.
 
 Every single channel is able to be overridden by an operator. Be careful though, any channel you override will have to be manually released back to automation. If you forget, your automation might not work properly as tasks would not be able to touch it.
 

@@ -1,6 +1,8 @@
 ---
-title: "pluginWorkspaceAssetPath"
-summary: "Portable assets/plugins/id/relative reference for authored shared plugin files. Bind the manifest's plugin ID. Validates segments and requires a file extension. No I/O or isolation from generic storage APIs."
+title: pluginWorkspaceAssetPath
+summary: Portable assets/plugins/id/relative reference for authored shared plugin files. Bind the manifest's plugin ID. Validates segments and requires a file extension. No I/O or isolation from generic storage APIs.
+created: 2026-10-22T02:44
+updated: 2026-10-29T20:51
 ---
 
 ## Declaration
@@ -42,7 +44,8 @@ inline std::string pluginWorkspaceAssetPath(const std::string& plugin_id, const 
     enum class RecordMode {
         OnValueChange,
         Never,
-        EveryValue
+        EveryValue,
+        EveryValueExcludeAutorecord
     };
     enum class ControlPolicy {
         Free,

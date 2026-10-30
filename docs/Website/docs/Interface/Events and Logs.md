@@ -1,81 +1,203 @@
 ---
 summary: Investigate events, respond to prompts and holds, and read live or recorded logs.
 created: 2026-08-03T15:41
-updated: 2026-10-29T18:29
+updated: 2026-10-30T14:38
 ---
 
-When a device disconnects or pressure exceeds a limit, an **event** brings the condition to the operator's attention and tracks how it is handled. A **log** preserves timestamped text, such as the driver's connection error. **ARGUS** is the Engine service that manages and records both, so you can review them alongside channel measurements.
+Events flag conditions that need attention; logs preserve timestamped output explaining what happened. **ARGUS** manages and records both. Open **Events** or **Logs** in the left sidebar, or use their [Node Board views](Node%2C%20Context%2C%20and%20Project%20Board.md#node-activity) beside your main tab.
 
 # Events
 
-Open **Events** to search and filter the event list. The **Node Board** keeps a node's activity beside your work; the bottom bar also opens aborts, holds, and prompts.
+Plugins and automation report events such as a disconnected device or high pressure. Use the Interface to investigate the condition and respond. [Engine Events and Logs](../Engine/Events%20and%20Logs.md#events) explains how events are produced and handled.
 
-![The event list with a selected warning, related channels, and operator actions.](../Engine/_attachments/Pasted%20image%2020261028143012.png)
+## Viewing Events
 
-Select an event and read its description, suggested resolution, source, and related graphs. Follow **Trigger Origin**, **Definition Origin**, or **Open diagnostics** when available to investigate its source.
+Open **Events** in the left sidebar to see live events and recorded history. Select an event to inspect its details and available actions.
 
-## Event Types
+![The Events resource with its event list and selected-event details.](_attachments/Pasted%20image%2020261029225414.png)
 
-Some events simply tell you that something happened, while others need a response before work can continue. The type helps you decide whether to read the message, investigate a problem, or answer a request.
+Use **Search events** and the filter menu to narrow by severity, type, node, system, subsystem, or status. 
 
-Messages report information; warnings and errors highlight problems. Aborts identify conditions needing the application's abort response. Holds wait for release, and prompts wait for an answer. The type alone does not define an equipment shutdown; see [Event Types](../Engine/Events%20and%20Logs.md#event-types).
+Choose **Calendar → Calendar or Session**, select the period, and **Apply**. The blue dots represent days on which recorded content exists, and the blue outlined section represents the current range that is loaded.
 
-## Event States and Actions
+White sections select start and end days with the grey highlighting days in between, and the light grey highlighted day represents the current day.
 
-Suppose a pressure warning appears during a fill. You want the other operators to know you have seen it while you investigate, even if the pressure is still high. Later, when the condition has cleared and you have finished checking it, you can mark it resolved. An event's state tracks that progress; its actions let you acknowledge it, finish handling it, or provide a response.
+![](_attachments/Pasted%20image%2020261030000847.png)
 
-The warning first appears as **New**. Choosing **Acknowledge** changes it to **Acknowledged**, showing that someone has seen it. Its **firing** indicator tells you whether the condition is still active; acknowledging high pressure does not make the pressure fall.
+![](_attachments/Pasted%20image%2020261030000617.png)
 
-Other labels help you recognize older or uncertain information. **Stale** identifies an unfinished event from an earlier Engine session. **Firing unknown** means the Interface cannot establish the condition's current state because its owner is unavailable.
+Click an event and scroll its details to read the description, resolution, origins, and graphs. Use its actions to acknowledge or resolve it, answer a prompt, or release a hold. Select several events for bulk actions.
 
-| Action | Use |
-| --- | --- |
-| **Acknowledge** | Mark the event as seen. |
-| **Resolve** | Finish handling a condition after firing stops. |
-| **Silence** | Hide it from the board; the condition can continue. |
-| **Respond** | Submit a prompt's answer. |
-| **Release hold** | Release the waiting workflow, then check its task state. |
+Open **Node Board** near the bottom of the sidebar to keep events beside your main tab; the activity bar also opens aborts, holds, and prompts. See [Node Activity](Node%2C%20Context%2C%20and%20Project%20Board.md#node-activity).
 
-Use the details panel's actions, or select several events for the bulk toolbar. Actions depend on type, state, and permissions. For the complete lifecycle, see [Event States](../Engine/Events%20and%20Logs.md#event-states) and [Event Actions](../Engine/Events%20and%20Logs.md#event-actions).
+![](_attachments/Pasted%20image%2020261029235109.png)
 
-## Query Events
-
-After a test, you may need to find a warning that has already left the active board or see how often it returned. Event history keeps those records and the operator's responses. Each period of firing is an **occurrence**, so repeated warnings can be reviewed as part of the same event.
-
-Open **Data → Databases → ARGUS Events**, set the calendar range and filters, then select an event to review its recorded occurrences and responses. History is recorded while events are active; you do not need to resolve them before reviewing or exporting saved records.
+For saved occurrences and responses, open **Data → Databases → ARGUS Events** and set its range and filters. You can review history while events remain active. See [Historical Queries](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#historical-queries).
 
 ![ARGUS Events opened from the database catalog.](../Engine/_attachments/Pasted%20image%2020261029010108.png)
 
-Choose **Export selected range** in the database toolbar to download the filtered event history as JSON Lines (`.jsonl`). For events and channel samples together, pause [Telemetry](Telemetry%20Graphs.md#saved-ranges-and-exports) and use **Export telemetry**, or export a [dataframe](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-formats).
+## Event Metadata
+
+These details identify the condition and help you investigate. Availability depends on its producer and recorded history; see [Event Metadata](../Engine/Events%20and%20Logs.md#event-metadata) for exact behavior.
+
+| Detail                     | Meaning                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| Title                      | Name of the condition.                                                        |
+| Type / severity            | Purpose and attention level.                                                  |
+| Description                | What happened.                                                                |
+| Resolution                 | Suggested checks or recovery steps.                                           |
+| Node                       | Owning Engine.                                                                |
+| System / subsystem         | Grouping, such as propulsion / fuel.                                          |
+| State / firing             | Handling progress / whether the condition is active.                          |
+| First / last               | First and most recent detection times.                                        |
+| Detections                 | Accepted reports of the condition.                                            |
+| Occurrences                | Separate firing periods, with recorded timing, session, and detection counts. |
+| Trigger Origin             | Source that fired it: task, loop, script/line, module, plugin, or operation.  |
+| Definition Origin          | Declaration key and originating node/script if its a DCode declared event.    |
+| Channels / graphs          | Related measurements.                                                         |
+| References / diagnostics   | Links for investigation.                                                      |
+| Response                   | Prompt answer and responder.                                                  |
+| IDs / session / timestamps | Identity and timing in history and exports.                                   |
+| Automatic acknowledgement  | Producer-configured acknowledgement delay.                                    |
+| Firing timeout             | Producer-configured quiet interval before firing ends.                        |
+
+Clicking an event shows its Info Panel on the right, which these metadata fields can be viewed in.
+
+![](_attachments/Pasted%20image%2020261029232140.png)
+
+![](_attachments/Pasted%20image%2020261029232202.png)
+
+The Event Info Panel contains useful information used to react to the event, who may have reacted to the event, or figure out where it came from and what limits may have triggered it.
+
+### Types
+
+The type tells you why an event needs attention.
+
+![](_attachments/Pasted%20image%2020261029232455.png)
+
+| Type | Meaning |
+| --- | --- |
+| Message | Information or a completed action. |
+| Warning | A condition needing attention. |
+| Error | A failure or fault. |
+| Abort | A condition needing the application's abort response. |
+| Hold | A workflow waiting for release. |
+| Prompt | A request for a number, text, yes/no, or selected option. |
+
+### States
+
+Handling and firing are separate: acknowledging high pressure does not stop the pressure condition. See [Event States](../Engine/Events%20and%20Logs.md#event-states) for lifecycle details.
+
+![](_attachments/Pasted%20image%2020261029232524.png)
+
+| State | Meaning |
+| --- | --- |
+| New | Awaiting acknowledgement. |
+| Acknowledged | Seen; may still be firing. |
+| Resolved | Handling finished after firing stopped; later detections can reopen it. |
+| Silenced | Hidden from the active board; may still fire. |
+| Deleted | Removed from the event lifecycle; recorded history remains. |
+| Responded | Prompt answered. |
+| Released | Hold released; check what resumed. |
+| Stale | Unfinished event from an earlier Engine session. |
+
+**New active** and **Acknowledged active** indicate firing. **Firing unknown** means the owner's current state is unavailable. **Observed** is a resolved observation record.
+
+### Actions
+
+Available controls depend on type, state, and permissions. They do not themselves prove equipment recovery; see [Event Actions](../Engine/Events%20and%20Logs.md#event-actions).
+
+![](_attachments/Pasted%20image%2020261029232538.png)
+
+| Action          | Result                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------ |
+| Acknowledge     | Mark as seen.                                                                                                |
+| Unacknowledge   | Return to New.                                                                                               |
+| Resolve         | Finish handling a condition that has stopped firing. Removes the event from the Node Board.                  |
+| Unresolve       | Return to Acknowledged without restarting firing. Returns                                                    |
+| Silence         | Hide without stopping the condition.                                                                         |
+| Unsilence       | Return to Acknowledged.                                                                                      |
+| Respond         | Submit a prompt's answer.                                                                                    |
+| Release hold    | Release the waiting workflow.                                                                                |
+| Delete          | Mark deleted; recorded history remains.                                                                      |
+| Resolve locally | Clear a disconnected remote event locally; its owner's state stays unchanged and it may return on reconnect. |
+
+It is best practice to Acknowledge an event once you have read it. Once you diagnose it and resolve the issue, (and it has stopped firing), you can resolve it to remove it from the board.
+
+Never acknowledge an Event without really knowing what triggered it or what the severity may be. You could forget about the occurrence, and that could mean the difference between hardware working when it needs to, and when it does not.
+
+Silencing an event will prevent it from showing up on the board. You can go to the Events resource to unsilence it.
+
+## Export Events
+
+You may want to export events for further analysis outside of DARTWIC. You can export events from the Events resource, the Events Node Board, or the Events Database in the Data Resource. 
+
+Export ranges available are chosen from the selected ranges in the Calendar Picker. Configure your range, then click the Export button adjacent to it, and select a range to start the export. 
+
+**Selected range**, **Loaded range**, and **Visible range**, with the same bounds shown in the calendar's information popup are offered.
+
+A live or unavailable range cannot be exported until it has concrete bounds. Each choice exports matching recorded events and occurrences as `.jsonl`, including results not loaded into the preview. See [Export Formats](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-formats).
+
+![](_attachments/Pasted%20image%2020261030001203.png)
+
+On the Node Board, **Selected events** exports selected items as shown, and **Current board** captures all matching events, including those outside the scroll viewport. Use a calendar range export for recorded occurrence history.
+
+![](_attachments/Pasted%20image%2020261030001254.png)
+
+To include channel samples, use a paused graph's [telemetry export](Telemetry%20Graphs.md#export-data) or export a dataframe.
 
 # Logs
 
-Logs help explain startup, device errors, and script output. An error log does not automatically create an actionable event.
+Logs help investigate startup, device errors, and script progress. A **stream** groups output by source; a **session** identifies one Engine run. Open **Logs** to follow incoming output or inspect earlier messages. [Write Logs](../Engine/Events%20and%20Logs.md#write-logs) covers producing output from plugins and automation.
 
-## Log Streams and Sessions
+## Viewing Logs
 
-When a device fails to connect, its driver's output is usually more useful than every message from the whole system. Streams separate output by source, while sessions help you find the Engine run when the problem occurred.
+Open **Logs** in the left sidebar and choose an output stream, such as the Engine or a device plugin.
 
-Open **Logs**, select a stream such as **Engine** or a plugin, then search or filter by severity.
+![](_attachments/Pasted%20image%2020261030001408.png)
 
-When the stream tabs overflow, open their list to see the same unread warning and error icons shown on the tabs. Use the filter beside the list search to show only streams with unread errors or warnings.
+Select a stream, then use **Search logs** and filters to find the relevant output. The stream list shows unread warning/error icons; its filter can limit the list to streams needing attention.
 
-![Timestamped Engine output in the log viewer.](../Engine/_attachments/Pasted%20image%2020261028142931.png)
+Use **Calendar → Calendar or Session** and **Apply** to inspect an earlier period. The blue dots represent days on which recorded content exists, and the blue outlined section represents the current range that is loaded.
 
-Use **Calendar → Calendar or Session**, select the period, and **Apply** to inspect earlier output. **Follow live logs** returns to incoming lines; the down-arrow jumps to the newest records. See [Log Streams and Sessions](../Engine/Events%20and%20Logs.md#log-streams-and-sessions) for how output is organized.
+White sections select start and end days with the grey highlighting days in between, and the light grey highlighted day represents the current day.
 
-## Action and Builder Logs
+![](_attachments/Pasted%20image%2020261030000847.png)
 
-If a native DCode script fails to load, the problem may be in the compilation step that prepares it to run. **Builder** performs that step, and its log preserves the compiler's explanation.
+![](_attachments/Pasted%20image%2020261030000617.png)
 
-**Project → Builder logs** and script activation details show **DARTWIC BUILDER** output. Read compiler messages alongside the activation result, then follow file/line links back to the [editor](DCode%20Editor.md).
 
-## Recorded Logs
+To watch a driver's output while configuring its module or starting a task, keep its logs open in [Node Board](Node%2C%20Context%2C%20and%20Project%20Board.md#node-activity).
 
-Use recorded logs when the output you need is no longer in the live view, such as startup messages from this morning or an error from a previous test. Date, session, and stream filters help narrow the search.
+![](_attachments/Pasted%20image%2020261030001646.png)
 
-Open **Data → Databases → ARGUS Logs**, select node, stream, session, and dates, then inspect the results. **Recorded only** reads saved output without following new lines.
+## Log Metadata
 
-Choose **Export selected range** to download matching logs as `.jsonl`. Export is available for retained history, including earlier sessions; you do not need to wait for the current Engine run to end. To compare logs with signals, enable Logs in a paused telemetry graph and [export its visible range](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-a-visible-range).
+Each record identifies the message, its source, and timing. See [Log Metadata](../Engine/Events%20and%20Logs.md#log-metadata) for the stored format.
 
-For recording, retention, and missing history, see [Event and Log Recording](../Engine/Recording%20and%20Telemetry.md#event-and-log-recording) and [Diagnostics](../Engine/Diagnostics%20and%20Troubleshooting.md#argus).
+| Field | Meaning |
+| --- | --- |
+| Node (`node`) | Originating Engine. |
+| Session (`session`) | Engine run. |
+| Stream (`stream`) | Named source, such as a plugin or DARTWIC BUILDER. |
+| Output channel (`channel`) | Usually `stdout` or `stderr`, not a measurement channel. |
+| Level (`level`) | Usually `info`, `warning`, or `error`. |
+| Text (`text`) | Message contents. |
+| Sequence (`sequence`) | Position within the node/session/stream. |
+| Timestamp (`timestamp_ns`) | Source time, stored as Unix-epoch nanoseconds. |
+
+**Info** gives context, **Warning** flags a problem, and **Error** reports a failure. Logs have no acknowledgement or resolution states. **Live** follows incoming output; **Recorded only** reads saved history.
+
+## Export Logs
+
+You may want to export logs for further analysis outside of DARTWIC. You can export logs from the Logs resource, the Logs Node Board, or the Logs Database in the Data Resource. 
+
+Export ranges available are chosen from the selected ranges in the Calendar Picker. Configure your range, then click the Export button adjacent to it, and select a range to start the export. 
+
+**Selected range**, **Loaded range**, and **Visible range**, with the same bounds shown in the calendar's information popup are offered.
+
+Each choice exports matching recorded output as `.jsonl`, including results not loaded into the preview. See [Export Formats](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-formats).
+
+![](_attachments/Pasted%20image%2020261030002019.png)
+
+You can export while the Engine is running. Keep the view and connection open until completion; **Cancel export** stops remaining work. To include channels, use a paused graph's [visible-range export](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-a-visible-range).

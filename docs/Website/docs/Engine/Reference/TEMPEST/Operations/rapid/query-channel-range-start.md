@@ -2,7 +2,7 @@
 title: rapid/query-channel-range-start
 summary: Starts a cancellable, low-priority historical graph query job.
 created: 2026-08-04T16:41
-updated: 2026-10-14T22:39
+updated: 2026-10-30T14:36
 ---
 
 - **Category:** Channels and Persistence
@@ -18,6 +18,7 @@ updated: 2026-10-14T22:39
 | `x_to` | `integer` | Optional | Alias for `to`. |
 | `bucket_count` | `integer` | Required | Positive downsample bucket count; required for this historical graph job. |
 | `bucket_mode` | `string` | Required | Must be `extrema` for this historical graph job. |
+| `include_commanded_by` | `boolean` | Optional | Include each returned point's recorded writer in the completed channel series. |
 | `request_key` | `string` | Optional | Client-defined key used to cancel and replace an older graph job; defaults to `default` and is truncated to 128 characters. |
 
 ## Response payload

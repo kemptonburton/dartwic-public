@@ -1,7 +1,7 @@
 ---
 summary: Understand what gets recorded, how live updates arrive, and how to keep and review history.
 created: 2026-08-03T15:41
-updated: 2026-10-29T20:49
+updated: 2026-10-30T02:00
 ---
 
 Recording saves what happened so you can review a test, compare measurements with events, or investigate a failure. Telemetry sends live updates to dashboards, clients, and other Engines.
@@ -106,13 +106,30 @@ Remote channels are skipped by this baseline. Their received observations follow
 
 ## Record Every Sample Without Periodic Snapshots
 
-An acquisition channel should preserve the samples supplied by its device without inserting cached values between them. Set its `record_mode` to `every_value_exclude_autorecord` before acquisition begins. Every accepted value write is selected for recording, including equal consecutive readings and individual samples within timestamped batches. Periodic autorecord skips the channel; it remains available to live telemetry.
+If you want your device to record exact samples and not be mixed with periodic snapshot samples, use `every_value_exclude_autorecord`. Every channel sample will be written, and the channel will not save periodic snapshots.
 
-For example, the **LabJack stream worker** configures its destination channels as `on_value_change` while idle. Once the worker owns the stream, it switches them to `every_value_exclude_autorecord` before submitting samples. The mode stays active through connection attempts and reconnect delays, so those interruptions leave acquisition gaps. When the worker finishes or is stopped, it restores `on_value_change`, and periodic snapshots can resume. Limit an exact-acquisition export to the worker's run interval; history before and after that interval can contain baseline snapshots.
+The **LabJack stream worker** enables this mode before acquisition and keeps it through connection attempts and reconnects, so interruptions leave acquisition gaps. Cleanup restores `on_value_change`, allowing idle snapshots again. This simplified C++ excerpt shows the SDK calls for a configured fixed `channel` and an acquired batch, `samples`:
 
-The worker groups LabJack readings into batches and calculates each sample timestamp from the stream start, scan number, and scan rate. Its `upsertBulk` wrapper calls `upsertChannelValueBulk`. That dedicated bulk path updates live memory once with the final sample and queues all selected samples with their timestamps. It does not call ordinary upsert for every sample or record the last sample twice. For example, a batch of three equal readings produces three recorded samples in exact mode, while live memory holds the third reading.
+```cpp
+using namespace DARTWIC::API;
 
-Realtime telemetry presents collected live state and may omit intermediate acquisition samples. Query or export recorded history to inspect the full accepted stream. Snapshot exclusion does not guarantee lossless device acquisition or persistence: check recording diagnostics for rejected or dropped samples, storage errors, and queue pressure.
+// Before acquisition: exclude periodic snapshots.
+api->upsertChannelField(channel, ChannelField::RECORD_MODE,
+    RecordMode::EveryValueExcludeAutorecord, ChannelStorage::Fixed);
+
+// For each batch: submit (value, Unix-nanosecond timestamp) pairs.
+api->upsertChannelValueBulk(channel, samples);
+
+// Worker cleanup: restore idle recording after sample submission stops.
+api->upsertChannelField(channel, ChannelField::RECORD_MODE,
+    RecordMode::OnValueChange, ChannelStorage::Fixed);
+```
+
+LabJack calculates each sample's timestamp from the stream start, scan number, and scan rate. Its `upsertBulk` wrapper calls `upsertChannelValueBulk` to submit those samples together.
+
+The bulk path queues the samples with their timestamps and updates live memory once with the final sample, without recording it twice. Three equal readings therefore produce three history samples, while live memory holds the third reading.
+
+Live telemetry can omit intermediate samples; query or export history for the recorded stream. Limit exact-acquisition exports to the worker's run interval because idle history can contain snapshots. This mode does not guarantee lossless acquisition or storage; check [recording diagnostics](Diagnostics%20and%20Troubleshooting.md#rapid) for drops, errors, and queue pressure.
 
 ## Saved Channel State
 
