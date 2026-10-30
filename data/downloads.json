@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:58:21.674Z",
+  "generatedAt": "2026-10-30T21:58:36.717Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -1727,6 +1727,34 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/node-client-v2.0.0/SHA256SUMS.txt",
+            "size": 96,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "node-client-v3.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/node-client-v3.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:58:31Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/node-client-v3.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/node-client-v3.0.0",
+        "assets": [
+          {
+            "name": "dartwic-node-client-3.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/node-client-v3.0.0/dartwic-node-client-3.0.0.zip",
+            "size": 9578,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-node-client-3.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/node-client-v3.0.0/release-manifest-node-client-3.0.0.json",
+            "size": 1019,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/node-client-v3.0.0/SHA256SUMS.txt",
             "size": 96,
             "state": "uploaded"
           }
