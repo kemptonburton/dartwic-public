@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:56:32.937Z",
+  "generatedAt": "2026-10-30T21:56:47.868Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -1600,6 +1600,34 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/python-client-v2.0.0/SHA256SUMS.txt",
+            "size": 98,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "python-client-v3.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/python-client-v3.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:56:42Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/python-client-v3.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/python-client-v3.0.0",
+        "assets": [
+          {
+            "name": "dartwic-python-client-3.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/python-client-v3.0.0/dartwic-python-client-3.0.0.zip",
+            "size": 13836,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-python-client-3.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/python-client-v3.0.0/release-manifest-python-client-3.0.0.json",
+            "size": 1020,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/python-client-v3.0.0/SHA256SUMS.txt",
             "size": 98,
             "state": "uploaded"
           }
