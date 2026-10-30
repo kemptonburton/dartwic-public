@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:57:03.943Z",
+  "generatedAt": "2026-10-30T21:57:20.737Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -556,6 +556,34 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-sdk-v2.0.0/SHA256SUMS.txt",
+            "size": 94,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-sdk-v3.0.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-sdk-v3.0.0",
+        "prerelease": false,
+        "published_at": "2026-10-30T21:57:14Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-sdk-v3.0.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-sdk-v3.0.0",
+        "assets": [
+          {
+            "name": "engine-plugin-sdk-3.0.0.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-sdk-v3.0.0/engine-plugin-sdk-3.0.0.zip",
+            "size": 31627,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-sdk-3.0.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-sdk-v3.0.0/release-manifest-engine-sdk-3.0.0.json",
+            "size": 1040,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-sdk-v3.0.0/SHA256SUMS.txt",
             "size": 94,
             "state": "uploaded"
           }
