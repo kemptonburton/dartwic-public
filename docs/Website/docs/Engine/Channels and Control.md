@@ -1,7 +1,7 @@
 ---
 summary: Understand RAPID channels, fields, storage, authority, and native or DCode publishing.
 created: 2026-09-04T17:13
-updated: 2026-10-28T18:11
+updated: 2026-10-29T20:49
 document_kind: walkthrough
 ---
 
@@ -51,7 +51,7 @@ Fields describe the value, its source, and its control. For example, `value = 12
 | `storage` | Fixed or dynamic storage. | Channel configuration. |
 | `units` | Display units, such as bar or degC. | Permitted metadata configuration. |
 | `stale_timeout` | Freshness threshold in seconds. | Permitted metadata configuration. |
-| `record_mode` | `on_value_change`, `every_value`, or `never`. | Permitted recording configuration. |
+| `record_mode` | `on_value_change`, `every_value`, `every_value_exclude_autorecord`, or `never`. | Permitted recording configuration. |
 | `value_options` | Numeric choices and display labels. | Permitted metadata configuration. |
 | `startup_value` | Optional value applied during Engine startup. | Configuration; changing it does not write the current value. |
 | `calculation_scripts` | Attached calculation relationships. | Calculation activation/configuration. |

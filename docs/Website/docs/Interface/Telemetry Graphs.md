@@ -16,6 +16,16 @@ Add the signals you want to compare. Each channel's plotted trace is a **series*
 
 **Realtime** follows a moving window. Pause to inspect a transition; return to realtime to follow incoming readings again. Pausing the graph does not stop acquisition or recording. For the difference between live snapshots and recorded measurements, see [Live Telemetry](../Engine/Recording%20and%20Telemetry.md#live-telemetry).
 
+## Show Who Wrote a Value
+
+If a command changed unexpectedly, knowing which task or operator wrote that particular point can help explain it. This is separate from who has control of the channel now.
+
+In the telemetry resource, enable the **BY** button (**Show commanded by**) to include the writer in realtime and historical graph tooltips. Attribution belongs to the selected point, so an older point keeps its original writer after another task writes the channel. Missing attribution is shown as **Unavailable**. This identifies the recorded writer, not current control ownership; for periodic snapshots it is the writer associated with the cached value.
+
+The button starts off. Its setting is remembered globally within this Interface and shared by its telemetry resources. It does not change schematic or channel-panel tooltips.
+
+See [Control Authority](../Engine/Channels%20and%20Control.md#control-authority) for the distinction between last writer, owner, and active controller, and [Channel Recording](../Engine/Recording%20and%20Telemetry.md#channel-recording) for recorded samples.
+
 ## Side-panel and Schematic Graph Controls
 
 When a graph is embedded in a channel panel or schematic, you may want to scroll the surrounding view without accidentally changing the plot. These smaller graphs start with panning and wheel zoom locked for that reason. Click the lock icon to unlock navigation, then drag to pan or scroll to zoom. Lock it again to scroll the surrounding panel normally.
@@ -36,6 +46,6 @@ A signal can retain its last number after its source stops updating. **Stale** m
 
 # Saved Ranges and Exports
 
-Once the graph is paused, choose **Export telemetry**, check **Channels**, **Events**, and/or **Logs**, then **Export visible range**. This exports recorded history across the full X-axis range, including records not yet loaded into the preview. Channels use CSV; events and logs use `.jsonl`.
+Once the graph is paused, choose **Export telemetry**, check **Channels**, **Events**, and/or **Logs**, then **Export visible range**. This exports recorded history across the full X-axis range, including records not yet loaded into the preview. Channels use CSV; events and logs use `.jsonl`. Enable **Include commanded by** in the export menu to add the writer beside each channel value. This separate preference also defaults off and is remembered within this Interface.
 
 To keep the whole run for later review, save its range and filters as a [dataframe](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#dataframes-from-recorded-history). The [data guide](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-formats) covers export selection, formats, and cancellation.

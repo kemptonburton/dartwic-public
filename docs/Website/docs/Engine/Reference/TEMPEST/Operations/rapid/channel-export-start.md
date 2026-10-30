@@ -1,6 +1,8 @@
 ---
-title: "rapid/channel-export-start"
-summary: "Starts a client-owned background CSV export of raw channel samples."
+title: rapid/channel-export-start
+summary: Starts a client-owned background CSV export of raw channel samples.
+created: 2026-08-04T16:41
+updated: 2026-10-29T20:51
 ---
 
 - **Category:** Channels and Persistence
@@ -14,6 +16,7 @@ summary: "Starts a client-owned background CSV export of raw channel samples."
 | `x_from` | `integer` | Optional | Alias for `from`. |
 | `to` | `integer` | Optional | Inclusive Unix-epoch end time. Millisecond, microsecond, and nanosecond values are normalized by magnitude; `x_to` is an alias. |
 | `x_to` | `integer` | Optional | Alias for `to`. |
+| `include_commanded_by` | `boolean` | Optional | Include a companion writer column per series; preserve duplicate samples at the same timestamp. Requires Engine 2.1.0. |
 | `columns` | `array<ExportColumn>` | Optional | Optional display labels. Each item uses `channelPath` and `columnLabel`. |
 
 ## Response payload

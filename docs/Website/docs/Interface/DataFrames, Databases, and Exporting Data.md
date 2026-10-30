@@ -70,6 +70,8 @@ If you have zoomed in on a pressure spike and want to share just that part of th
 
 Pause the graph, open **Export telemetry**, check **Channels**, **Events**, and/or **Logs**, then **Export visible range**. Preview bucketing does not reduce raw exports. CSV leaves missing samples empty rather than filling them with zeros.
 
+Telemetry exports offer **Include commanded by**, off by default. Enabling it adds a `<series label>.commanded_by` column beside each value column, using the attribution stored with that sample. Unknown writers remain empty. Samples sharing a channel and timestamp are retained as separate rows when attribution is enabled. With the option off, the existing CSV format and last-sample handling of duplicate timestamps remain unchanged. This preference is independent of the telemetry tooltip toggle and is remembered globally within the Interface. Database and whole-dataframe export controls are unchanged.
+
 Keep the view and connection open until the download completes. **Cancel export** stops remaining work; files already downloaded remain. Read any error before retrying.
 
 # Retention and Deletion

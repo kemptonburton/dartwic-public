@@ -1,6 +1,6 @@
 ---
 summary: Use the C++ peer API for channels, events, logs, and custom operations.
-updated: 2026-10-28T20:05
+updated: 2026-10-29T20:49
 created: 2026-09-06T14:49
 ---
 
@@ -169,7 +169,7 @@ auto all = peer.channels().query();
 | --- | --- |
 | Upsert change | `channel` name and `fields` containing only requested changes. `request.changes` holds one or more changes. |
 | Writable fields | Numeric `value`, optional Unix-nanosecond `timestamp`, `units`, `stale_timeout` in seconds, `record_mode`, `calculation_scripts`, `value_options`, and `startup_value`. Structured settings follow RAPID's field definitions. Identity and authority are not writable fields. |
-| Recording mode | `"on_value_change"`, `"every_value"`, or `"never"` for write-triggered recording. |
+| Recording mode | `"on_value_change"`, `"every_value"`, `"every_value_exclude_autorecord"`, or `"never"` for write-triggered recording. |
 | `ChannelQuery` | `channels` and optional `fields` selections; empty selections mean all available channels/fields. |
 | `ChannelQueryResult` | `channels`: matching current records, with channel name, owner, fields, and source lineage. |
 

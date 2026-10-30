@@ -1,7 +1,7 @@
 ---
 summary: Understand what gets recorded, how live updates arrive, and how to keep and review history.
 created: 2026-08-03T15:41
-updated: 2026-10-29T01:05
+updated: 2026-10-29T20:49
 ---
 
 Recording saves what happened so you can review a test, compare measurements with events, or investigate a failure. Telemetry sends live updates to dashboards, clients, and other Engines.
@@ -89,19 +89,30 @@ Choose which channel writes to save with `record_mode`:
 | ----------------- | ------------------------------------------------------------------------ |
 | `on_value_change` | Writes that change the number. Steady readings can leave sparse history. |
 | `every_value`     | Every accepted value write, including repeated equal measurements.       |
+| `every_value_exclude_autorecord` | Every accepted value write, including repeated equal measurements, without periodic snapshots. |
 | `never`           | None from writes; the value remains available live.                      |
 
-Choose before the run: use `every_value` when every pressure measurement matters, including equal readings. Periodic snapshots apply separately.
+Choose before the run: use `every_value_exclude_autorecord` when the history must contain only submitted measurements. Use `every_value` when you also want periodic snapshots of the cached value. Both retain repeated equal readings. The new mode requires Engine 2.1.0.
 
 ## Periodic Snapshots
 
-By default, DARTWIC records the current values of its local channels once every second, even when their recording mode is `never`. It does this by taking a periodic snapshot of the values held in memory.
+By default, DARTWIC records the current values of its local channels once every second, even when their recording mode is `never`. Channels using `every_value_exclude_autorecord` are excluded. It does this by taking a periodic snapshot of the values held in memory.
 
-This gives history a regular baseline even when values stay steady. While a channel exists and the baseline is enabled, unexpected gaps can point to Engine downtime or recording trouble. Check diagnostics, filters, and retention before deciding the cause; live telemetry delivery is separate.
+This gives history a regular baseline even when values stay steady. Baseline continuity shows that the Engine captured cached state; it does not prove a sensor continued acquiring. While a channel exists and the baseline is enabled, unexpected gaps can point to Engine downtime or recording trouble. Check diagnostics, filters, and retention before deciding the cause; live telemetry delivery is separate.
 
 Under **recording** in the Tasks / Modules channel view, use `engine_rapid_autorecord_enabled` to enable or disable the baseline and `engine_rapid_autorecord_interval_seconds` to change its interval. The interval is an expected cadence, not an exact deadline. A snapshot captures the value held in memory; the sensor may not have supplied a new reading.
 
 Remote channels are skipped by this baseline. Their received observations follow the source's recording mode and do not reproduce its full acquisition history.
+
+## Record Every Sample Without Periodic Snapshots
+
+An acquisition channel should preserve the samples supplied by its device without inserting cached values between them. Set its `record_mode` to `every_value_exclude_autorecord` before acquisition begins. Every accepted value write is selected for recording, including equal consecutive readings and individual samples within timestamped batches. Periodic autorecord skips the channel; it remains available to live telemetry.
+
+For example, the **LabJack stream worker** configures its destination channels as `on_value_change` while idle. Once the worker owns the stream, it switches them to `every_value_exclude_autorecord` before submitting samples. The mode stays active through connection attempts and reconnect delays, so those interruptions leave acquisition gaps. When the worker finishes or is stopped, it restores `on_value_change`, and periodic snapshots can resume. Limit an exact-acquisition export to the worker's run interval; history before and after that interval can contain baseline snapshots.
+
+The worker groups LabJack readings into batches and calculates each sample timestamp from the stream start, scan number, and scan rate. Its `upsertBulk` wrapper calls `upsertChannelValueBulk`. That dedicated bulk path updates live memory once with the final sample and queues all selected samples with their timestamps. It does not call ordinary upsert for every sample or record the last sample twice. For example, a batch of three equal readings produces three recorded samples in exact mode, while live memory holds the third reading.
+
+Realtime telemetry presents collected live state and may omit intermediate acquisition samples. Query or export recorded history to inspect the full accepted stream. Snapshot exclusion does not guarantee lossless device acquisition or persistence: check recording diagnostics for rejected or dropped samples, storage errors, and queue pressure.
 
 ## Saved Channel State
 
