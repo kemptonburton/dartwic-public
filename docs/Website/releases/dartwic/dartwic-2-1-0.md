@@ -1,6 +1,6 @@
 ---
 created: 2026-10-27T00:00:00.000Z
-updated: 2026-10-30T16:23
+updated: 2026-10-30T17:52
 component: dartwic
 releaseType: bundled
 releaseMode: planned
@@ -13,126 +13,126 @@ summary: "DARTWIC 2.1 brings together the changes made since DARTWIC 2.0: a simp
 publishedAt: 2026-10-30T00:00:00.000Z
 artifacts:
   - id: engine
-    name: "DARTWIC Engine"
+    name: DARTWIC Engine
     version: 2.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.1.0
   - id: interface-desktop
-    name: "Desktop Interface"
+    name: Desktop Interface
     version: 2.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.1.0
     minEngineVersion: 2.1.0
   - id: interface-webserver
-    name: "Webserver Interface"
+    name: Webserver Interface
     version: 2.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.1.0
     minEngineVersion: 2.1.0
   - id: react-client
-    name: "React Client"
+    name: React Client
     version: 3.0.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/react-client-v3.0.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/react-client-v3.0.0
     minEngineVersion: 2.1.0
   - id: python-client
-    name: "Python Client"
+    name: Python Client
     version: 3.0.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/python-client-v3.0.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/python-client-v3.0.0
     minEngineVersion: 2.1.0
   - id: cpp-peer-client
-    name: "TEMPEST Peer"
+    name: TEMPEST Peer
     version: 3.0.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/cpp-peer-client-v3.0.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/cpp-peer-client-v3.0.0
     minEngineVersion: 2.1.0
   - id: engine-sdk
-    name: "Engine Plugin SDK"
+    name: Engine Plugin SDK
     version: 3.0.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-sdk-v3.0.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/engine-sdk-v3.0.0
     minEngineVersion: 2.1.0
   - id: interface-sdk
-    name: "Interface Plugin SDK"
+    name: Interface Plugin SDK
     version: 2.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-sdk-v2.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/interface-sdk-v2.1.0
     minInterfaceVersion: 2.1.0
   - id: dartwic-peer-protocol-sdk
-    name: "DARTWIC Engine Protocol SDK"
+    name: DARTWIC Engine Protocol SDK
     version: 3.0.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/dartwic-peer-protocol-sdk-v3.0.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/dartwic-peer-protocol-sdk-v3.0.0
     minEngineVersion: 2.1.0
   - id: example-workspace
-    name: "DARTWIC Example Workspace"
+    name: DARTWIC Example Workspace
     version: 2.1.0
     delivery: source-repository
-    githubRelease: "https://github.com/kemptonburton/dartwic-example-workspace/releases/tag/v2.1.0"
-    githubRepository: "https://github.com/kemptonburton/dartwic-example-workspace"
-    githubTag: "https://github.com/kemptonburton/dartwic-example-workspace/tree/v2.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-example-workspace/releases/tag/v2.1.0
+    githubRepository: https://github.com/kemptonburton/dartwic-example-workspace
+    githubTag: https://github.com/kemptonburton/dartwic-example-workspace/tree/v2.1.0
     minEngineVersion: 2.1.0
     minInterfaceVersion: 2.1.0
   - id: example-plugin
-    name: "DARTWIC Example Plugin"
+    name: DARTWIC Example Plugin
     version: 2.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-example-plugin/releases/tag/v2.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-example-plugin/releases/tag/v2.1.0
     minEngineVersion: 2.1.0
     minInterfaceVersion: 2.1.0
   - id: node-client
-    name: "DARTWIC Node.js Client"
+    name: DARTWIC Node.js Client
     version: 3.0.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/node-client-v3.0.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/node-client-v3.0.0
     minEngineVersion: 2.1.0
   - id: cpp-client
-    name: "DARTWIC C++ Client"
+    name: DARTWIC C++ Client
     version: 3.0.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-public/releases/tag/cpp-client-v3.0.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-public/releases/tag/cpp-client-v3.0.0
     minEngineVersion: 2.1.0
   - id: modbus-plugin
-    name: "Modbus TCP Plugin"
+    name: Modbus TCP Plugin
     version: 1.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/tag/v1.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/tag/v1.1.0
     minEngineVersion: 2.1.0
     minInterfaceVersion: 2.1.0
   - id: labjack-plugin
-    name: "LabJack T7 Plugin"
+    name: LabJack T7 Plugin
     version: 1.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/tag/v1.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-labjack-plugin/releases/tag/v1.1.0
     minEngineVersion: 2.1.0
     minInterfaceVersion: 2.1.0
   - id: ethercat-plugin
-    name: "EtherCAT Plugin"
+    name: EtherCAT Plugin
     version: 2.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.1.0
     minEngineVersion: 2.1.0
     minInterfaceVersion: 2.1.0
   - id: fprime-plugin
-    name: "F Prime Bridge"
+    name: F Prime Bridge
     version: 2.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/fprime-dartwic-plugin/releases/tag/v2.1.0"
+    githubRelease: https://github.com/kemptonburton/fprime-dartwic-plugin/releases/tag/v2.1.0
     minEngineVersion: 2.1.0
     minInterfaceVersion: 2.0.0
   - id: checklists-plugin
-    name: "Checklists"
+    name: Checklists
     version: 2.1.0
     delivery: github-release
-    githubRelease: "https://github.com/kemptonburton/dartwic-checklists-plugin/releases/tag/v2.1.0"
+    githubRelease: https://github.com/kemptonburton/dartwic-checklists-plugin/releases/tag/v2.1.0
     minEngineVersion: 2.0.0
     minInterfaceVersion: 2.0.0
   - id: docs
-    name: "Documentation"
+    name: Documentation
     version: 2.1.0
     delivery: documentation
-    githubTag: "https://github.com/kemptonburton/dartwic-public/tree/docs-v2.1.0"
+    githubTag: https://github.com/kemptonburton/dartwic-public/tree/docs-v2.1.0
 ---
 
 <!-- DARTWIC:RELEASE-ARTIFACTS:START -->
@@ -195,10 +195,6 @@ TEMPEST peer integrations now use the same three main objects throughout DARTWIC
 
 The Engine and C++ applications now share `EngineProtocolPeer`. Use the built-in ZeroMQ/TCP transport or supply your own, without creating a database just to connect. Existing `PeerClient` names remain supported.
 
-The Network Map's **Connection type** selector explains the choices: an Engine Protocol Peer shares channels, events, and logs; a TEMPEST Protocol Peer supports custom operations and telemetry.
-
-![](_attachments/Pasted%20image%2020261027225840.png)
-
 Reconnection and forgetting peers have also received fixes, including preventing queued telemetry from restoring data after a connection has been removed.
 
 Channel APIs use `upsert`, `query`, and `remove`, with clearer command and telemetry handlers. Incremental updates report changes; complete snapshots keep connected nodes synchronized, including removals.
@@ -210,8 +206,6 @@ Plugin authors use `registerPeerTransport` for a new link between DARTWIC applic
 Timed conditions such as `when(|sensor_ready| == 1, time=0.5):` wait for a condition to stay true across evaluations before running a block, without blocking the surrounding work. A false evaluation resets the timer; once qualified, the block runs on each qualifying evaluation. Use `if` for an immediate check or `wait_until` when the procedure itself should wait.
 
 Nest `once:` inside `when` for work that should run only once during that runtime section's execution.
-
-![](_attachments/Pasted%20image%2020261027230100.png)
 
 Channel-control statements are more consistent: `command`, `set`, `override`, and `free` work with or without a value. Operator manual overrides retain priority. Rejected operations leave the channel unchanged and warn without stopping the task body.
 
@@ -229,15 +223,13 @@ Peer synchronization retains complete 5 Hz snapshots, with fixes for duplicate e
 
 The new `every_value_exclude_autorecord` mode saves every submitted measurement without mixing in periodic snapshots. The LabJack stream worker uses it so acquisition gaps stay visible in history. Graph tooltips and telemetry CSV exports can also show who wrote each sample.
 
-# Review and export a run
+# Save Telemetry Graph Views
 
 Save arrangements of multiple telemetry graphs and reopen them across the workspace, with each graph's channels, window, and settings ready to use.
 
 ![Saved telemetry views with multiple graphs.](_attachments/saved-telemetry-views.png)
 
-Click a dataframe to open its run in Telemetry. Channel traces, events, logs, and dataframe ranges share a time axis, with blue highlights showing loaded records. Export channels, events, and logs together for the period you are viewing, or a whole dataframe as a ZIP. Events, Logs, and databases also offer selected, loaded, and visible range exports.
 
-![Review a recorded run with channel traces, events, and logs together.](_attachments/telemetry-run-review.png)
 
 # Device feedback and the example workspace
 

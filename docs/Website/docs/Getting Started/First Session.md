@@ -1,6 +1,6 @@
 ---
 summary: Open a workspace, connect to its engine, and inspect your first signal.
-updated: 2026-10-26T23:24
+updated: 2026-10-30T22:30
 created: 2026-08-03T15:41
 ---
 
@@ -225,14 +225,95 @@ You can then drag and drop any channel from the linked task view in your module,
 
 The video below shows taking the `fuel_open_coil` channel and dropping it onto the schematic to create a valve.
 
-
+![](_attachments/schematic-dropin-video.mp4)
 
 Because the `fuel_open_coil` has a matching `fuel_open_coil_state` channel, its `_state` channel will automatically be used as the state channel for that valve, and the `fuel_open_coil` will be used as the command channel for that valve.
 
 # Creating a DCode Automation
 
+The example device has separate open and close coils. This DCode automation turns a single valve request into a half-second pulse on the appropriate coil to open and close it.
+
+Keep the device's read/write tasks running. The names below use the default `example_device_` prefix; adapt them if you changed your task mappings.
+
+Under **Scripts**, create `valves.yaml` and `double_acting_valves.dcode` in the same folder. Each YAML row creates one valve loop:
+
+```yaml
+valves:
+  - valve: fuel
+  - valve: oxidizer
+  - valve: fill
+  - valve: vent
+```
+
+Put this in `double_acting_valves.dcode`:
+
+```dcode
+params = yaml "./valves.yaml#valves"
+
+template(params) loop example_valve_{params.valve} 10 disable_warnings:
+    once:
+        state.last_value = null
+
+    value = |example_device_{params.valve}_request|
+
+    if value == state.last_value:
+        return
+
+    state.last_value = value
+
+    if value == 1:
+        command |example_device_{params.valve}_open_coil| = 1
+        wait(0.5)
+        command |example_device_{params.valve}_open_coil| = 0
+        set |example_device_{params.valve}_state| = 1
+    elif value == 0:
+        command |example_device_{params.valve}_close_coil| = 1
+        wait(0.5)
+        command |example_device_{params.valve}_close_coil| = 0
+        set |example_device_{params.valve}_state| = 0
+```
+
+Save both files and run the DCode file in **DCode · Lua** mode (**Ctrl+R**). You can also run usin the Run button in the Editor. Activation starts the loops; an initial request of `0` sends a close pulse.
+
+![](_attachments/Pasted%20image%2020261030173121.png)
+
+Click the dropdown arrow to expand the template to see what Loops it makes. You can then **Ctrl + Click** a channel to open it in the task editor
+
+Command `example_device_fuel_request` to `1` to open or `0` to close. Its coil should pulse once for each changed request.
+
+![](_attachments/Pasted%20image%2020261030173355.png)
+
+Now, drag and drop `example_device_fuel_request` into the schematic, and it should add the new valve, and you should be able to command it.
+
+See [Templates and Configuration](../DCode/Templates%20and%20Configuration.md) and [Loops](../DCode/Loops.md) for more detail.
 
 # Exporting Channels, Events, and Logs
 
+## Channels
 
+Now select all the channels related to `example_device_fuel` in the Channels List using the select all button, and open them in telemetry using the Open in Telemetry button.
 
+![](_attachments/Pasted%20image%2020261030173735.png)
+
+You can then scroll out to find where the channels were changing, zoom in and pan to it, and choose **Export telemetry → Channels → Export visible range** for CSV samples. Check **Events** and **Logs** to include their recordings for the same period. See [Telemetry Export](../Interface/Telemetry%20Graphs.md#export-data).
+
+## Events and Logs
+
+You can also view Events or Logs that occurred during the same time as that time range, and export them with the channels also. Click the Show ARGUS Events and Show ARGUS Logs buttons to show them.
+
+![](_attachments/Pasted%20image%2020261030174036.png)
+
+Both export `.jsonl` files, including matching recordings beyond the loaded preview.
+
+The same exports are available under **Data → Databases**. Stay connected until completion. See [Export Events](../Interface/Events%20and%20Logs.md#export-events), [Export Logs](../Interface/Events%20and%20Logs.md#export-logs), and [channel recording settings](../Engine/Recording%20and%20Telemetry.md#channel-recording).
+
+# Conclusion
+
+You have now connected to an Engine, set up a simulated device, built a schematic, controlled valves with DCode, and exported your results. You can build on this setup with more automation, additional schematic controls, or a plugin for your own hardware.
+
+To explore further:
+
+- [Interface guides](../Interface/Overview.md) — walkthroughs of the resources and controls.
+- [DCode guides](../DCode/Overview.md) — build tasks, sequences, calculations, and events.
+- [Engine guides](../Engine/Overview.md) — understand channels, automation, networking, and recording.
+- [Plugin guides](../Plugins/Overview.md) — connect hardware and extend DARTWIC.
