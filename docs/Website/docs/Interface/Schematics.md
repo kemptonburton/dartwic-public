@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-10-30T14:30
+updated: 2026-11-04
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -21,6 +21,22 @@ Use the toolbar above the canvas to change editing, commanding, and navigation s
 ## Schematic Editing
 
 The **pencil** enables editing so you can arrange nodes and edges. Use **Undo / Redo** or **Ctrl+Z / Ctrl+Y** to reverse or restore changes. Use **Ctrl + C** or **Ctrl + V** to copy and paste nodes.
+
+## Canvas editing
+
+The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. Enable the pencil to edit. The existing grid toggle snaps movement to the configured grid spacing. Alignment guides help match node edges and centers while dragging or resizing; hold **Alt** to bypass snapping. Hold **Space** to pan with the left mouse button, or drag with the right mouse button.
+
+Right-click the canvas with multiple nodes selected to align their edges or centers. Select at least three nodes to distribute them with equal horizontal or vertical gaps. Each completed move, resize, or alignment action is one undo step.
+
+Select a connection to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, click the selected wire to add a bend, and double-click a bend to remove it. Use the connection context menu's **Reset route** to restore automatic routing. Double-click a connection or choose **Edit label** to edit its text; Enter saves and Escape cancels.
+
+Existing schematic nodes and authored layouts remain supported. Legacy embedded draw.io (`mxgraph_diagram`) nodes have been retired and display the unsupported-node placeholder; their saved payload remains intact.
+
+## Media colors
+
+Use **Edit media** to change an SVG's colors with the shared color picker. A color can have separate light and dark values; editing one preserves the other. Color overrides belong to that node instance, so another node using the same media asset keeps its own colors. Explicit source colors, transparent fills, and gradients remain intact unless edited.
+
+Colors follow application theme changes immediately in the canvas, previews, and Media editor. Changing the theme does not edit the schematic or create an undo entry. The stock Vent includes contrasting light/dark stroke colors. The test workspace's **Vent Theme Check** schematic provides a saved example.
 
 ## Commanding
 
