@@ -290,9 +290,4 @@ For Engine plugin authors, the old `claimChannel` SDK helper has been removed; u
 
 For a custom integration, start with the updated guides and SDK examples. They show the new registration and handler APIs, including the simpler path for a bridge that already has its own receive callbacks.
 
-<!-- EDITORIAL CHECKS BEFORE PUBLICATION
-Scope baseline: interface-desktop-v2.0.9 (Engine 2.0.6 at that tag) through the local dev/tempest-peer-simplification branch. Include the intervening 2.0.10/2.0.11 fixes in this roundup.
-This is a private draft. No publication date, download URLs, release tags, or platform availability are promised here; the release workflow must refresh selected-artifact metadata when the bundle is prepared.
-Windows Debug/Release and Linux peer matrices, installed ABI-6 plugin loading, Interface registration, package consumers, plugin fixtures, and actual Hadron SITL have scoped passing evidence in docs/Planning/General/TEMPEST Peer Simplification - 2026-10-27.md.
-The recorded broad repository gate was 314 passed / 25 failed before focused repairs. A clean full-suite result has not been established. Resolve remaining release blockers and the DCode descriptor/reference drift before adopting this as a published release announcement. Do not imply physical hardware, production reliability, or real-time deadline qualification from fixture/SITL results.
--->
+
