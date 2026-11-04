@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T21:59:57.004Z",
+  "generatedAt": "2026-11-04T05:42:12.322Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -1055,6 +1055,34 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.1.0/SHA256SUMS.txt",
+            "size": 89,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.1.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.1.1",
+        "prerelease": false,
+        "published_at": "2026-11-04T05:42:09Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.1.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.1.1",
+        "assets": [
+          {
+            "name": "engine-2.1.1-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.1.1/engine-2.1.1-win64.zip",
+            "size": 18272043,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.1.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.1.1/release-manifest-engine-2.1.1.json",
+            "size": 1741,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.1.1/SHA256SUMS.txt",
             "size": 89,
             "state": "uploaded"
           }
