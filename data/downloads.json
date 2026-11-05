@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-04T06:27:20.862Z",
+  "generatedAt": "2026-11-05T03:11:10.275Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -627,6 +627,40 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.1.1/SHA256SUMS.txt",
+            "size": 165,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "v1.1.2",
+        "html_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/tag/v1.1.2",
+        "prerelease": false,
+        "published_at": "2026-11-05T03:10:50Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-modbus-tcp-client/zipball/v1.1.2",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-modbus-tcp-client/tarball/v1.1.2",
+        "assets": [
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.1.2/plugin-win32-x64.zip",
+            "size": 3311273,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.1.2/plugin.json",
+            "size": 956,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-modbus-plugin-1.1.2.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.1.2/release-manifest-modbus-plugin-1.1.2.json",
+            "size": 898,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-modbus-tcp-client/releases/download/v1.1.2/SHA256SUMS.txt",
             "size": 165,
             "state": "uploaded"
           }
