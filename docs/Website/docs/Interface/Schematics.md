@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T15:42
+updated: 2026-11-05T15:50
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -44,13 +44,13 @@ Colors follow application theme changes immediately in the canvas, previews, and
 
 ## Two-Click Commands
 
-Enable **Two-click commands** to arm an action with the first click and confirm it with the second. The affect this has on nodes depends on the node type. This setting is recommended to be turned on, it is to prevent accidental commands being sent by clicking on a node once, i.e., opening a valve with only one click.
+In edit mode, enable **Two-click commands** to arm an action with the first click and confirm it with the second. The behavior depends on the node type. Use this setting to prevent accidental commands such as opening a valve with a single click.
 
 ![](_attachments/Pasted%20image%2020261030032119.png)
 
 ## Other Controls
 
-Use **Fit view** to frame the layout and the **lock** to switch between automatic fitting and manual pan/zoom. **Snap to grid** snaps movement to the grid. The **Alignment guides** ruler toggles guide lines and snapping to nearby nodes while editing. The Interface remembers that setting in your browser or desktop profile. **Background** switches between Dots and Blank. Dot colors follow the application theme.
+Use **Fit view** to frame the layout and the **lock** to switch between automatic fitting and manual pan/zoom. Changes to the opening view are saved only in edit mode. **Snap to grid** snaps movement to the grid. The **Alignment guides** ruler toggles guide lines and snapping to nearby nodes while editing. The Interface remembers that setting in your browser or desktop profile. In edit mode, **Background** switches between Dots and Blank. New schematics start with Blank. Dot colors follow the application theme.
 
 **Background node interactivity** toggles editing of background nodes. Check save/synchronization status when finished.
 
