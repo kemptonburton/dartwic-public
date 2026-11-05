@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-04
+updated: 2026-11-05T15:42
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -50,7 +50,7 @@ Enable **Two-click commands** to arm an action with the first click and confirm 
 
 ## Other Controls
 
-Use **Fit view** to frame the layout and the **lock** to switch between automatic fitting and manual pan/zoom. **Snap to grid** helps alignment, and **Background** switches between Dots and Blank. Dot colors follow the application theme.
+Use **Fit view** to frame the layout and the **lock** to switch between automatic fitting and manual pan/zoom. **Snap to grid** snaps movement to the grid. The **Alignment guides** ruler toggles guide lines and snapping to nearby nodes while editing. The Interface remembers that setting in your browser or desktop profile. **Background** switches between Dots and Blank. Dot colors follow the application theme.
 
 **Background node interactivity** toggles editing of background nodes. Check save/synchronization status when finished.
 
