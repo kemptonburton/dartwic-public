@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-05T03:11:10.275Z",
+  "generatedAt": "2026-11-05T03:37:15.043Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -477,6 +477,40 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.1.0/SHA256SUMS.txt",
+            "size": 165,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "v1.1.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/tag/v1.1.1",
+        "prerelease": false,
+        "published_at": "2026-11-05T03:36:54Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-labjack-plugin/zipball/v1.1.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-labjack-plugin/tarball/v1.1.1",
+        "assets": [
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.1.1/plugin-win32-x64.zip",
+            "size": 3270701,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.1.1/plugin.json",
+            "size": 567,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-labjack-plugin-1.1.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.1.1/release-manifest-labjack-plugin-1.1.1.json",
+            "size": 897,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-labjack-plugin/releases/download/v1.1.1/SHA256SUMS.txt",
             "size": 165,
             "state": "uploaded"
           }
