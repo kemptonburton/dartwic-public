@@ -24,7 +24,7 @@ The **pencil** enables editing so you can arrange nodes and edges. Use **Undo / 
 
 ## Canvas editing
 
-The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. Enable the pencil to edit. The existing grid toggle snaps movement to the configured grid spacing. Alignment guides help match node edges and centers while dragging or resizing; hold **Alt** to bypass snapping. Hold **Space** to pan with the left mouse button, or drag with the right mouse button.
+The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. Enable the pencil to edit. The existing grid toggle snaps movement to the configured grid spacing. Alignment guides help match node edges and centers while dragging or resizing; hold **Alt** to bypass snapping. Drag empty canvas with the left mouse button to pan. In edit mode, left-drag a node to move it and use **Shift+left-drag** on empty canvas for box selection. Outside edit mode, node clicks do not show editing selection or resize handles. Hold **Space** to pan over a node.
 
 Right-click the canvas with multiple nodes selected to align their edges or centers. Select at least three nodes to distribute them with equal horizontal or vertical gaps. Each completed move, resize, or alignment action is one undo step.
 
@@ -34,7 +34,7 @@ Existing schematic nodes and authored layouts remain supported. Legacy embedded 
 
 ## Media colors
 
-Use **Edit media** to change an SVG's colors with the shared color picker. A color can have separate light and dark values; editing one preserves the other. Color overrides belong to that node instance, so another node using the same media asset keeps its own colors. Explicit source colors, transparent fills, and gradients remain intact unless edited.
+Use **Edit media** to change an SVG's color with one shared color picker. Its Light/Dark tabs hold both theme values; a live opposite-theme suggestion offers a readable counterpart without overwriting a manually chosen value. Enabling the second theme starts from that suggestion. A color can have separate light and dark values; editing one preserves the other. Color overrides belong to that node instance, so another node using the same media asset keeps its own colors. Explicit source colors, transparent fills, and gradients remain intact unless edited.
 
 Colors follow application theme changes immediately in the canvas, previews, and Media editor. Changing the theme does not edit the schematic or create an undo entry. The stock Vent includes contrasting light/dark stroke colors. The test workspace's **Vent Theme Check** schematic provides a saved example.
 
