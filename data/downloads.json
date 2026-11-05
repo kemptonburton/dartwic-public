@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-05T03:37:15.043Z",
+  "generatedAt": "2026-11-05T03:38:22.766Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -176,6 +176,40 @@
           {
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.1.0/SHA256SUMS.txt",
+            "size": 165,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "v2.1.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.1.1",
+        "prerelease": false,
+        "published_at": "2026-11-05T03:38:15Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/zipball/v2.1.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/tarball/v2.1.1",
+        "assets": [
+          {
+            "name": "plugin-win32-x64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.1.1/plugin-win32-x64.zip",
+            "size": 3722677,
+            "state": "uploaded"
+          },
+          {
+            "name": "plugin.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.1.1/plugin.json",
+            "size": 547,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-ethercat-plugin-2.1.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.1.1/release-manifest-ethercat-plugin-2.1.1.json",
+            "size": 898,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/download/v2.1.1/SHA256SUMS.txt",
             "size": 165,
             "state": "uploaded"
           }
