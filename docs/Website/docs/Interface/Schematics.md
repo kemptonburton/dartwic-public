@@ -50,7 +50,7 @@ Enable **Two-click commands** to arm an action with the first click and confirm 
 
 ## Other Controls
 
-Use **Fit view** to frame the layout and the **lock** to switch between automatic fitting and manual pan/zoom. **Snap to grid** helps alignment, and **Background** changes the canvas pattern and color.
+Use **Fit view** to frame the layout and the **lock** to switch between automatic fitting and manual pan/zoom. **Snap to grid** helps alignment, and **Background** switches between Dots and Blank. Dot colors follow the application theme.
 
 **Background node interactivity** toggles editing of background nodes. Check save/synchronization status when finished.
 
