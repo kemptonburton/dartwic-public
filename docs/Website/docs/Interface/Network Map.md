@@ -1,7 +1,7 @@
 ---
 summary: Inspect clients, remote nodes, and the connections between them.
 created: 2026-08-03T15:41
-updated: 2026-10-30T02:58
+updated: 2026-11-05T16:08
 ---
 
 **Network Map** shows connections between your Interface, Engine, and other nodes. Open it from the left sidebar, then select a node for details or a connection for traffic. Use **fit view** to bring the map back into view.
@@ -15,6 +15,8 @@ Your connected **Engine** sits in the center. [Operators](#operators) using desk
 [Clients](#clients) appear **below the Engine**. These include Python analysis scripts, Node.js services, C++ applications, and other tools that use a client library or custom client implementation.
 
 [Peers](#peers) appear **on the right**. They can be other DARTWIC Engines, custom applications exposing their own data and commands, or device and flight-computer connections supplied by plugins.
+
+Client telemetry uses a dotted purple line and operations use a solid blue line. A link turns red when it reports a failure and amber when its status is unknown. Labels stay attached to the links as you pan or zoom.
 
 ![](_attachments/Pasted%20image%2020261030024815.png)
 
