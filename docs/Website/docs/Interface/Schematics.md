@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T16:17
+updated: 2026-11-05T16:27
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -10,7 +10,7 @@ A **schematic** is a saved operator display that brings measurements and control
 
 Open **Schematics** in the left sidebar and select a saved display, or right-click its resource list and choose **Create Resource** to name a new one. It opens as a canvas in its own tab.
 
-Select the **Remote Views** icon beside the file search to switch to cards for saved Remote Views across the project, including those in subfolders. Search by view or schematic name, then select a card to open its view. The thumbnail is a layout preview drawn from the saved schematic. Use **Refresh Remote Views** after editing a view, and select **Remote Views** again to return to the file tree.
+Select the **Remote Views** icon beside the file search to switch to cards for saved Remote Views across the project, including those in subfolders. Search by view or schematic name. **Open view** opens the Remote View in a separate window or browser tab. **Go to node** opens the source schematic and centers on the Remote View region. The thumbnail is a layout preview drawn from the saved schematic. Use **Refresh Remote Views** after editing a view, and select **Remote Views** again to return to the file tree.
 
 ![The schematic canvas and editor toolbar.](_attachments/Pasted%20image%2020261030030010.png)
 
