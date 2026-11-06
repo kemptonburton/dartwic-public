@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T22:42
+updated: 2026-11-05T22:58
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -42,7 +42,7 @@ Existing schematic nodes and authored layouts remain supported. Legacy embedded 
 
 Open the **Colors** tab in the media editor or **SVG Colors** in a placed Media node's configuration. Search for an element ID, CSS selector, paint property, or original value. Check one or more entries to edit them together. For example, search for `stroke` and choose **Select all shown** to recolor the matching outlines in one edit.
 
-Use **Hex Color** for a fixed Light/Dark pair, **Channel Value** for a channel that supplies a CSS color such as `#22c55e`, or **Linear Interpolate** to map a numeric channel between two colors. If a live value is unavailable or invalid, the SVG uses its saved paint. **Reset** restores the selected entries' underlying paint. Colors belong to the node instance. The editor and node browser show saved colors in their previews.
+Use **Hex Color** for a fixed Light/Dark pair. To drive a paint from telemetry, choose **Channel Value** and set its **Default color** during import. After placing the node, open **SVG Colors** and choose the channel that supplies a CSS color such as `#22c55e`. The default appears in previews and whenever the channel is unassigned, stale, or invalid. The placed node's **Linear Interpolate** option maps a numeric channel between two colors. **Reset** restores the selected entries' underlying paint.
 
 Colors follow application theme changes immediately in the canvas, previews, and Media editor. Changing the theme does not edit the schematic or create an undo entry. The stock Vent includes contrasting light/dark stroke colors. The test workspace's **Vent Theme Check** schematic provides a saved example.
 
