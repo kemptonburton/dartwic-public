@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T21:34
+updated: 2026-11-05T21:56
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -28,13 +28,13 @@ The **pencil** enables editing so you can arrange nodes and edges. Use **Undo / 
 
 The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. Enable the pencil to edit. The existing grid toggle snaps movement to the configured grid spacing. Alignment guides help match node edges and centers while dragging or resizing; hold **Alt** to bypass snapping. Unlock **Manual pan/zoom** in the toolbar to pan with a left-drag on empty canvas or by holding **Space** over a node. In edit mode, left-drag a node to move it and use **Shift+left-drag** on empty canvas for box selection. In view mode, right-click a node to inspect it and show its outline.
 
-In edit mode, drag from a connection point to start a wire. Tanks and boxes show strips along their borders, where you can start or end a wire anywhere along a side. Tanks also have a fixed circular handle at the midpoint of each side. Automatic routes leave and enter perpendicular to the chosen side. Valves use fixed ports. Drop the wire onto another wire to add a branch. All branches share the existing wire's settings and are selected and deleted as one wire.
+In edit mode, drag from a connection point to start a wire. Tanks and boxes show strips along their borders, where you can start or end a wire anywhere along a side. Tanks also have a fixed circular handle at the midpoint of each side. Automatic routes leave and enter perpendicular to the chosen side. Valves use fixed ports. Drop the wire onto another wire to add a branch at a right angle. A click selects the whole wire and its shared settings. Double-click a branch to select it by itself. Delete then removes that branch and any branches attached to it.
 
-Select a connection to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, **Shift+click** the wire to add a bend, and double-click a bend to remove it. Use the connection context menu's **Reset route** to restore automatic routing. Double-click a wire segment to edit the label at its center, or choose **Edit label** to edit it at its saved position. Click away or press Enter to save. Press Escape to cancel.
+Select a connection to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, **Shift+click** the wire to add a bend, and double-click a bend to remove it. Use the connection context menu's **Reset route** to restore automatic routing. Double-click the main wire or an already selected branch to edit its own label at the segment's center. You can also choose **Edit label** in the context menu. Click away or press Enter to save. Press Escape to cancel.
 
 **Above node** and **Below node** captions appear centered in their own bordered boxes. The node outline and wire attachment points stay in place as captions change.
 
-Under **General → Layout**, choose **Small** (50%), **Normal** (100%), **Large** (150%), or **Custom** to enter a percentage from 10% to 400%. Channel Control cards put the same picker under **Advanced → Layout**. Plugin nodes with their own settings panels show it in a **General** section above those settings. On a resizable node, drag the diagonal arrow at the lower-right corner to set custom body dimensions. The presets scale the node from its authored dimensions.
+Under **General → Layout**, choose **Small** (75%), **Normal** (100%), **Large** (125%), or **Custom** to enter a percentage from 10% to 400%. Channel Control cards put the same picker under **Advanced → Layout**. Plugin nodes with their own settings panels show it in a **General** section above those settings. On a resizable node, drag the diagonal arrow at the lower-right corner to set custom body dimensions. The presets scale the node from its authored dimensions.
 
 Existing schematic nodes and authored layouts remain supported. Legacy embedded draw.io (`mxgraph_diagram`) nodes have been retired and display the unsupported-node placeholder; their saved payload remains intact.
 
