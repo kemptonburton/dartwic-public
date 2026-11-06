@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T20:21
+updated: 2026-11-05T20:29
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -153,6 +153,8 @@ You can add an image or SVG in two ways.
 ![](_attachments/Pasted%20image%2020261030142544.png)
 
 **Import a reusable schematic node:** choose **Import media node → Choose media** in the Nodes palette. Select your media, give it a name and category, and choose **Add to node browser**. You can then drag the named entry onto schematics in that project.
+
+Administrators can right-click a project preset in the Nodes palette and choose **Delete** to remove it from the browser. Nodes already placed on schematics keep their shared media and settings.
 
 
 ![](_attachments/Pasted%20image%2020261030142321.png)
