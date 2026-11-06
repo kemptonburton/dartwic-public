@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T20:29
+updated: 2026-11-05T20:37
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -140,6 +140,8 @@ Control Nodes are nodes that control a specific thing, like a Channel or Task.
 ![](_attachments/Pasted%20image%2020261030141929.png)
 
 ![](_attachments/Pasted%20image%2020261030141946.png)
+
+In a **Task Control** node, choose a **CAESAR Artifact** by name or by its DCode symbol. Under **Display**, toggle **Task icon** to control whether the icon appears on the card. Enable **Hide task controls** to replace the start, hold, and stop buttons with a status dot. Gray means off, green means running, and yellow means held.
 
 Parameter Nodes are nodes that display something that is read-only, like a value or parameter.
 
