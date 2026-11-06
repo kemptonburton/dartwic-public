@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T16:27
+updated: 2026-11-05T20:12
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -30,7 +30,9 @@ The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. En
 
 Right-click the canvas with multiple nodes selected to align their edges or centers. Select at least three nodes to distribute them with equal horizontal or vertical gaps. Each completed move, resize, or alignment action is one undo step.
 
-Select a connection to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, **Shift+click** the wire to add a bend, and double-click a bend to remove it. Use the connection context menu's **Reset route** to restore automatic routing. Double-click a wire segment to edit the label at its center, or choose **Edit label** to edit it at its saved position. Press Enter to save or Escape to cancel.
+In edit mode, drag from a connection point to start a wire. Tanks and boxes show strips along their borders, where you can start or end a wire anywhere along a side. Valves use fixed ports.
+
+Select a connection to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, **Shift+click** the wire to add a bend, and double-click a bend to remove it. Use the connection context menu's **Reset route** to restore automatic routing. Double-click a wire segment to edit the label at its center, or choose **Edit label** to edit it at its saved position. Click away or press Enter to save. Press Escape to cancel.
 
 Existing schematic nodes and authored layouts remain supported. Legacy embedded draw.io (`mxgraph_diagram`) nodes have been retired and display the unsupported-node placeholder; their saved payload remains intact.
 
