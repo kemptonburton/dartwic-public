@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T20:12
+updated: 2026-11-05T20:21
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -26,7 +26,7 @@ The **pencil** enables editing so you can arrange nodes and edges. Use **Undo / 
 
 ## Canvas editing
 
-The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. Enable the pencil to edit. The existing grid toggle snaps movement to the configured grid spacing. Alignment guides help match node edges and centers while dragging or resizing; hold **Alt** to bypass snapping. Drag empty canvas with the left mouse button to pan. In edit mode, left-drag a node to move it and use **Shift+left-drag** on empty canvas for box selection. Outside edit mode, node clicks do not show editing selection or resize handles. Hold **Space** to pan over a node.
+The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. Enable the pencil to edit. The existing grid toggle snaps movement to the configured grid spacing. Alignment guides help match node edges and centers while dragging or resizing; hold **Alt** to bypass snapping. Unlock **Manual pan/zoom** in the toolbar to pan with a left-drag on empty canvas or by holding **Space** over a node. In edit mode, left-drag a node to move it and use **Shift+left-drag** on empty canvas for box selection. Outside edit mode, node clicks do not show editing selection or resize handles.
 
 Right-click the canvas with multiple nodes selected to align their edges or centers. Select at least three nodes to distribute them with equal horizontal or vertical gaps. Each completed move, resize, or alignment action is one undo step.
 
