@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T22:58
+updated: 2026-11-05T23:15
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -143,7 +143,7 @@ It shows side-by-side examples of node appearances, control policies, events, an
 
 Control Nodes are nodes that control a specific thing, like a Channel or Task.
 
-Use **Button Options → Center label** to add text inside a Button node.
+Use **Button Options → Center label** to add text inside a Button node. **Button shape** switches between the square style and a circle. A circle keeps equal width and height when resized.
 
 ![](_attachments/Pasted%20image%2020261030141929.png)
 
@@ -164,7 +164,9 @@ You can add an image or SVG in two ways.
 
 **Import a reusable schematic node:** choose **Import media node → Choose media** in the Nodes palette. Select your media, give it a name and category, and choose **Add to node browser**. You can then drag the named entry onto schematics in that project.
 
-Turn on **Commandable** when importing or editing media to show the artwork inside a button. After placing it, open the node's **Command** settings and choose the action, just as you would for a Button node. The schematic's commanding and confirmation settings apply to both.
+Open **Handles** when importing or editing media to place connection points on the artwork. Click to add a handle, drag it to move it, or enter its X and Y in artwork coordinates. Set **Wire direction** to control how automatic wiring approaches that point. Adding a custom handle replaces the four default handles. Choose **Use defaults** to restore them.
+
+Turn on **Commandable** when importing or editing media to show the artwork inside a button, then choose **Square** or **Circle**. After placing it, open the node's **Command** settings and choose the action, just as you would for a Button node. The schematic's commanding and confirmation settings apply to both.
 
 Administrators can right-click a project preset in the Nodes palette and choose **Delete** to remove it from the browser. Nodes already placed on schematics keep their shared media and settings.
 
