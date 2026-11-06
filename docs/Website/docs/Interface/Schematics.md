@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-06T00:54
+updated: 2026-11-06T01:01
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -166,7 +166,7 @@ You can add an image or SVG in two ways.
 
 The node browser previews the saved proportions, button shape, crop, artwork scale, and colors. Large nodes shrink proportionally to fit the preview, and channel-driven SVG paints use their saved default colors.
 
-Open **Preview** when importing or editing media to see the artwork inside its node. Adjust **Artwork scale** to enlarge or shrink it without changing the node size. Use **Contain** to keep its proportions, **Cover** to fill the face, or **Stretch** to fit its bounds. **Reset scale** returns the artwork to 100%. Custom handles follow the artwork as it scales.
+Open **Preview** when importing or editing media to see the artwork inside its node. Adjust **Artwork scale** to enlarge or shrink it without changing the node size. Use **Contain** to keep its proportions, **Cover** to fill the face, or **Stretch** to fit its bounds. **Reset scale** returns the artwork to 100%. Custom handles follow the artwork as it scales. For SVGs, **SVG stroke width** adjusts line thickness independently. **Reset stroke** restores the original widths.
 
 Open **Handles** when importing or editing media to place connection points on the artwork. Click to add a handle or drag it to move it. Each row has X, Y, wire direction, and an **X** button to remove that handle. Adding a custom handle replaces the four default handles. Choose **Use defaults** to restore them.
 
