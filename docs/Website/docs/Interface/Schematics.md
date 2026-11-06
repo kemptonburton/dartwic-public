@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-06T00:32
+updated: 2026-11-06T00:44
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -143,7 +143,7 @@ It shows side-by-side examples of node appearances, control policies, events, an
 
 Control Nodes are nodes that control a specific thing, like a Channel or Task.
 
-Use **Button Options → Center label** to add text inside a Button node. **Button shape** switches between the square style and a circle. A circle keeps equal width and height when resized.
+Use **Button Options → Center label** to add text inside a Button node. **Button shape** switches between the square style and a circle. Switching shape starts at 86 × 32 for Square, close to the compact Channel Control card, or 40 × 40 for Circle, matching the round valve. A circle keeps equal width and height when resized.
 
 ![](_attachments/Pasted%20image%2020261030141929.png)
 
@@ -166,7 +166,7 @@ You can add an image or SVG in two ways.
 
 Open **Handles** when importing or editing media to place connection points on the artwork. Click to add a handle or drag it to move it. Each row has X, Y, wire direction, and an **X** button to remove that handle. Adding a custom handle replaces the four default handles. Choose **Use defaults** to restore them.
 
-Turn on **Commandable** when importing or editing media to show the artwork inside a button, then choose **Square** or **Circle**. The artwork can reach the face's edge. Use **Contain** to keep its proportions, **Cover** to fill the face, or **Stretch** to fit its bounds. A circle clips the artwork at its rim and uses the round valve's face and authority backing. After placing it, open the node's **Command** settings and choose the action, just as you would for a Button node.
+Turn on **Commandable** near the top of **Setup** when importing media, or in the placed node's **Media** settings. Choose **Square** or **Circle** directly below it. Commandable media uses the same default button sizes as Button nodes. The artwork can reach the face's edge. Use **Contain** to keep its proportions, **Cover** to fill the face, or **Stretch** to fit its bounds. A circle clips the artwork at its rim and uses the round valve's face and authority backing. After placing it, open the node's **Command** settings and choose the action, just as you would for a Button node.
 
 Administrators can right-click a project preset in the Nodes palette and choose **Delete** to remove it from the browser. Nodes already placed on schematics keep their shared media and settings.
 
