@@ -2,7 +2,7 @@
 title: Projects and Files
 summary: Open projects and work with their files, directories, and project metadata.
 created: 2026-08-04T17:33
-updated: 2026-10-25T22:12
+updated: 2026-11-05T21:10
 ---
 
 | Operation | Description |
@@ -19,6 +19,8 @@ updated: 2026-10-25T22:12
 | [`dartwic/projects/select`](dartwic/projects/select.md) | Selects the active project loaded by the engine. |
 | [`dartwic/rename-file`](dartwic/rename-file.md) | Renames a file or directory without changing its parent directory. |
 | [`dartwic/save-file`](dartwic/save-file.md) | Writes a file or creates a directory below a workspace root. |
+| [`dartwic/saved-colors/list`](dartwic/saved-colors/list.md) | Lists the Engine instance's named palette across workspaces. |
+| [`dartwic/saved-colors/save`](dartwic/saved-colors/save.md) | Saves one named palette entry in the Engine instance's global data. Requires administrator access. |
 | [`dartwic/search-files`](dartwic/search-files.md) | Searches file names, paths, and optionally text content in the active project. |
 | [`dartwic/search-files/start`](dartwic/search-files/start.md) | Starts a detached job that searches project files. |
 | [`dartwic/settings/configure`](dartwic/settings/configure.md) | Writes workspace/project overrides, or resets JSON pointers to inheritance. |

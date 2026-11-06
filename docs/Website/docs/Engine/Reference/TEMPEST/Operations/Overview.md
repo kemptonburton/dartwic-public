@@ -2,7 +2,7 @@
 title: TEMPEST Operations
 summary: Official request and response operations available in a standard DARTWIC runtime.
 created: 2026-08-04T17:33
-updated: 2026-10-25T13:05
+updated: 2026-11-05T21:10
 ---
 
 Plugins can register additional operations while they are loaded. This reference covers the operations built into DARTWIC and TEMPEST.
@@ -26,7 +26,7 @@ See [Using TEMPEST](../../../Advanced/Using%20TEMPEST.md) for request and respon
 | [Modules](Modules.md) | 8 |
 | [Plugins](Plugins.md) | 7 |
 | [Plugins and Modules](Plugins%20and%20Modules.md) | 2 |
-| [Projects and Files](Projects%20and%20Files.md) | 22 |
+| [Projects and Files](Projects%20and%20Files.md) | 24 |
 | [Schematics](Schematics.md) | 4 |
 | [Tasks](Tasks.md) | 12 |
 | [TEMPEST peers](TEMPEST%20peers.md) | 14 |

@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T21:05
+updated: 2026-11-05T21:16
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -32,6 +32,8 @@ In edit mode, drag from a connection point to start a wire. Tanks and boxes show
 
 Select a connection to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, **Shift+click** the wire to add a bend, and double-click a bend to remove it. Use the connection context menu's **Reset route** to restore automatic routing. Double-click a wire segment to edit the label at its center, or choose **Edit label** to edit it at its saved position. Click away or press Enter to save. Press Escape to cancel.
 
+**Above node** and **Below node** captions stay centered. Resizable nodes extend their outline to make room for captions and keep the equipment body at its authored size. Handles on the equipment body follow its position.
+
 Existing schematic nodes and authored layouts remain supported. Legacy embedded draw.io (`mxgraph_diagram`) nodes have been retired and display the unsupported-node placeholder; their saved payload remains intact.
 
 ## Media colors
@@ -39,6 +41,8 @@ Existing schematic nodes and authored layouts remain supported. Legacy embedded 
 Use **Edit media** to change an SVG's color with one shared color picker. Its Light and Dark tabs hold both colors. The first custom color supplies a readable default for the other theme. You can edit that color in its own tab to set the two colors independently. Color overrides belong to that node instance, so another node using the same media asset keeps its own colors. Explicit source colors, transparent fills, and gradients remain intact unless edited.
 
 Colors follow application theme changes immediately in the canvas, previews, and Media editor. Changing the theme does not edit the schematic or create an undo entry. The stock Vent includes contrasting light/dark stroke colors. The test workspace's **Vent Theme Check** schematic provides a saved example.
+
+The shared color picker has a **Saved** tab. Adjust the Light and Dark colors, open **Saved**, then enter a name and choose **Save**. Search by name and select an entry to copy its color values into the current field. A picker for a single color uses the active theme's value. Administrators can save or replace entries. The palette belongs to the connected Engine instance and is available across its workspaces.
 
 ## Commanding
 
