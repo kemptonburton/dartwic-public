@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T21:16
+updated: 2026-11-05T21:25
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -33,6 +33,8 @@ In edit mode, drag from a connection point to start a wire. Tanks and boxes show
 Select a connection to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, **Shift+click** the wire to add a bend, and double-click a bend to remove it. Use the connection context menu's **Reset route** to restore automatic routing. Double-click a wire segment to edit the label at its center, or choose **Edit label** to edit it at its saved position. Click away or press Enter to save. Press Escape to cancel.
 
 **Above node** and **Below node** captions stay centered. Resizable nodes extend their outline to make room for captions and keep the equipment body at its authored size. Handles on the equipment body follow its position.
+
+Under **General → Layout**, choose **Small** (50%), **Normal** (100%), **Large** (150%), or **Custom** to enter a percentage from 10% to 400%. Channel Control cards put the same picker under **Advanced → Layout**. Plugin nodes with their own settings panels show it in a **General** section above those settings. If the node has resize handles, you can also drag a handle to set custom body dimensions. The presets scale the node from its authored dimensions.
 
 Existing schematic nodes and authored layouts remain supported. Legacy embedded draw.io (`mxgraph_diagram`) nodes have been retired and display the unsupported-node placeholder; their saved payload remains intact.
 
