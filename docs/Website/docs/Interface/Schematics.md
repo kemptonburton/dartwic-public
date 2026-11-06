@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T22:04
+updated: 2026-11-05T22:21
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -40,7 +40,7 @@ Existing schematic nodes and authored layouts remain supported. Legacy embedded 
 
 ## Media colors
 
-Use **Edit media** to change an SVG's color with one shared color picker. Its Light and Dark tabs hold both colors. The first custom color supplies a readable default for the other theme. You can edit that color in its own tab to set the two colors independently. Color overrides belong to that node instance, so another node using the same media asset keeps its own colors. Explicit source colors, transparent fills, and gradients remain intact unless edited.
+Use **Edit media** to choose **Outline** or **Fill**, then adjust that part of the SVG with the shared color picker. Its Light and Dark tabs hold both colors. The first custom color supplies a readable default for the other theme, which you can adjust in its own tab. Use the reset icon to remove the selected override. Colors belong to the node instance. Unpainted areas and gradient references keep their source paint.
 
 Colors follow application theme changes immediately in the canvas, previews, and Media editor. Changing the theme does not edit the schematic or create an undo entry. The stock Vent includes contrasting light/dark stroke colors. The test workspace's **Vent Theme Check** schematic provides a saved example.
 
@@ -161,6 +161,8 @@ You can add an image or SVG in two ways.
 ![](_attachments/Pasted%20image%2020261030142544.png)
 
 **Import a reusable schematic node:** choose **Import media node → Choose media** in the Nodes palette. Select your media, give it a name and category, and choose **Add to node browser**. You can then drag the named entry onto schematics in that project.
+
+Turn on **Commandable** when importing or editing media to show the artwork inside a button. After placing it, open the node's **Command** settings and choose the action, just as you would for a Button node. The schematic's commanding and confirmation settings apply to both.
 
 Administrators can right-click a project preset in the Nodes palette and choose **Delete** to remove it from the browser. Nodes already placed on schematics keep their shared media and settings.
 
