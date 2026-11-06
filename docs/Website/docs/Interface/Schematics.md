@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T23:15
+updated: 2026-11-06T00:32
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -44,7 +44,7 @@ Open the **Colors** tab in the media editor or **SVG Colors** in a placed Media 
 
 Use **Hex Color** for a fixed Light/Dark pair. To drive a paint from telemetry, choose **Channel Value** and set its **Default color** during import. After placing the node, open **SVG Colors** and choose the channel that supplies a CSS color such as `#22c55e`. The default appears in previews and whenever the channel is unassigned, stale, or invalid. The placed node's **Linear Interpolate** option maps a numeric channel between two colors. **Reset** restores the selected entries' underlying paint.
 
-Colors follow application theme changes immediately in the canvas, previews, and Media editor. Changing the theme does not edit the schematic or create an undo entry. The stock Vent includes contrasting light/dark stroke colors. The test workspace's **Vent Theme Check** schematic provides a saved example.
+Colors follow application theme changes in the canvas, previews, and Media editor. Choose **App Colors** in the shared picker to use an Interface color variable such as `--schematic-node-outline` or `--schematic-valve-circle`. Changing the theme does not edit the schematic or create an undo entry. The stock Vent includes contrasting light/dark stroke colors. The test workspace's **Vent Theme Check** schematic provides a saved example.
 
 The shared color picker has a **Saved** tab. Adjust the Light and Dark colors, open **Saved**, then enter a name and choose **Save**. Search by name and select an entry to copy its color values into the current field. A picker for a single color uses the active theme's value. Administrators can save or replace entries. The palette belongs to the connected Engine instance and is available across its workspaces.
 
@@ -164,9 +164,9 @@ You can add an image or SVG in two ways.
 
 **Import a reusable schematic node:** choose **Import media node → Choose media** in the Nodes palette. Select your media, give it a name and category, and choose **Add to node browser**. You can then drag the named entry onto schematics in that project.
 
-Open **Handles** when importing or editing media to place connection points on the artwork. Click to add a handle, drag it to move it, or enter its X and Y in artwork coordinates. Set **Wire direction** to control how automatic wiring approaches that point. Adding a custom handle replaces the four default handles. Choose **Use defaults** to restore them.
+Open **Handles** when importing or editing media to place connection points on the artwork. Click to add a handle or drag it to move it. Each row has X, Y, wire direction, and an **X** button to remove that handle. Adding a custom handle replaces the four default handles. Choose **Use defaults** to restore them.
 
-Turn on **Commandable** when importing or editing media to show the artwork inside a button, then choose **Square** or **Circle**. After placing it, open the node's **Command** settings and choose the action, just as you would for a Button node. The schematic's commanding and confirmation settings apply to both.
+Turn on **Commandable** when importing or editing media to show the artwork inside a button, then choose **Square** or **Circle**. The artwork can reach the face's edge. Use **Contain** to keep its proportions, **Cover** to fill the face, or **Stretch** to fit its bounds. A circle clips the artwork at its rim and uses the round valve's face and authority backing. After placing it, open the node's **Command** settings and choose the action, just as you would for a Button node.
 
 Administrators can right-click a project preset in the Nodes palette and choose **Delete** to remove it from the browser. Nodes already placed on schematics keep their shared media and settings.
 
