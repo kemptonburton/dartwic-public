@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T20:37
+updated: 2026-11-05T20:48
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -28,9 +28,7 @@ The **pencil** enables editing so you can arrange nodes and edges. Use **Undo / 
 
 The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. Enable the pencil to edit. The existing grid toggle snaps movement to the configured grid spacing. Alignment guides help match node edges and centers while dragging or resizing; hold **Alt** to bypass snapping. Unlock **Manual pan/zoom** in the toolbar to pan with a left-drag on empty canvas or by holding **Space** over a node. In edit mode, left-drag a node to move it and use **Shift+left-drag** on empty canvas for box selection. Outside edit mode, node clicks do not show editing selection or resize handles.
 
-Right-click the canvas with multiple nodes selected to align their edges or centers. Select at least three nodes to distribute them with equal horizontal or vertical gaps. Each completed move, resize, or alignment action is one undo step.
-
-In edit mode, drag from a connection point to start a wire. Tanks and boxes show strips along their borders, where you can start or end a wire anywhere along a side. Valves use fixed ports.
+In edit mode, drag from a connection point to start a wire. Tanks and boxes show strips along their borders, where you can start or end a wire anywhere along a side. Valves use fixed ports. Drop the wire onto another wire to add a branch. All branches share the existing wire's settings and are selected and deleted as one wire.
 
 Select a connection to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, **Shift+click** the wire to add a bend, and double-click a bend to remove it. Use the connection context menu's **Reset route** to restore automatic routing. Double-click a wire segment to edit the label at its center, or choose **Edit label** to edit it at its saved position. Click away or press Enter to save. Press Escape to cancel.
 
@@ -44,7 +42,7 @@ Colors follow application theme changes immediately in the canvas, previews, and
 
 ## Commanding
 
-**Commanding** enables or disables operator actions. Leave edit mode before operating the display; editing disables commanding. Check device feedback after a command. For disabled or rejected controls, inspect [channel authority](../Engine/Channels%20and%20Control.md#policies).
+**Commanding** enables or disables operator actions. Control nodes keep their normal appearance with commanding off. Leave edit mode before operating the display; editing disables commanding. Check device feedback after a command. For disabled or rejected controls, inspect [channel authority](../Engine/Channels%20and%20Control.md#policies).
 
 In a Remote View with commanding off, controls keep their normal appearance and display live values. They cannot send commands.
 
@@ -136,6 +134,8 @@ The Node Gallery shows all the current nodes in there different states for refer
 It shows side-by-side examples of node appearances, control policies, events, and stale or missing data. Use the command button to enable simulated controls, then try the two-click toggle and example commands. The Disabled example stays disabled.
 
 Control Nodes are nodes that control a specific thing, like a Channel or Task.
+
+Use **Button Options → Center label** to add text inside a Button node.
 
 ![](_attachments/Pasted%20image%2020261030141929.png)
 
