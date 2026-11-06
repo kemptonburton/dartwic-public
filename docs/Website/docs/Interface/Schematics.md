@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-05T22:33
+updated: 2026-11-05T22:42
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -40,11 +40,9 @@ Existing schematic nodes and authored layouts remain supported. Legacy embedded 
 
 ## Media colors
 
-Use **Edit media** to choose **Outline** or **Fill**, then adjust that part of the SVG with the shared color picker. Its Light and Dark tabs hold both colors. The first custom color supplies a readable default for the other theme, which you can adjust in its own tab. Use the reset icon to remove the selected override. Colors belong to the node instance. Unpainted areas and gradient references keep their source paint.
+Open the **Colors** tab in the media editor or **SVG Colors** in a placed Media node's configuration. Search for an element ID, CSS selector, paint property, or original value. Check one or more entries to edit them together. For example, search for `stroke` and choose **Select all shown** to recolor the matching outlines in one edit.
 
-Open **SVG Colors** in a placed Media node's configuration, or expand **SVG color attributes** during import. Search for an element ID, CSS selector, paint property, or original value. Select a paint and choose **Override**. The list includes individual fills, strokes, gradient stops, filter colors, and CSS color declarations. A targeted override takes precedence over the quick Outline and Fill controls.
-
-Use **Hex Color** for a fixed light/dark pair, **Channel Value** for a channel that supplies a CSS color such as `#22c55e`, or **Linear Interpolate** to map a numeric channel between two colors. If a live value is unavailable or invalid, the SVG uses its saved paint. **Reset** restores that paint. The editor and node browser show saved colors in their previews.
+Use **Hex Color** for a fixed Light/Dark pair, **Channel Value** for a channel that supplies a CSS color such as `#22c55e`, or **Linear Interpolate** to map a numeric channel between two colors. If a live value is unavailable or invalid, the SVG uses its saved paint. **Reset** restores the selected entries' underlying paint. Colors belong to the node instance. The editor and node browser show saved colors in their previews.
 
 Colors follow application theme changes immediately in the canvas, previews, and Media editor. Changing the theme does not edit the schematic or create an undo entry. The stock Vent includes contrasting light/dark stroke colors. The test workspace's **Vent Theme Check** schematic provides a saved example.
 
