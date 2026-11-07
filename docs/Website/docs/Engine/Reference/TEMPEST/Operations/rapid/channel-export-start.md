@@ -2,7 +2,7 @@
 title: rapid/channel-export-start
 summary: Starts a client-owned background CSV export of raw channel samples.
 created: 2026-08-04T16:41
-updated: 2026-11-06T23:08
+updated: 2026-11-07T01:22
 ---
 
 - **Category:** Channels and Persistence
@@ -17,7 +17,7 @@ updated: 2026-11-06T23:08
 | `to` | `integer` | Optional | Inclusive Unix-epoch end time. Millisecond, microsecond, and nanosecond values are normalized by magnitude; `x_to` is an alias. |
 | `x_to` | `integer` | Optional | Alias for `to`. |
 | `include_commanded_by` | `boolean` | Optional | Include a companion writer column per series; preserve duplicate samples at the same timestamp. Requires Engine 2.1.0. |
-| `fill_forward` | `boolean` | Optional | Fill empty value cells from the last recorded sample, without an age limit. Seed leading cells from the last sample strictly before the range, or from the current in-memory value if available. Adds a history lookup and streaming rewrite before completion. Filled cells have no writer. The completed result confirms support with `fill_forward: true`. |
+| `fill_forward` | `boolean` | Optional | Fill empty value cells from the last recorded sample, without an age limit. Leading cells stay blank when there is no sample strictly before the range. Adds a history lookup and streaming rewrite before completion. Filled cells have no writer. The completed result confirms support with `fill_forward: true`. |
 | `columns` | `array<ExportColumn>` | Optional | Optional display labels. Each item uses `channelPath` and `columnLabel`. |
 
 ## Response payload

@@ -1,7 +1,7 @@
 ---
 summary: Understand what gets recorded, how live updates arrive, and how to keep and review history.
 created: 2026-08-03T15:41
-updated: 2026-11-06T23:48
+updated: 2026-11-07T01:22
 ---
 
 Recording saves what happened so you can review a test, compare measurements with events, or investigate a failure. Telemetry sends live updates to dashboards, clients, and other Engines.
@@ -267,11 +267,11 @@ Channels can record at different times, even when they come from the same device
 
 For readings from the same acquisition, you can also give each write the same source timestamp so the readings line up in the raw CSV. See [Write Multiple Channels With One Timestamp](#write-multiple-channels-with-one-timestamp).
 
-For leading blanks, DARTWIC uses the last sample recorded before the export range. If there is no earlier sample, it uses the channel's current in-memory value when available. That fallback reflects the value at export time. If both sources are unavailable, the cells stay blank until the first recorded sample.
+For leading blanks, DARTWIC uses the last sample recorded before the export range. If there is no earlier sample, the cells stay blank until the channel's first recorded sample in the range.
 
 Each recorded sample takes precedence on its own row and becomes the value carried forward to later rows. Carried values have no age limit and can span interruptions. Writer columns identify only recorded samples.
 
-Suppose the export starts at 10:00:00. Pressure last recorded 42 psi before that time. Flow has no earlier recording and its current in-memory value is 8 L/min.
+Suppose the export starts at 10:00:00. Pressure last recorded 42 psi before that time. Flow's first recorded sample is at 10:00:02.
 
 **Off**
 
@@ -285,8 +285,8 @@ Suppose the export starts at 10:00:00. Pressure last recorded 42 psi before that
 
 | Time | Pump speed (rpm) | Pressure (psi) | Flow (L/min) |
 | --- | ---: | ---: | ---: |
-| 10:00:00 | 1200 | **42** | **8** |
-| 10:00:01 | **1200** | 43 | **8** |
+| 10:00:00 | 1200 | **42** | |
+| 10:00:01 | **1200** | 43 | |
 | 10:00:02 | **1200** | **43** | 9 |
 
 # Recording and Delivery Loss
