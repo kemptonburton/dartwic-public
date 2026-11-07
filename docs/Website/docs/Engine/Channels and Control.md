@@ -1,7 +1,7 @@
 ---
 summary: Understand RAPID channels, fields, storage, authority, and native or DCode publishing.
 created: 2026-09-04T17:13
-updated: 2026-10-29T20:49
+updated: 2026-11-06T23:49
 document_kind: walkthrough
 ---
 
@@ -26,11 +26,13 @@ units = |tank_pressure|:units                 # read a field
 remote = |SECONDARY_NODE:tank_pressure|        # read from another node
 ```
 
-In C++, use `queryChannel` for the value, `queryChannelData` for the full channel data, and `upsertChannel` for an ordinary write:
+In a C++ Engine plugin, use the `SDK_API` instance provided to your plugin. This example copies the numeric value of `tank_pressure` to `demo_pressure`:
 
 ```cpp
-const double pressure = rapid.queryChannel("tank_pressure");
-rapid.upsertChannel("demo_pressure", pressure);
+using DARTWIC::API::ChannelField;
+
+const double pressure = api.queryChannelField("tank_pressure", ChannelField::VALUE, std::nullopt);
+api.upsertChannelField("demo_pressure", ChannelField::VALUE, pressure);
 ```
 
 These examples assume an existing pressure input and a writable demo output. A named upsert can create missing dynamic state; fixed channels are prepared during configuration. Ordinary reads and writes do not acquire authority. Every write checks permission and current authority.
@@ -75,16 +77,11 @@ Most of the time, you do not need to choose the storage yourself. Lua DCode norm
 
 ## Remote channels
 
-A remote channel belongs to another connected Engine. In DCode, prefix its name with the node name; in C++, use the node/key overload:
+A remote channel belongs to another connected Engine. In DCode, prefix its name with the node name:
 
 ```dcode
 pressure = |SECONDARY_NODE:tank_pressure|
 |SECONDARY_NODE:valve_command| = 1
-```
-
-```cpp
-const double pressure = rapid.queryChannel("SECONDARY_NODE", "tank_pressure");
-rapid.upsertChannel("SECONDARY_NODE", "valve_command", 1.0);
 ```
 
 Reads use the latest cached observation from that Engine. Check connection status and the sample's timestamp: a retained value may be stale, and disconnecting does not turn it into a fresh sample. Writes go to the owning Engine, which checks permissions and channel authority. Sending a write does not by itself confirm acceptance or hardware action.
@@ -113,18 +110,18 @@ Use this when a valve or actuator should start at a chosen command instead of it
 In a plugin's start callback, acquire authority without replacing the existing values:
 
 ```cpp
-rapid.commandChannel("valve_command"); // Acquire automatic authority; keep the value.
-rapid.setChannel("valve_feedback");   // Acquire publishing authority; keep the value.
+api.commandChannel("valve_command"); // Acquire automatic authority and keep the value.
+api.setChannel("valve_feedback");    // Acquire publishing authority and keep the value.
 ```
 
 Supplying a value instead requests a write on every task start. Use this only when the reset is intentional:
 
 ```cpp
-rapid.commandChannel("valve_command", 0.0); // Command zero, replacing the current value.
-rapid.setChannel("valve_feedback", 0.0);    // Publish zero, replacing the last feedback.
+api.commandChannel("valve_command", 0.0); // Command zero, replacing the current value.
+api.setChannel("valve_feedback", 0.0);    // Publish zero, replacing the last feedback.
 ```
 
-An output driver normally reads the existing command rather than acquiring or resetting it. For channel defaults, use create-only `insertChannel` or create/get fixed channels during configuration so existing values survive.
+An output driver normally reads the existing command. To set a default while preserving existing values, call `insertChannelField` for a named channel or `createFixedChannel` during configuration.
 
 
 # Control authority
@@ -209,7 +206,7 @@ Replacement cleans up the old runtime without clearing the replacement's claims.
 
 For eligible authority owners, these four operations manage claims with or without a value:
 
-| C++ API | DCode | Without a value | With a value |
+| C++ Engine Plugin SDK | DCode | Without a value | With a value |
 | --- | --- | --- | --- |
 | `commandChannel` | `command` | Acquire or retain automatic ownership. | Acquire/retain ownership and write. |
 | `setChannel` | `set` | Acquire or retain observe-only publishing. | Acquire/retain publishing and write. |
@@ -218,11 +215,11 @@ For eligible authority owners, these four operations manage claims with or witho
 
 Without an eligible owner, or when targeting a [remote channel](#remote-channels), all four act as ordinary upserts when given a value and do nothing without one. Channel permissions still apply. An eligible local owner's rejected authority operation never falls back to an ordinary write.
 
-Use a name or fixed handle in C++, or a channel pipe in DCode. For example:
+Use a name or fixed handle in the C++ Engine Plugin SDK, or a channel pipe in DCode. For example:
 
 ```cpp
-rapid.commandChannel(channel);
-rapid.commandChannel(channel, value);
+api.commandChannel(channel);
+api.commandChannel(channel, value);
 ```
 
 ```dcode
@@ -278,34 +275,31 @@ For device plugins, prepare resources in `on_configure`, acquire publishing/cont
 
 ## Native DAQ with fixed channels
 
-A driver publishes measurements and feedback, and reads commands chosen by other controllers. These RAPID excerpts show the three lifecycle phases; plugin registration and device I/O are omitted.
+A driver publishes measurements and feedback and reads commands chosen by other controllers. These C++ Engine Plugin SDK excerpts use the plugin's `SDK_API` instance. For registration and device setup, see [Building a Hardware Driver](../Plugins/Building%20a%20Hardware%20Driver.md).
 
 Retain these bindings in the task instance:
 
 ```cpp
-std::optional<RAPID::FixedChannelHandle> pressure;
-std::optional<RAPID::FixedChannelHandle> valve_command;
-std::optional<RAPID::FixedChannelHandle> valve_feedback;
+DARTWIC::API::FixedChannelHandle pressure;
+DARTWIC::API::FixedChannelHandle valve_command;
+DARTWIC::API::FixedChannelHandle valve_feedback;
 ```
 
 In `on_configure`, create/get the fixed channels and prepare device mappings and buffers:
 
 ```cpp
-pressure = rapid.createFixedChannel("tank_pressure");
-valve_command = rapid.createFixedChannel("valve_command");
-valve_feedback = rapid.createFixedChannel("valve_feedback");
-
-if (!pressure || !valve_command || !valve_feedback)
-    throw std::runtime_error("Channel preparation failed");
+pressure = api.createFixedChannel("tank_pressure");
+valve_command = api.createFixedChannel("valve_command");
+valve_feedback = api.createFixedChannel("valve_feedback");
 ```
 
-Getting an existing fixed channel preserves its value and authority.
+Getting an existing fixed channel preserves its value and authority. If the SDK cannot prepare the channel, the call throws.
 
 In `on_start`, acquire the channels this driver publishes:
 
 ```cpp
-rapid.setChannel(*pressure);
-rapid.setChannel(*valve_feedback);
+api.setChannel(pressure);
+api.setChannel(valve_feedback);
 ```
 
 The driver reads `valve_command` without owning it. A publishing conflict emits an ARGUS warning and leaves the rejected channel unchanged; task start continues into the body.
@@ -313,13 +307,12 @@ The driver reads `valve_command` without owning it. A publishing conflict emits 
 After obtaining a device sample, use the retained handles in `on_task`:
 
 ```cpp
-rapid.upsertChannel(*pressure, measured_pressure, sample_timestamp);
+api.upsertChannel(pressure, measured_pressure, sample_timestamp);
 
-const double requested_position = rapid.queryChannel(*valve_command);
+const double requested_position = api.queryChannel(valve_command);
 // Deliver requested_position through the device's output path.
 
-rapid.upsertChannel(
-    *valve_feedback, measured_position, feedback_timestamp);
+api.upsertChannel(valve_feedback, measured_position, feedback_timestamp);
 ```
 
 Measurements and timestamps come from the device; feedback is not a copy of the request. Handle-based upserts remain prepared operations and report whether each write was accepted. On stop, observations retain their last sample and observe-only policy without this driver's claim. Restart reacquires publishing authority.

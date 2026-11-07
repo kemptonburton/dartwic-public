@@ -1,7 +1,7 @@
 ---
 summary: Configure device connections, operate automation, and check the result.
 created: 2026-08-03T15:41
-updated: 2026-10-29T22:44
+updated: 2026-11-05T16:09
 ---
 
 A module provides a connection or service; a task does work with it. Open **Modules** or **Tasks** from the left sidebar to create, configure, and monitor them. This walkthrough uses a Modbus device to connect inputs and outputs to channels and operate the resulting tasks. Install the device's [plugin](Plugins.md) and select your project first.
@@ -72,11 +72,13 @@ For this device, choose a read task to publish measurements or a write task to s
 
 ![](_attachments/Pasted%20image%2020261029215302.png)
 
-Search the available types, select the driver's type, name the instance, and choose its module when required. Then choose **Create task**.
+Search the available types, select the driver's type, name the instance, and choose its module when required. Then choose **Create task**. Device discovery is optional: Modbus, LabJack and EtherCAT tasks can be created with empty mappings, then configured before their first start. Apply the mappings before you use **Start**.
 
 ![](_attachments/Pasted%20image%2020261029215543.png)
 
 Open the created task and configure its mappings: which device input publishes to which channel, or which channel commands each output. Edits that need to be saved show in yellow, if that task uses the Plugin SDK Config Map. Choose **Apply** to save the configuration.
+
+In Modbus, LabJack and EtherCAT Task Config, **Auto-set stale timeout** is on by default with **Stale timeout (seconds)** set to **2**. Apply sets the timeout on mapped measurements and write readbacks, including channels you created earlier. Command inputs, task diagnostics and built-in CAESAR channels are outside this setting. Increase the task timeout if your normal update interval exceeds two seconds. To manage these timeouts per channel, turn off the switch, apply, then edit each channel’s stale timeout. Turning off the switch leaves existing timeout values in place.
 
 ![](_attachments/Pasted%20image%2020261029220047.png)
 

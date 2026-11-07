@@ -1,6 +1,6 @@
 ---
 summary: Package a plugin, publish its GitHub release, and install or list it in the browser.
-updated: 2026-10-27T00:11
+updated: 2026-11-05T15:59
 created: 2026-10-04T18:31
 ---
 
@@ -183,6 +183,8 @@ The Plugin Browser installs the enabled Engine and Interface sides from a compat
 ![](_attachments/Pasted%20image%2020261025232743.png)
 
 Search for a plugin and read its README for setup, vendor libraries, and device permissions. Check its compatible release and enabled sides, then choose **Install** and check the result for each side.
+
+The **Pre-release** badge identifies the displayed version when its GitHub release is marked as a prerelease. Check the release notes before installing a preview.
 
 ![](_attachments/Pasted%20image%2020261025233048.png)
 

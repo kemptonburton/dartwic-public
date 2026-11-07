@@ -1,7 +1,7 @@
 ---
 summary: Save runs, browse recorded data, and choose what to export or delete.
 created: 2026-08-03T15:41
-updated: 2026-10-30T16:04
+updated: 2026-11-06T23:09
 ---
 
 Open **Data** in the left sidebar to browse recordings under **Databases**, or create and reopen named runs under **Dataframes**. You can graph, export, and delete recorded data here; other resources also provide exports.
@@ -77,7 +77,9 @@ Range exports include matching history beyond the loaded preview. Board snapshot
 
 ## Export a Visible Range
 
-The [telemetry export](Telemetry%20Graphs.md#export-data) uses the graph's full X-axis range and raw recordings, regardless of preview bucketing. **Include commanded by** adds sample writers to its CSV. Keep the view connected until completion; **Cancel export** stops remaining work.
+The [telemetry export](Telemetry%20Graphs.md#export-data) uses the graph's full X-axis range and reads recordings at full resolution. **Include commanded by** adds sample writers to its CSV. Keep the view connected until completion. **Cancel export** stops remaining work.
+
+The telemetry and recorded-channel database download menus offer **Carry forward last value** for CSV exports. See the [recording guide and CSV comparison](../Engine/Recording%20and%20Telemetry.md#carry-forward-the-last-value).
 
 # Retention and Deletion
 

@@ -1,7 +1,7 @@
 ---
 summary: Plot signals, navigate live and recorded ranges, and compare events and logs.
 created: 2026-10-24
-updated: 2026-10-30T16:00
+updated: 2026-11-06T23:09
 ---
 
 Open **Telemetry** in the left sidebar to plot channel measurements and commands against time. Compare signals live, review recorded tests, and export their data.
@@ -81,5 +81,7 @@ Clicking a dataframe in **Data → Dataframes** opens its saved range here. When
 ![A recorded run with channel traces, event intervals, and log output.](../Engine/_attachments/Pasted%20image%2020261029010151.png)
 
 Pause, open **Export telemetry**, check **Channels**, **Events**, and **Logs** to include all three, then choose **Export visible range**. This exports matching recordings across the full X-axis range, including unloaded records. Channels use CSV; events and logs use `.jsonl`. **Include commanded by** adds sample writers.
+
+Turn on **Carry forward last value** to fill blank cells in the channel CSV. See the [recording guide and CSV comparison](../Engine/Recording%20and%20Telemetry.md#carry-forward-the-last-value).
 
 Keep the view connected until export finishes. For whole-dataframe ZIP exports and other export options, see [Export Formats](DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md#export-formats).

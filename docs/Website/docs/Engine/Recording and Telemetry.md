@@ -1,7 +1,7 @@
 ---
 summary: Understand what gets recorded, how live updates arrive, and how to keep and review history.
 created: 2026-08-03T15:41
-updated: 2026-10-30T02:00
+updated: 2026-11-06T23:48
 ---
 
 Recording saves what happened so you can review a test, compare measurements with events, or investigate a failure. Telemetry sends live updates to dashboards, clients, and other Engines.
@@ -93,6 +93,73 @@ Choose which channel writes to save with `record_mode`:
 | `never`           | None from writes; the value remains available live.                      |
 
 Choose before the run: use `every_value_exclude_autorecord` when the history must contain only submitted measurements. Use `every_value` when you also want periodic snapshots of the cached value. Both retain repeated equal readings. The new mode requires Engine 2.1.0.
+
+## Write Multiple Channels With One Timestamp
+
+When one acquisition produces several readings, give those writes the same source timestamp so they line up in recorded history and in a channel CSV. Use the device's measurement time if it supplies one in Unix-epoch nanoseconds. Otherwise, read the system clock once per acquisition and reuse that timestamp for every channel in the scan.
+
+These examples use the public C++ Engine Plugin SDK. They assume your plugin already has its `SDK_API` instance and publishing authority for `demo_pressure` and `demo_flow`. For the fixed handles used by the first example, see [Building a Hardware Driver](../Plugins/Building%20a%20Hardware%20Driver.md).
+
+**Write channels individually**
+
+Pass the shared timestamp as the third argument to each `upsertChannel` call. Each call reports whether its write was accepted.
+
+```cpp
+#include <sdk_api.h>
+#include <chrono>
+#include <cstdint>
+#include <stdexcept>
+
+std::uint64_t unixNowNs() {
+    const auto sinceEpoch = std::chrono::system_clock::now().time_since_epoch();
+    return static_cast<std::uint64_t>(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(sinceEpoch).count());
+}
+
+void publishScan(DARTWIC::API::SDK_API& api,
+                 const DARTWIC::API::FixedChannelHandle& pressureChannel,
+                 const DARTWIC::API::FixedChannelHandle& flowChannel,
+                 double pressure, double flow) {
+    const auto timestamp = unixNowNs();
+    const bool pressureAccepted = api.upsertChannel(pressureChannel, pressure, timestamp);
+    const bool flowAccepted = api.upsertChannel(flowChannel, flow, timestamp);
+    if (!pressureAccepted || !flowAccepted)
+        throw std::runtime_error("A scan write was rejected");
+}
+```
+
+**Write channels in bulk**
+
+For buffered acquisition, call `bufferScan` when each pair of readings arrives. Then pass the buffered scans to `publishBufferedScans`. The SDK's `upsertChannelValueBulk` accepts one channel per call, with a timestamp on every sample. Reusing each scan's timestamp in both batches aligns the readings across channels.
+
+```cpp
+#include <utility>
+#include <vector>
+
+struct Scan {
+    double pressure;
+    double flow;
+    std::uint64_t timestamp;
+};
+
+void bufferScan(std::vector<Scan>& scans, double pressure, double flow) {
+    scans.push_back({pressure, flow, unixNowNs()});
+}
+
+void publishBufferedScans(DARTWIC::API::SDK_API& api, const std::vector<Scan>& scans) {
+    std::vector<std::pair<double, std::uint64_t>> pressureSamples, flowSamples;
+    pressureSamples.reserve(scans.size());
+    flowSamples.reserve(scans.size());
+    for (const auto& scan : scans) {
+        pressureSamples.emplace_back(scan.pressure, scan.timestamp);
+        flowSamples.emplace_back(scan.flow, scan.timestamp);
+    }
+    api.upsertChannelValueBulk("demo_pressure", pressureSamples);
+    api.upsertChannelValueBulk("demo_flow", flowSamples);
+}
+```
+
+With both channels set to `every_value_exclude_autorecord`, accepted writes from each scan are queued for recording with the shared timestamp. After recording, export both channels to see the scan's readings on the same row.
 
 ## Periodic Snapshots
 
@@ -193,6 +260,34 @@ For application queries, see the [Python client](../Clients/Python%20Client.md) 
 ## Preview versus Raw Data
 
 A graph can reduce samples to fewer plotted points (**bucketing**); raw exports retain recorded samples. Events and logs load in pages. See the [data guide](../Interface/DataFrames%2C%20Databases%2C%20and%20Exporting%20Data.md) for browsing and exports.
+
+## Carry Forward the Last Value
+
+Channels can record at different times, even when they come from the same device. A raw CSV leaves a channel's cell blank when it has no sample on that row. Turn on **Carry forward last value** in **Export telemetry** or in the recorded-channel download menu under **Data → Databases** to fill those cells on existing CSV rows. The option starts off.
+
+For readings from the same acquisition, you can also give each write the same source timestamp so the readings line up in the raw CSV. See [Write Multiple Channels With One Timestamp](#write-multiple-channels-with-one-timestamp).
+
+For leading blanks, DARTWIC uses the last sample recorded before the export range. If there is no earlier sample, it uses the channel's current in-memory value when available. That fallback reflects the value at export time. If both sources are unavailable, the cells stay blank until the first recorded sample.
+
+Each recorded sample takes precedence on its own row and becomes the value carried forward to later rows. Carried values have no age limit and can span interruptions. Writer columns identify only recorded samples.
+
+Suppose the export starts at 10:00:00. Pressure last recorded 42 psi before that time. Flow has no earlier recording and its current in-memory value is 8 L/min.
+
+**Off**
+
+| Time | Pump speed (rpm) | Pressure (psi) | Flow (L/min) |
+| --- | ---: | ---: | ---: |
+| 10:00:00 | 1200 | | |
+| 10:00:01 | | 43 | |
+| 10:00:02 | | | 9 |
+
+**On** (bold values are filled)
+
+| Time | Pump speed (rpm) | Pressure (psi) | Flow (L/min) |
+| --- | ---: | ---: | ---: |
+| 10:00:00 | 1200 | **42** | **8** |
+| 10:00:01 | **1200** | 43 | **8** |
+| 10:00:02 | **1200** | **43** | 9 |
 
 # Recording and Delivery Loss
 

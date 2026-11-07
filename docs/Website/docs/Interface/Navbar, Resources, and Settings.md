@@ -2,7 +2,7 @@
 title: Navbar, Resources, and Settings
 summary: Navigate resources and configure your Interface, connections, and Engine settings.
 created: 2026-08-03T15:41
-updated: 2026-10-30T15:35
+updated: 2026-11-05T15:54
 ---
 
 This guide covers the controls you use to navigate and configure the Interface:
@@ -58,9 +58,15 @@ You can also right click the sidebar to show or hide resources.
 
 ![](_attachments/Pasted%20image%2020261030151920.png)
 
-And you can drag resource Components (CMP) and drop then in your interface view to arrange tabs. Most things can be dragged and dropped to rearrange the tabs. You need to have one resource view open to do so however.
+Drag a resource from the sidebar into the docking area to open it, even when the area is empty. When tabs are already open, drop onto a tab strip to add a tab or onto the edge of a pane to split the view.
 
 ![](_attachments/Pasted%20image%2020261030152054.png)
+
+## Detach a Tab on Desktop
+
+Drag a docked tab outside the Interface windows or right-click the tab and choose **Move to New Window**. Use the detached window to keep resources visible on another monitor while working in the main window. Both windows share the same Engine connection.
+
+Drag tabs between windows and drop them on a tab strip or pane edge to arrange them. You can also open resources in the detached window from its navbar search. A floating vertical toolbar above the bottom node bar holds **Context** and **Node Board**. Close the detached window with its title bar controls to return its tabs to the main window.
 
 ## Live Editing and Other Operators
 

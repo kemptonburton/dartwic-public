@@ -1,6 +1,6 @@
 ---
 summary: Connect your equipment, write control logic, and build a workspace your team can use.
-updated: 2026-11-04
+updated: 2026-11-04T14:59
 created: 2026-09-04T17:13
 ---
 

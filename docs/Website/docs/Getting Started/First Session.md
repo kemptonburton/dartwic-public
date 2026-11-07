@@ -1,6 +1,6 @@
 ---
 summary: Open a workspace, connect to its engine, and inspect your first signal.
-updated: 2026-10-30T22:30
+updated: 2026-11-04T14:58
 created: 2026-08-03T15:41
 ---
 
