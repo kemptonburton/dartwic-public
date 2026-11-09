@@ -1,6 +1,6 @@
 ---
 summary: Follow Interface plugin registration, contributions, host APIs, and delivery.
-updated: 2026-10-26T23:59
+updated: 2026-11-07T17:09
 created: 2026-10-04T18:31
 ---
 
@@ -146,6 +146,8 @@ registry.addSchematicNode({
 ```
 
 Use the [schematic node reference](Reference/Interface/Schematic%20Nodes/Overview.md) for configuration components, sizing, and command actions.
+
+For a connectable node, use `dataDefaults.fluid_port_roles` to assign `"sink"`, `"source"`, or `"none"` to its `left`, `right`, `top`, or `bottom` handle. For example, `dataDefaults: {fluid_port_roles: {left: "sink"}}` lets the left handle accept activity from an upstream valve, pump, or tank. Operators can override the roles in the node settings. Setting a role describes the connection. The host drives source activity from built-in valve, pump, and tank behavior.
 
 ## Settings panels
 

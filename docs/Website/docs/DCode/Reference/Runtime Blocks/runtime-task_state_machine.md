@@ -1,8 +1,6 @@
 ---
-title: task_state_machine
-summary: Define a named-state CAESAR task in DCode.
-created: 2026-08-04T17:38
-updated: 2026-10-27T16:09
+title: "task_state_machine"
+summary: "Define a named-state CAESAR task in DCode."
 ---
 
 ## Syntax
@@ -42,7 +40,9 @@ DARTWIC tracks changes to the block and its template dependencies when loading t
 
 - `<name>_running`
 - `<name>_target_frequency`
-- `<name>_actual_frequency`
+- `<name>_average_frequency`
+- `<name>_cycle_to_cycle_frequency_min`
+- `<name>_cycle_to_cycle_frequency_max`
 - `<name>_execution_time`
 - `<name>_missed_cycles`
 - `<name>_hold`

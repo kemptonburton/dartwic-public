@@ -1,7 +1,7 @@
 ---
 summary: Build and operate a saved view of equipment, signals, graphs, and controls.
 created: 2026-08-03T15:41
-updated: 2026-11-07T00:57
+updated: 2026-11-07T17:23
 ---
 
 A **schematic** is a saved operator display that brings measurements and controls together. This is a walkthrough of the editor and shared node-and-edge workflow, not an exhaustive guide to every node or its options.
@@ -26,13 +26,17 @@ The **pencil** enables editing so you can arrange nodes and edges. Use **Undo / 
 
 ## Canvas editing
 
-The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. Enable the pencil to edit. The grid toggle snaps movement to an 8-unit grid or to the schematic's saved spacing when it is finer. Alignment guides help match node edges and centers while dragging or resizing. Hold **Alt** to bypass snapping. Unlock **Manual pan/zoom** in the toolbar to pan with a left-drag on empty canvas or by holding **Space** over a node. In edit mode, left-drag a node to move it and use **Shift+left-drag** on empty canvas to select nodes and wires together. In view mode, right-click a node to inspect it and show its outline.
+The canvas uses X6 for schematic editing, embedded previews, and Cluster Map. Enable the pencil to edit. The grid toggle snaps movement to an 8-unit grid or to the schematic's saved spacing when it is finer. Alignment guides help match node edges and centers while dragging or resizing. Hold **Alt** to bypass snapping. Unlock **Manual pan/zoom** in the toolbar to pan with a left-drag on empty canvas or by holding **Space** over a node. In edit mode, left-drag a node to move it and use **Shift+left-drag** on empty canvas to select nodes and edges together. In view mode, right-click a node to inspect it and show its outline.
 
-In edit mode, hover over a node to see its outline and any connection points. Drag from a connection point to start a wire. Tanks and boxes show strips along their borders, where you can start or end a wire anywhere along a side. Tanks also have a fixed circular handle at the midpoint of each side. Automatic routes leave and enter perpendicular to the chosen side. Valves use fixed ports. Drop the wire onto another wire to add a branch at a right angle. When there is room, automatic orthogonal branches make their rounded turn farther from the main wire. A click selects the whole wire and its shared settings. Double-click a branch to select it by itself. Delete then removes that branch and any branches attached to it.
+In edit mode, select a node to show its rotation controls at the top right. Click the upper button to advance to the next multiple of 90°. Shift-click it to reset to 0°, or drag the angle handle below it for finer rotation. Hold Shift while dragging to snap to 15° increments.
 
-Select a connection to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, **Shift+click** the wire to add a bend, and double-click a bend to remove it. Use the connection context menu's **Reset route** to restore automatic routing. Double-click the main wire or an already selected branch to edit its own label at the segment's center. You can also choose **Edit label** in the context menu. Click away or press Enter to save. Press Escape to cancel.
+In edit mode, hover over a node to see its outline and any connection points. Drag from a connection point to start an edge. Tanks and boxes show strips along their borders, where you can start or end an edge anywhere along a side. Tanks also have a fixed circular handle at the midpoint of each side. Automatic routes leave and enter perpendicular to the chosen side. Valves use fixed ports. Drop the edge onto another edge to add a branch at a right angle. When there is room, automatic orthogonal branches make their rounded turn farther from the main edge. A click selects the whole edge and its shared settings. Double-click a branch to select it by itself. Delete then removes that branch and any branches attached to it.
 
-**Top label** and **Bottom label** appear outside the node body. Changing a label keeps the wire attachment points in place.
+Select an edge to reveal its bend points, segment controls, and endpoint handles. Drag a bend or segment to reshape it, **Shift+click** the edge to add a bend, and double-click a bend to remove it. Use the edge context menu's **RESET ROUTE** to restore automatic routing. Double-click the main edge or an already selected branch to edit its own label at the segment's center. You can also choose **EDIT LABEL** in the context menu. Click away or press Enter to save. Press Escape to cancel.
+
+Right-click an edge or branch to inspect the whole edge's endpoints and channel bindings. In edit mode, choose **INSPECT EDGE** from the context menu. The edge and its branches stay outlined while the inspector is open.
+
+**Top label** and **Bottom label** appear outside the node body. Changing a label keeps the edge attachment points in place.
 
 Under **Node Setup → Layout**, choose **Small** (75%), **Normal** (100%), **Large** (125%), or **Custom** to enter a percentage from 10% to 400%. On a resizable node, drag the diagonal arrow at the lower-right corner to change its body dimensions. The presets scale the node from its authored dimensions. Plugin nodes with their own settings panels may show the size picker in a **General** section.
 
@@ -114,7 +118,23 @@ For a Control node, set **State value** to the value you want the node to show. 
 
 On a Valve, **State value** sets the position shown on the node. On an Angle Valve, it sets the angle shown. **Closed angle** and **Open angle** define the displayed range. Under **Command**, **Value to open** and **Value to close** set the values sent to the command channel. Find orientation and **Show command value** under **Appearance**.
 
-Find **Check Valve**, **Pump**, **Regulator**, and **Three-Way Valve** in **Fluids**. Choose the flow orientation under **Appearance**. The Check Valve is a passive symbol. On a Pump, set **State → Running feedback** to the channel that reports whether the pump is running. The fan spins up and coasts down briefly as feedback changes. On a Regulator, choose the setpoint channel under **Command** to enter a numeric setpoint from the canvas. On a Three-Way Valve, set the **Straight value** and **Branch value** under **Command**, then bind **State value** to position feedback that reports those same values.
+Find **Check Valve**, **Pump**, **Regulator**, and **Three-Way Valve** in **Fluids**. Choose the flow orientation under **Appearance**. The Check Valve is a passive symbol. On a Pump, set **State → Running feedback** to the channel that reports whether the pump is running. The fan spins up and coasts down briefly as feedback changes. On a Regulator, choose the setpoint channel under **Command** to enter a numeric setpoint from the canvas. On a Three-Way Valve, set **Value to open** and **Value to close** under **Command**, then bind **State value** to position feedback that reports those same values. Open runs straight across. Close uses the 90° outlet. The highlight transitions briefly when the feedback changes.
+
+**Relief Valve**, **Burst Disc**, and **Filter** are read-only parameters in **Fluids**. Bind a measurement under **State**. These nodes start without labels. To display the measurement, set an external label to **State** under **Node Setup → External labels**. For example, bind a Filter to differential pressure and set the label units to `bar`.
+
+For a read-only regulator symbol, turn off **Commandable** in its **Command** tab.
+
+### Fluid edge activity
+
+Valves and pumps use their state feedback to highlight fluid edges. Active sections thicken and glow in their configured color. A branch to an inactive source or a dead end at a closed valve stays dim up to its junction. Tank handles default to **Source**. A tank can pass along existing edge activity or feed an open valve or running pump through passive equipment. To change a handle's role, open **Node Setup → Handle roles**.
+
+Ties default to **Carry**, which passes activity between connected sink edges. In the Tie's settings, set **Fluid flow** to **Inhibit** to stop activity from passing through that junction.
+
+### Command Form
+
+Place a **Command Form** from the **Command** category, or choose **Open command form** as a Button's action. The standalone node starts at a custom size of 55%. In **Command**, add a row for each destination channel and choose **Number** or **Boolean**. An empty label uses the channel name. Each row needs a different destination channel.
+
+The popup shows each label beside the current channel value. The border shows that channel's authority, and a take or release button appears where applicable. The node's authority strip summarizes the configured channels, giving automatic override priority over manual override. Select **False** on the left to write 0 or **True** on the right to write 1. Take manual control first when the value is locked. To edit a number, click its value, type the new number, then press Enter or click the inline send icon. Each action writes only that row's channel and follows its authority rules. If a response is lost, check that channel's readback before retrying.
 
 Sliders and Switches use **Command channel** under **Command** and **State value** under **State**. With an empty state channel, the node shows the command channel. For a TEMPEST action, choose the operation under **Command**, then choose a state channel or operation response under **State**. A command menu uses its shared or per-option state to show which option is active.
 
@@ -178,13 +198,13 @@ For a single placement, add a **General Node** or **Media** preset to the schema
 
 ![](_attachments/Pasted%20image%2020261030142544.png)
 
-To create a preset, choose **Import Node** in the Nodes palette. Give it a name and category beside the preview. Configure the shape, labels, and optional commands in the same settings you use on the canvas. Use **Media → Add media** if the preset needs artwork, then choose **Save preset**. You can also right-click a placed node in edit mode and choose **Save to Node Browser**. Each placement starts with a copy of the preset settings, so later edits apply to that placement.
+To create a preset, choose **Import Node** in the Nodes palette. Give it a name and category beside the preview. Configure the shape, labels, and optional commands in the same settings you use on the canvas. Use **Media → Add media** if the preset needs artwork, then choose **Save preset**. The node’s right-click menu shows the preset name and node type. To reuse a placed node, right-click it in edit mode and choose **Save to Node Browser**. Each placement starts with a copy of the preset settings, so later edits apply to that placement.
 
 The node browser previews the saved proportions, button shape, crop, artwork scale, and colors. Large nodes shrink proportionally to fit the preview, and channel-driven SVG paints use their saved default colors.
 
 Open **Preview** when importing or editing media to see the artwork inside its node. Adjust **Artwork scale** to enlarge or shrink it without changing the node size. Use **Contain** to keep its proportions, **Cover** to fill the face, or **Stretch** to fit its bounds. **Reset scale** returns the artwork to 100%. Custom handles follow the artwork as it scales. For SVGs, **SVG stroke width** adjusts line thickness independently. **Reset stroke** restores the original widths.
 
-Open **Handles** when importing or editing media to place connection points on the artwork. Click to add a handle or drag it to move it. Each row has X, Y, wire direction, and an **X** button to remove that handle. Adding a custom handle replaces the four default handles. Choose **Use defaults** to restore them.
+Open **Handles** when importing or editing media to place connection points on the artwork. Click to add a handle or drag it to move it. Each row lets you set X, Y, edge direction, and the role. Adding a custom handle replaces the four default handles. Choose **Use defaults** to restore them.
 
 To use artwork as a control, turn on **Commandable** in **Node Setup** and choose an action in **Command**. The preset preview shows the face and artwork. Commands become available on placed nodes according to the schematic's commanding settings and Engine authority.
 
@@ -219,13 +239,13 @@ With editing enabled, drop a channel onto an existing edge to drive its color fr
 
 ## Draw and Configure Edges
 
-With editing enabled, open **Schematic accent** to the left of the pencil. Choose **Schematic default** or a color from **Saved** or **App colors**. The accent colors new wires and the fill and outline of new built-in tanks. Branches use the color of the wire they join.
+With editing enabled, open **Schematic accent** to the left of the pencil. Choose **Schematic default** or a color from **Saved** or **App colors**. The accent colors new edges and the fill and outline of new built-in tanks. Branches use the color of the edge they join.
 
-Select wires or tanks to see their accent colors in the toolbar. Choose a color to apply it to the whole selection. Undo restores the previous colors in one step. For individual tank settings, open the **Tank** tab.
+Select edges or tanks to see their accent colors in the toolbar. Choose a color to apply it to the whole selection. Undo restores the previous colors in one step. For individual tank settings, open the **Tank** tab.
 
-Choose the pencil beside **Search colors** to open the Saved Colors dialog. Search for an existing color to edit or delete it, or use **New color** to start a new entry. Set the **Dark** and **Light** swatches, then name and save the color in the footer. The regular color picker's **Saved** tab opens the same dialog. Existing wires keep the colors stored when they were drawn.
+Choose the pencil beside **Search colors** to open the Saved Colors dialog. Search for an existing color to edit or delete it, or use **New color** to start a new entry. Set the **Dark** and **Light** swatches, then name and save the color in the footer. The regular color picker's **Saved** tab opens the same dialog. Existing edges keep the colors stored when they were drawn.
 
-Drag a wire's route handles to adjust its path.
+Drag an edge's route handles to adjust its path.
 
 ![](_attachments/Pasted%20image%2020261030142735.png)
 

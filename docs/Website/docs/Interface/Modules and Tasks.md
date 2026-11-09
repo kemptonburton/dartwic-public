@@ -109,7 +109,8 @@ With the task configured, use **Start** to begin its work. A task can be running
 | --- | --- | --- |
 | Start / Stop | `<task>_running` | Write `1` to request start or `0` to request stop. |
 | Hold / Release | `<task>_hold` | Write `1` to hold supported work or `0` to continue the same run. |
-| Target / Actual frequency | `<task>_target_frequency` / `<task>_actual_frequency` | Set the requested rate and read the measured rate; 10 Hz means ten iterations per second. Actual frequency is read-only. |
+| Target / Average frequency | `<task>_target_frequency` / `<task>_average_frequency` | Set the requested rate and read the average number of callbacks completed per second. |
+| Cycle-to-cycle | `<task>_cycle_to_cycle_frequency_min` / `<task>_cycle_to_cycle_frequency_max` | Compare the range between consecutive starts with the target, even when the average matches. |
 | Current / Target state | `<task>_current_state` / `<task>_target_state` | Read the current stage and write a requested state-machine transition. The task's logic decides whether to accept it; current state is read-only. |
 
 Replace `<task>` with the task's name: a task named `tank_fill` has `tank_fill_running`, for example. You can command these control channels from Channels, DCode, or a client instead of using the task buttons. Available channels depend on the task's structure and implementation.

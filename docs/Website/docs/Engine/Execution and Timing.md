@@ -75,7 +75,8 @@ Some timing measurements are RAPID diagnostic channels; others are fields in the
 | Callback duration | `_execution_time` — diagnostic channel | Smoothed execution time in milliseconds, including channel writes and synchronous reactions. The health report also exposes `health.callback_duration_last_ms`. |
 | Missed cycles | `_missed_cycles` — diagnostic channel | Total skipped iterations. A slightly late start does not necessarily skip one. |
 | Overrun status | `health.state` = `overrun` — report field | A completed callback reached or exceeded its completion deadline, normally one task period. No dedicated overrun channel. |
-| Actual frequency | `_actual_frequency` — diagnostic channel | Observed iterations per second. An average can hide individual late iterations. |
+| Average frequency | `_average_frequency` for tasks, `_actual_frequency` for named loops | Completed callbacks per second over a sampling window. |
+| Cycle-to-cycle frequency range | `_cycle_to_cycle_frequency_min` and `_cycle_to_cycle_frequency_max` for tasks | Longest and shortest gaps between consecutive task starts, expressed in Hz. |
 
 DCode's `missed:` section can respond to skipped iterations. Keep it short: it runs on the task's execution thread and cannot run while that thread is blocked. `health.state` can also report `active_overdue` when a callback is still executing past its deadline.
 

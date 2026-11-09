@@ -111,7 +111,8 @@ The **CAESAR** tab includes task and loop diagnostics. These measurements show w
 
 | Measurement | Meaning | What a warning could mean |
 | --- | --- | --- |
-| Requested/observed rate (e.g. `sample_control_actual_frequency`) | Requested rate versus observed iterations per second; workers report work rate. | Execution or blocking waits prevent the requested rate. |
+| Requested/average rate (e.g. `sample_control_average_frequency`) | Requested rate versus completed callbacks per second; workers report work rate. | Execution or blocking waits prevent the requested rate. |
+| Cycle-to-cycle frequency range | Lowest and highest rates calculated from consecutive starts. | Gaps vary even when the average meets the target. |
 | Callback duration (`sample_control_execution_time`) | Smoothed callback duration, including waits and synchronous reactions. | The callback consumes too much of its scheduled period or deadline. |
 | Skipped iterations (`sample_control_missed_cycles`) | Scheduled iterations skipped after execution fell behind. | A task, shared loop, or CPU workload takes too long. |
 | Callback failures (`sample_control_failed_cycles`) | Callback exceptions caught by CAESAR. | Inspect task events, logs, and inputs for failing code. |
@@ -167,14 +168,15 @@ Task cards, Network Map, and events/logs provide more specific evidence outside 
 
 Open [Modules and Tasks](../Interface/Modules%20and%20Tasks.md) to inspect a task's controls, state, and timing on its card.
 
-A task configured for 100 Hz may run more slowly or get stuck. Its channels and health report show actual execution. For `sample_control`, suffixes below form names such as `sample_control_actual_frequency`:
+A task configured for 100 Hz can average 100 Hz with uneven spacing between starts. Compare the average with the cycle-to-cycle range. The **CAESAR task cadence varied** warning uses a default tolerance of ±10% of the target frequency. Set `caesar_cadence_tolerance_percent` through the Engine diagnostics configuration to adjust it. For `sample_control`, suffixes below form names such as `sample_control_average_frequency`.
 
 | Suffix | Meaning |
 | --- | --- |
 | `_running` | Start/stop request; an active callback may still be finishing. |
 | `_hold` | Hold/release request on supported task structures. |
 | `_target_frequency` | Requested Hz for scheduled tasks. |
-| `_actual_frequency` | Observed rate for scheduled tasks; workers use `_worker_rate`. |
+| `_average_frequency` | Completed callbacks per second over a sampling window. Workers use `_worker_rate`. |
+| `_cycle_to_cycle_frequency_min`, `_cycle_to_cycle_frequency_max` | Minimum and maximum rate between task starts in the latest sample. Zero means there is no valid range. |
 | `_execution_time` | Smoothed callback duration in milliseconds for scheduled tasks. |
 | `_missed_cycles` | Total skipped scheduled iterations. |
 | `_failed_cycles` | Total callback exceptions caught by CAESAR. |

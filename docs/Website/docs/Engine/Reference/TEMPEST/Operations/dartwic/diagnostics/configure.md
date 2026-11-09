@@ -1,15 +1,15 @@
 ---
-title: dartwic/diagnostics/configure
-summary: Updates engine diagnostics thresholds and event emission settings.
-created: 2026-10-04T18:31
-updated: 2026-10-20T18:59
+title: "dartwic/diagnostics/configure"
+summary: "Updates engine diagnostics thresholds and event emission settings."
 ---
 
 - **Category:** Diagnostics
 
 ## Request payload
 
-**object:** Partial configuration patch with optional scope (workspace or project). measurement_warnings maps channel names to enabled and above/below/outside_range rules. Disabling an engine diagnostic stops publication and its warnings; shared inputs remain while needed. internal_caesar_warnings maps task|name or loop|name to enable flags (engine internals default off). Task switches suppress warnings without deleting task-owned channels. warnings_enabled globally disables sampler diagnostics. Legacy condition_warnings switches migrate to canonical channel/runtime controls.
+| Field | Type | Requirement | Description |
+| --- | --- | --- | --- |
+| `caesar_cadence_tolerance_percent` | `number` | Optional | Allowed deviation on either side of a task's target frequency, from 0 up to but excluding 100. Defaults to 10. |
 
 ## Response payload
 

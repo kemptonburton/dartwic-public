@@ -159,7 +159,7 @@ This example uses the shared [wait functions](Common%20Syntax%20and%20Functions.
 
 # Task Controls and Diagnostics
 
-Use the [shared task control and diagnostic channels](../Engine/Modules%20and%20Tasks.md#task-channels), with your task's name as the prefix, such as `tasks_noise_filter_running`. Change frequency through `_target_frequency` or Tasks, then compare `_actual_frequency` with the target.
+Use the [shared task control and diagnostic channels](../Engine/Modules%20and%20Tasks.md#task-channels), with your task's name as the prefix, such as `tasks_noise_filter_running`. Change frequency through `_target_frequency` or Tasks, then compare `_average_frequency` and the cycle-to-cycle range with the target.
 
 For a sequence, `<name>_current_line` identifies its active source line and becomes zero after completion. [Startup behavior](../Engine/Modules%20and%20Tasks.md#configuration-and-registration) covers automatic Engine startup.
 

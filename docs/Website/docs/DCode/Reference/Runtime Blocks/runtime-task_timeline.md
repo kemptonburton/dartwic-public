@@ -1,8 +1,6 @@
 ---
-title: task_timeline
-summary: Schedule cooperative DCode sequence buckets against a signed T-/T+ mission clock. Buckets share one tick thread; ordinary blocking code stalls the entire timeline.
-created: 2026-10-04T18:31
-updated: 2026-10-27T16:09
+title: "task_timeline"
+summary: "Schedule cooperative DCode sequence buckets against a signed T-/T+ mission clock. Buckets share one tick thread; ordinary blocking code stalls the entire timeline."
 ---
 
 ## Syntax
@@ -50,7 +48,9 @@ Ticks at a configurable frequency (default 10 Hz). Inside a bucket, wait, wait_u
 - `<name>_aborted`
 - `<name>_current_line`
 - `<name>_target_frequency`
-- `<name>_actual_frequency`
+- `<name>_average_frequency`
+- `<name>_cycle_to_cycle_frequency_min`
+- `<name>_cycle_to_cycle_frequency_max`
 - `<name>_execution_time`
 - `<name>_missed_cycles`
 - `<name>_failed_cycles`
