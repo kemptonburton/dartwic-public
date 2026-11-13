@@ -2,7 +2,7 @@
 title: rapid/channel-export-start
 summary: Starts a client-owned background CSV export of raw channel samples.
 created: 2026-08-04T16:41
-updated: 2026-11-07T01:22
+updated: 2026-11-13T00:56
 ---
 
 - **Category:** Channels and Persistence

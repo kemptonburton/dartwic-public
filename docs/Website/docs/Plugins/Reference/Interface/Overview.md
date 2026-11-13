@@ -2,7 +2,7 @@
 title: Interface Plugin SDK Reference
 summary: Public TypeScript exports for extending the DARTWIC interface.
 created: 2026-08-03T15:41
-updated: 2026-11-12T23:58
+updated: 2026-11-13T00:56
 ---
 
 ## Categories

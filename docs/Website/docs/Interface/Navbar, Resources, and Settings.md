@@ -2,7 +2,7 @@
 title: Navbar, Resources, and Settings
 summary: Navigate resources and configure your Interface, connections, and Engine settings.
 created: 2026-08-03T15:41
-updated: 2026-11-05T15:54
+updated: 2026-11-13T00:56
 ---
 
 This guide covers the controls you use to navigate and configure the Interface:

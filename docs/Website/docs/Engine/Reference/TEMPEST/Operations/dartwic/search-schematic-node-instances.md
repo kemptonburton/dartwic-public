@@ -5,7 +5,7 @@ summary: |-
   Reconciles the cached index before returning. Empty queries return the first nodes.
   Unreadable or malformed files are reported without hiding valid matches.
 created: 2026-08-03T16:00
-updated: 2026-11-11T19:40
+updated: 2026-11-13T00:56
 ---
 
 - **Category:** Schematics

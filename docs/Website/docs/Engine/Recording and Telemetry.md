@@ -1,7 +1,7 @@
 ---
 summary: Understand what gets recorded, how live updates arrive, and how to keep and review history.
 created: 2026-08-03T15:41
-updated: 2026-11-07T01:22
+updated: 2026-11-13T00:56
 ---
 
 Recording saves what happened so you can review a test, compare measurements with events, or investigate a failure. Telemetry sends live updates to dashboards, clients, and other Engines.

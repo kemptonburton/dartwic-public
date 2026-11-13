@@ -1,7 +1,7 @@
 ---
 summary: Edit scripts, understand saved versus active code, and find runtime errors.
 created: 2026-10-24
-updated: 2026-10-30T02:35
+updated: 2026-11-13T00:56
 ---
 
 **DCode** is DARTWIC's automation language for calculations, device control, event conditions, and procedures. Open **Scripts** in the left sidebar to work with it. This guide covers opening or creating a script, the editor's language tools, choosing what to build, and activating changes in the Engine.

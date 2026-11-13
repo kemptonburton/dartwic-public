@@ -1,7 +1,7 @@
 ---
 summary: Configure device connections, operate automation, and check the result.
 created: 2026-08-03T15:41
-updated: 2026-11-12T18:06
+updated: 2026-11-13T00:56
 ---
 
 A module provides a connection or service; a task does work with it. Open **Modules** or **Tasks** from the left sidebar to create, configure, and monitor them. This walkthrough uses a Modbus device to connect inputs and outputs to channels and operate the resulting tasks. Install the device's [plugin](Plugins.md) and select your project first.

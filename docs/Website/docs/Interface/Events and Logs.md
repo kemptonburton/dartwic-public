@@ -1,7 +1,7 @@
 ---
 summary: Investigate events, respond to prompts and holds, and read live or recorded logs.
 created: 2026-08-03T15:41
-updated: 2026-11-12T17:04
+updated: 2026-11-13T00:56
 ---
 
 Events flag conditions that need attention; logs preserve timestamped output explaining what happened. **ARGUS** manages and records both. Open **Events** or **Logs** in the left sidebar, or use their [Node Board views](Node%2C%20Context%2C%20and%20Project%20Board.md#node-activity) beside your main tab.

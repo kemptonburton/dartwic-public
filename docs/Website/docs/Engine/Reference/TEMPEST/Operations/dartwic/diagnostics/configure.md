@@ -2,7 +2,7 @@
 title: dartwic/diagnostics/configure
 summary: Updates engine diagnostics thresholds and event emission settings.
 created: 2026-10-04T18:31
-updated: 2026-11-12T18:18
+updated: 2026-11-13T00:56
 ---
 
 - **Category:** Diagnostics

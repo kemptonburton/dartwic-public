@@ -1,6 +1,8 @@
 ---
-title: "Schematics"
-summary: "Load and modify schematic definitions used by DARTWIC interfaces."
+title: Schematics
+summary: Load and modify schematic definitions used by DARTWIC interfaces.
+created: 2026-08-04T17:33
+updated: 2026-11-13T00:56
 ---
 
 | Operation | Description |

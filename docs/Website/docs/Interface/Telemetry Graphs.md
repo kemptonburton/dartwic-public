@@ -1,7 +1,7 @@
 ---
 summary: Plot signals, navigate live and recorded ranges, and compare events and logs.
 created: 2026-10-24
-updated: 2026-11-12T17:57
+updated: 2026-11-13T00:56
 ---
 
 Open **Telemetry** in the left sidebar to plot channel measurements and commands against time. Compare signals live, review recorded tests, and export their data.

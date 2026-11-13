@@ -2,7 +2,7 @@
 title: dartwic/diagnostics/get
 summary: Returns the engine's current diagnostics snapshot.
 created: 2026-10-04T18:31
-updated: 2026-11-12T18:18
+updated: 2026-11-13T00:56
 ---
 
 - **Category:** Diagnostics

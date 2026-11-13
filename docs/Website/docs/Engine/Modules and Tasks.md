@@ -1,7 +1,7 @@
 ---
 summary: Understand module instances, task structures and types, other CAESAR artifacts, and their shared lifecycle.
 created: 2026-09-04T17:13
-updated: 2026-10-28T22:07
+updated: 2026-11-13T00:56
 ---
 
 A **module** gives the Engine a device connection or shared service. A **task** does work, such as reading that device, calculating a command, or running a procedure.

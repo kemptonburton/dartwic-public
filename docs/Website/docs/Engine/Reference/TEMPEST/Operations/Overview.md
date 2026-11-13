@@ -1,6 +1,8 @@
 ---
-title: "TEMPEST Operations"
-summary: "Official request and response operations available in a standard DARTWIC runtime."
+title: TEMPEST Operations
+summary: Official request and response operations available in a standard DARTWIC runtime.
+created: 2026-08-04T17:33
+updated: 2026-11-13T00:56
 ---
 
 Plugins can register additional operations while they are loaded. This reference covers the operations built into DARTWIC and TEMPEST.

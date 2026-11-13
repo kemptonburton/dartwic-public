@@ -1,7 +1,7 @@
 ---
 summary: Find signals, understand their status, and inspect or change their values.
 created: 2026-09-04T17:13
-updated: 2026-11-12T19:34
+updated: 2026-11-13T00:56
 ---
 
 A channel is a named signal: a measurement, command, task status, or calculated value. Open **Channels** to find it and see where they come from and what is controlling them.

@@ -1,6 +1,8 @@
 ---
-title: "DARTWIC UI Components"
-summary: "Use higher-level components that follow DARTWIC interaction and styling conventions."
+title: DARTWIC UI Components
+summary: Use higher-level components that follow DARTWIC interaction and styling conventions.
+created: 2026-08-04T17:38
+updated: 2026-11-13T00:56
 ---
 
 | Export | Import path | Description |
