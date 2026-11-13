@@ -1,6 +1,8 @@
 ---
-title: "InterfaceContributions"
-summary: "Contributions grouped by supported interface extension point."
+title: InterfaceContributions
+summary: Contributions grouped by supported interface extension point.
+created: 2026-08-04T17:38
+updated: 2026-11-13T00:56
 ---
 
 ## Import

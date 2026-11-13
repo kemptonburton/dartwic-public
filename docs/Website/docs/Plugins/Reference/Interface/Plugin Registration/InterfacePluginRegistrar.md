@@ -1,6 +1,8 @@
 ---
-title: "InterfacePluginRegistrar"
-summary: "Focused registry supplied to an interface plugin's `register` callback."
+title: InterfacePluginRegistrar
+summary: Focused registry supplied to an interface plugin's `register` callback.
+created: 2026-08-04T17:38
+updated: 2026-11-13T00:56
 ---
 
 ## Import

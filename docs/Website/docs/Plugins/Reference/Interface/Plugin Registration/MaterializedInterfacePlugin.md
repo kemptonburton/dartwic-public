@@ -1,6 +1,8 @@
 ---
-title: "MaterializedInterfacePlugin"
-summary: "Runtime form of an interface plugin after registration has been evaluated."
+title: MaterializedInterfacePlugin
+summary: Runtime form of an interface plugin after registration has been evaluated.
+created: 2026-08-04T17:38
+updated: 2026-11-13T00:56
 ---
 
 ## Import
