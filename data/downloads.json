@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-05T05:10:32.887Z",
+  "generatedAt": "2026-11-13T08:32:25.814Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -70,7 +70,7 @@
       {
         "tag_name": "v2.0.0",
         "html_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.0.0",
-        "prerelease": false,
+        "prerelease": true,
         "published_at": "2026-10-22T20:57:38Z",
         "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/zipball/v2.0.0",
         "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/tarball/v2.0.0",
@@ -110,7 +110,7 @@
       {
         "tag_name": "v2.0.1",
         "html_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.0.1",
-        "prerelease": false,
+        "prerelease": true,
         "published_at": "2026-10-27T01:25:47Z",
         "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/zipball/v2.0.1",
         "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/tarball/v2.0.1",
@@ -150,7 +150,7 @@
       {
         "tag_name": "v2.1.0",
         "html_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.1.0",
-        "prerelease": false,
+        "prerelease": true,
         "published_at": "2026-10-30T21:59:25Z",
         "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/zipball/v2.1.0",
         "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/tarball/v2.1.0",
@@ -184,7 +184,7 @@
       {
         "tag_name": "v2.1.1",
         "html_url": "https://github.com/kemptonburton/dartwic-ethercat-plugin/releases/tag/v2.1.1",
-        "prerelease": false,
+        "prerelease": true,
         "published_at": "2026-11-05T03:38:15Z",
         "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/zipball/v2.1.1",
         "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-ethercat-plugin/tarball/v2.1.1",
@@ -1254,6 +1254,40 @@
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.1.1/SHA256SUMS.txt",
             "size": 89,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "engine-v2.2.0",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.2.0",
+        "prerelease": false,
+        "published_at": "2026-11-13T08:32:18Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/engine-v2.2.0",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/engine-v2.2.0",
+        "assets": [
+          {
+            "name": "engine-2.2.0-linux.tar.gz",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.2.0/engine-2.2.0-linux.tar.gz",
+            "size": 26411039,
+            "state": "uploaded"
+          },
+          {
+            "name": "engine-2.2.0-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.2.0/engine-2.2.0-win64.zip",
+            "size": 18507027,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-engine-2.2.0.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.2.0/release-manifest-engine-2.2.0.json",
+            "size": 3152,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/engine-v2.2.0/SHA256SUMS.txt",
+            "size": 181,
             "state": "uploaded"
           }
         ]
