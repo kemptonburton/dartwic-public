@@ -1,8 +1,6 @@
 ---
-title: DARTWIC UI Components
-summary: Use higher-level components that follow DARTWIC interaction and styling conventions.
-created: 2026-08-04T17:38
-updated: 2026-10-21T15:16
+title: "DARTWIC UI Components"
+summary: "Use higher-level components that follow DARTWIC interaction and styling conventions."
 ---
 
 | Export | Import path | Description |
@@ -10,7 +8,8 @@ updated: 2026-10-21T15:16
 | [AbstractedButtonNodeConfig](AbstractedButtonNodeConfig.md) | `@dartwic/interface-sdk/ui` | Configure an abstracted schematic button node. |
 | [buildChannelFieldPayload](buildChannelFieldPayload.md) | `@dartwic/interface-sdk/ui` | Build a channel-field payload from a value reference and optional field. |
 | [buildControlDisplayNodeDefinitionFromChannel](buildControlDisplayNodeDefinitionFromChannel.md) | `@dartwic/interface-sdk/ui` | Create a control-display schematic node definition from channel data. |
-| [buildParameterDisplayNodeDefinitionFromChannel](buildParameterDisplayNodeDefinitionFromChannel.md) | `@dartwic/interface-sdk/ui` | Create a parameter-display schematic node definition from channel data. |
+| [buildParameterDisplayNodeDefinitionFromChannel](buildParameterDisplayNodeDefinitionFromChannel.md) | `@dartwic/interface-sdk/ui` | Legacy alias for buildReadoutNodeDefinitionFromChannel. |
+| [buildReadoutNodeDefinitionFromChannel](buildReadoutNodeDefinitionFromChannel.md) | `@dartwic/interface-sdk/ui` | Create a readout schematic node definition from channel data. |
 | [ChannelComboBox](ChannelComboBox.md) | `@dartwic/interface-sdk/ui` | Selects a DARTWIC channel and, optionally, one of its fields. |
 | [ChannelComboBoxProps](ChannelComboBoxProps.md) | `@dartwic/interface-sdk/ui` | Props for the host channel and field selector. |
 | [ComboboxSearch](ComboboxSearch.md) | `@dartwic/interface-sdk/ui` | Searches a fixed option list using DARTWIC's standard host-owned combobox. |

@@ -1,7 +1,7 @@
 ---
 summary: Find signals, understand their status, and inspect or change their values.
 created: 2026-09-04T17:13
-updated: 2026-10-30T03:44
+updated: 2026-11-12T19:34
 ---
 
 A channel is a named signal: a measurement, command, task status, or calculated value. Open **Channels** to find it and see where they come from and what is controlling them.
@@ -37,6 +37,14 @@ For example, you see that `tank_pressure` has a value error and your tank is bli
 
 The views support similar functions for channels, or toolbar actions. If they don't, the buttons will be disabled. Channel List View is the default view, and is a good intro to most channel functions.
 
+## Pin channels
+
+Pin channels you check often to keep them together while switching between **Channel list** and **Modules / Tasks**. Hover over a channel row, then select the pin immediately left of its dropdown arrow. The pin highlights on hover and stays visible while pinned. Select it again to unpin. Clicking elsewhere in the channel-name area still opens or closes the channel's fields.
+
+Both views show the same **Pinned** section above their normal rows. Its header has the same channel-count, state, and event badges as node headers. In **Modules / Tasks**, pinned channels keep their plugin, module, and task hierarchy, with the same owner links and controls as the normal rows. Pins follow channel-name search and the active filters, and channels also remain in their usual locations. Remote channels pinned from the list appear in this section in both views. Config Map does not show pins.
+
+The Interface remembers pins for that workspace on your current installation or browser profile, across projects and restarts. Other users' Interfaces keep their own pins. A channel that disappears is hidden from Pinned until it returns; a renamed channel needs to be pinned under its new name. Moving the workspace or connecting through a different Engine host address starts a separate set of pins.
+
 # Channel List View
 
 Use the channel list to view and search all the channels in the engine.
@@ -64,11 +72,11 @@ Local channels do not include their node, such as `tank_pressure`. Editing that 
 
 Remote channels include their node, such as `TEST_STAND:tank_pressure`. Editing that channel will send an edit command from the currently connected engine, to that remote node. The edit result will then be visible when that remote node sends telemetry to the engine you are connected to, and then to your client Interface.
 
-As of now, only the **Channel List View** supports **remote nodes**.
+Browse remote nodes in **Channel list**. Remote channels you pin there are also available in the **Pinned** section of **Modules / Tasks**.
 
 ## Channel Fields
 
-Click a channel to reveal its **fields**. Editable fields have controls; read-only details are dimmed. Some edits require control of the channel.
+Click a channel to reveal its **fields**. Editable fields have controls; read-only details are dimmed. Protected fields, including stale timeout and record mode, stay dimmed and cannot be edited while automation or an observe-only publisher controls the channel. Take manual override to edit them, then release it when finished.
 
 | Field | What it is for |
 | --- | --- |

@@ -3,8 +3,42 @@ import assert from "node:assert/strict";
 import {createInterfacePlugin, definePlugin} from "./index.ts";
 import {getConfigMapChannels} from "./config-maps/index.ts";
 import {defineMarkdownChip} from "./markdown/index.ts";
+import type {SchematicFluidPath} from "./schematic-nodes/index.ts";
 
 const Component = () => null;
+
+test("named schematic fluid paths retain typed IDs and memberships through registration", () => {
+    const paths: SchematicFluidPath[] = [{id: "coolant", label: "Coolant", ports: ["inlet", "outlet"]}];
+    const plugin = createInterfacePlugin({id: "paths", register(registry) {
+        registry.addSchematicNode({id: "exchanger", name: "Exchanger", component: Component, dataDefaults: {
+            connection_ports: [{id: "inlet", x: 0, y: .5, side: "left"}, {id: "outlet", x: 1, y: .5, side: "right"}],
+            fluid_port_roles: {inlet: "sink", outlet: "source"}, fluid_paths: paths,
+        }});
+    }});
+    assert.deepEqual(plugin.schematicNodes?.[0].dataDefaults?.fluid_paths, paths);
+});
+
+test('schematic renderers and data-only gallery presets retain separate qualified identities', () => {
+    const plugin = createInterfacePlugin({id: 'bench', register(registry) {
+        const type = registry.addSchematicNode({id: 'sensor', name: 'Sensor', component: Component,
+            configIncludesBase: true, channelBinding: 'general', palette: {category: 'readouts'},
+            dataDefaults: {connection_ports: [{id: 'inlet', side: 'left', x: 0, y: .5}], fluid_port_roles: {inlet: 'sink'}}});
+        assert.equal(type, 'bench.sensor');
+        registry.addSchematicNodePreset({id: 'large', name: 'Large Sensor', category: 'readouts', node: {type, width: 200, data: {custom: true}}});
+        registry.addSchematicNodePreset({id: 'readout', name: 'Bench Readout', node: {type: 'general', data: {}}});
+    }});
+    assert.equal(plugin.schematicNodes[0].configIncludesBase, true);
+    assert.equal(plugin.schematicNodes[0].channelBinding, 'general');
+    assert.equal(plugin.schematicNodePresets?.[0].id, 'bench.large');
+    assert.equal(plugin.schematicNodePresets?.[0].node.type, 'bench.sensor');
+    assert.equal(plugin.contributions.interface.schematicNodePresets?.length, 2);
+    assert.throws(() => createInterfacePlugin({id: 'bad', register(registry) {
+        registry.addSchematicNodePreset({id: 'x', name: 'X', node: {} as any});
+    }}), /requires a name and node/);
+    assert.throws(() => createInterfacePlugin({id: 'bad', register(registry) {
+        for (let i = 0; i < 2; i++) registry.addSchematicNodePreset({id: 'same', name: 'X', node: {type: 'general', data: {}}});
+    }}), /Duplicate schematicNodePresets/);
+});
 
 test('Config Map registrations create default editors and preserve custom components', () => {
     const configMap = {groups: [], load: async () => ({}), apply: async (next: any) => next};

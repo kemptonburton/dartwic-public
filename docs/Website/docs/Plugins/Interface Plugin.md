@@ -67,7 +67,8 @@ Put imports at file scope and `registry.add…` calls inside `register(registry)
 | `addResource` | A page or file-backed operator tool. |
 | `addTaskUi` | A task card, configuration editor, or Config Map for a registered task type. |
 | `addModuleUi` | A module icon, connection presentation, and configuration UI. |
-| `addSchematicNode` | A schematic component and palette defaults. |
+| `addSchematicNode` | A schematic renderer, shared editor integration and palette defaults. |
+| `addSchematicNodePreset` | A named preset in the node browser, Insert Node and gallery. |
 | `addSettingsPanel` | Plugin settings, with a custom component or Config Map. |
 | `addPopupUi` | A named modal workflow responding to backend UI requests. |
 | `addValueFormat` | Numeric display and editing selected through a channel's Units format. |
@@ -131,23 +132,19 @@ A contribution can also supply a `card` or custom `editor`. The [driver guide](B
 
 ## Schematic nodes
 
-A schematic contribution registers a canvas component and its initial data. This small label needs no Engine connection:
+Use `addSchematicNodePreset` for a named General Node preset, or `addSchematicNode` for custom center content wrapped in `BaseNode`. `BaseNodeConfig` supplies the shared Node Setup and Node Appearance tabs. The node browser, Insert Node picker and gallery share these contributions.
 
-```jsx
-import React from "@dartwic/interface-sdk/react";
-
-// Inside register(registry):
-registry.addSchematicNode({
-    id: "label", name: "Bench label",
-    component: ({data}) => <div className="rounded border bg-card p-2">{data?.label}</div>,
-    dataDefaults: {label: "Bench"},
-    palette: {defaults: {width: 160, height: 48}},
+```ts
+registry.addSchematicNodePreset({
+    id: "pressure", name: "Pressure", category: "readouts",
+    node: {type: "general", data: {general_settings: {
+        content: "readout", body_style: "card", body_shape: "rectangle",
+        readout: {type: "value", title: "PRESSURE", units: "psi"},
+    }}},
 });
 ```
 
-Use the [schematic node reference](Reference/Interface/Schematic%20Nodes/Overview.md) for configuration components, sizing, and command actions.
-
-For a connectable node, use `dataDefaults.fluid_port_roles` to assign `"sink"`, `"source"`, or `"none"` to its `left`, `right`, `top`, or `bottom` handle. For example, `dataDefaults: {fluid_port_roles: {left: "sink"}}` lets the left handle accept activity from an upstream valve, pump, or tank. Operators can override the roles in the node settings. Setting a role describes the connection. The host drives source activity from built-in valve, pump, and tank behavior.
+See [Schematic Nodes](Schematic%20Nodes.md) for renderer/editor examples, gallery defaults, custom handles, channel drops and shared-selection configuration. The [schematic node reference](Reference/Interface/Schematic%20Nodes/Overview.md) lists signatures.
 
 ## Settings panels
 

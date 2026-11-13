@@ -1,7 +1,7 @@
 ---
 summary: Interpret runtime evidence and choose the next check when work fails or falls behind.
 created: 2026-10-24
-updated: 2026-10-28T22:03
+updated: 2026-11-12T18:18
 ---
 
 Diagnostics help explain a slow task, missing recordings, or a display that stops updating. Use the measurements to identify which part of the system needs investigation, then check its events and logs.
@@ -168,7 +168,11 @@ Task cards, Network Map, and events/logs provide more specific evidence outside 
 
 Open [Modules and Tasks](../Interface/Modules%20and%20Tasks.md) to inspect a task's controls, state, and timing on its card.
 
-A task configured for 100 Hz can average 100 Hz with uneven spacing between starts. Compare the average with the cycle-to-cycle range. The **CAESAR task cadence varied** warning uses a default tolerance of ±10% of the target frequency. Set `caesar_cadence_tolerance_percent` through the Engine diagnostics configuration to adjust it. For `sample_control`, suffixes below form names such as `sample_control_average_frequency`.
+A task configured for 100 Hz can average 100 Hz with uneven spacing between starts. Compare the average with the cycle-to-cycle range. The **Task timing variation** warning reports the frequency range at detection, the target, and each channel's configured warning rule. Live readings may have recovered since the recorded detection.
+
+Use the Diagnostics shortcut beside the warning's Trigger Origin to find both frequency channels in **Settings → Diagnostics → CAESAR**. It searches the shared prefix, such as `sample_control_cycle_to_cycle_frequency_`. Open the gear on each row to set its enable switch, warning condition and limit in Hz, using the same controls as other measurements. Either enabled channel rule can trigger the same task warning. The warning clears when neither enabled rule is breached; disabling one rule leaves the other active and keeps both measurements available.
+
+For a 10 Hz task, the default minimum-channel rule is **Below 9 Hz**, and the default maximum-channel rule is **Above 11 Hz**. Save a different limit to customize either channel in the selected workspace or project scope. Both default and customized limits automatically follow the configured target frequency: changing a 10 Hz target to 20 Hz moves 9/11 Hz limits to 18/22 Hz. The controls continue showing Hz and refresh automatically, including while open. Thresholds follow the target rather than the measured average, so slow execution cannot lower its own warning limit. Existing saved limits are adapted automatically when the task target is first available. Channels without a custom rule use target-relative defaults; older saved `caesar_cadence_tolerance_percent` values remain the default source. For `sample_control`, suffixes below form names such as `sample_control_average_frequency`.
 
 | Suffix | Meaning |
 | --- | --- |
@@ -176,10 +180,12 @@ A task configured for 100 Hz can average 100 Hz with uneven spacing between star
 | `_hold` | Hold/release request on supported task structures. |
 | `_target_frequency` | Requested Hz for scheduled tasks. |
 | `_average_frequency` | Completed callbacks per second over a sampling window. Workers use `_worker_rate`. |
-| `_cycle_to_cycle_frequency_min`, `_cycle_to_cycle_frequency_max` | Minimum and maximum rate between task starts in the latest sample. Zero means there is no valid range. |
+| `_cycle_to_cycle_frequency_min`, `_cycle_to_cycle_frequency_max` | Lowest and highest start-to-start frequency collected over a reporting window of at least half a second. The completed pair stays available until a new window with valid measurements is ready. Zero means there is no valid range. |
 | `_execution_time` | Smoothed callback duration in milliseconds for scheduled tasks. |
 | `_missed_cycles` | Total skipped scheduled iterations. |
 | `_failed_cycles` | Total callback exceptions caught by CAESAR. |
+
+The health monitor continues checking timing at its normal faster rate. Channel updates occur on the first health check after the half-second window is ready. Start, stop, hold/resume and target-frequency changes reset the range. Holding each completed pair gives periodic telemetry more opportunity to deliver an extreme; it does not guarantee delivery during a disconnection.
 
 ### Failure Counters
 

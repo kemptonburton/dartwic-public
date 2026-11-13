@@ -280,7 +280,7 @@ Control writes **request** a transition. A successful write to `_running` does n
 | Suffix | What it tells you | Applies to |
 | --- | --- | --- |
 | `_average_frequency` | Completed callbacks per second, averaged over a sampling window. | Periodic, state-machine, and timeline tasks. |
-| `_cycle_to_cycle_frequency_min`, `_cycle_to_cycle_frequency_max` | Lowest and highest rates in Hz calculated from consecutive task starts in the latest sample. A zero in either channel means the range is unavailable. | Periodic, state-machine, and timeline tasks. |
+| `_cycle_to_cycle_frequency_min`, `_cycle_to_cycle_frequency_max` | Lowest and highest rates in Hz calculated from consecutive task starts over a reporting window of at least half a second. The completed pair is held until the next window with valid measurements. Start, stop, hold/resume and frequency changes reset the range. A zero in either channel means the range is unavailable. | Periodic, state-machine, and timeline tasks. |
 | `_execution_time` | Smoothed iteration duration in milliseconds. | Periodic, state-machine, and timeline tasks. |
 | `_missed_cycles` | Planned releases skipped because execution fell behind. | Periodic, state-machine, and timeline tasks. |
 | `_failed_cycles` | Caught execution-body failures; excludes start/end errors. | Tasks. |

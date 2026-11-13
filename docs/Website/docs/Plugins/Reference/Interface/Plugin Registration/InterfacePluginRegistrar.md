@@ -18,6 +18,8 @@ export interface InterfacePluginRegistrar {
     addModuleUi(definition: ModuleUiDefinition): string;
     addResource(definition: ResourceContributionDefinition): string;
     addSchematicNode(definition: SchematicNodeContributionDefinition): string;
+    /** Add a data-only preset to the node browser, Insert Node and gallery. Returns its plugin-qualified id. */
+    addSchematicNodePreset(definition: SchematicNodePresetDefinition): string;
     addSettingsPanel(definition: SettingsPanelDefinition): string;
     addPopupUi(definition: PopupUiDefinition): string;
 }
@@ -32,5 +34,6 @@ export interface InterfacePluginRegistrar {
 | `addModuleUi` | `string` | Required |  |
 | `addResource` | `string` | Required |  |
 | `addSchematicNode` | `string` | Required |  |
+| `addSchematicNodePreset` | `string` | Required | Add a data-only preset to the node browser, Insert Node and gallery. Returns its plugin-qualified id. |
 | `addSettingsPanel` | `string` | Required |  |
 | `addPopupUi` | `string` | Required |  |

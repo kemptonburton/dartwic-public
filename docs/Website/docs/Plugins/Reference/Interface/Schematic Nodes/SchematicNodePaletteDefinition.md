@@ -1,6 +1,8 @@
 ---
-title: "SchematicNodePaletteDefinition"
-summary: "Palette label and default node data for a schematic contribution."
+title: SchematicNodePaletteDefinition
+summary: Palette label and default node data for a schematic contribution.
+created: 2026-08-04T17:38
+updated: 2026-11-12T23:58
 ---
 
 ## Import
@@ -14,7 +16,9 @@ import type { SchematicNodePaletteDefinition } from "@dartwic/interface-sdk/sche
 ```ts
 export interface SchematicNodePaletteDefinition {
     name?: string;
-    defaults?: Record<string, unknown>;
+    /** Built-in category id or a custom category shared by browser, Insert Node and gallery. */
+    category?: string;
+    defaults?: SchematicNodeData;
 }
 ```
 
@@ -23,4 +27,5 @@ export interface SchematicNodePaletteDefinition {
 | Name | Type | Requirement | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | Optional |  |
-| `defaults` | `Record<string, unknown>` | Optional |  |
+| `category` | `string` | Optional | Built-in category id or a custom category shared by browser, Insert Node and gallery. |
+| `defaults` | `SchematicNodeData` | Optional |  |

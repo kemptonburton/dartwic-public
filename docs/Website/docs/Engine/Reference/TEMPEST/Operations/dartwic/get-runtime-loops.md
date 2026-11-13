@@ -2,7 +2,7 @@
 title: dartwic/get-runtime-loops
 summary: Returns runtime loops.
 created: 2026-08-03T16:00
-updated: 2026-10-20T18:59
+updated: 2026-11-12T18:27
 ---
 
 - **Category:** Tasks
@@ -17,5 +17,5 @@ updated: 2026-10-20T18:59
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `loops` | `array<RuntimeLoop>` | Matching CAESAR and DCode loop descriptors, including identity, state, timing, and source metadata. |
+| `loops` | `array<RuntimeLoop>` | Matching CAESAR and DCode loop descriptors, including identity, state, timing, and source metadata. `average_frequency` is the observed average rate in Hz; `average_frequency_channel` names its published diagnostic channel, or is null when unpublished. Engine 2.2 uses only these average-frequency field names. |
 | `query` | `string` | Search text supplied by the client. |

@@ -1,7 +1,7 @@
 ---
 summary: Configure device connections, operate automation, and check the result.
 created: 2026-08-03T15:41
-updated: 2026-11-05T16:09
+updated: 2026-11-12T18:06
 ---
 
 A module provides a connection or service; a task does work with it. Open **Modules** or **Tasks** from the left sidebar to create, configure, and monitor them. This walkthrough uses a Modbus device to connect inputs and outputs to channels and operate the resulting tasks. Install the device's [plugin](Plugins.md) and select your project first.
@@ -102,6 +102,10 @@ You dont have to create a DCode task through the Tasks resource either. Just add
 ## Task Controls
 
 With the task configured, use **Start** to begin its work. A task can be running but held, so check both controls and the resulting channel readings.
+
+The standard task card groups its timing metrics into two rows. The first shows **Target Hz**, **Average Hz**, and **Cycle Hz** (the cycle-to-cycle frequency range). The second shows **Skipped**, **Failed**, and **Execution ms**. Frequency and execution values use the units in their labels. Metrics appear only when the task declares their channels. A supported cycle-to-cycle readout shows `-` while no valid range is available, including while the task is stopped or held.
+
+The cycle-to-cycle range retains the lowest and highest frequency seen across a reporting window of at least half a second. It holds that completed range until the next window with measurements is ready, so a brief spike is easier to see between updates.
 
 ![](_attachments/Pasted%20image%2020261029220833.png)
 

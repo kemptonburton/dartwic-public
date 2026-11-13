@@ -56,6 +56,10 @@ Click a resource icon to open its view or list, then select an item. Right-click
 
 You can also right click the sidebar to show or hide resources.
 
+Use a sidebar file explorer's search field to filter its files and folders. Matching text is highlighted in blue, and folders containing results expand so you can reach them.
+
+**Open in** shortcuts take you to the normal resource view and search for the selected item. For example, **Open in Channel Search** opens **Channels**, reusing its tab if it is already open in the current window. Task and loop shortcuts use **Tasks** and select the matching toolbar tab. Module and script shortcuts open the selected file in its usual editor, reusing that file's tab when available.
+
 ![](_attachments/Pasted%20image%2020261030151920.png)
 
 Drag a resource from the sidebar into the docking area to open it, even when the area is empty. When tabs are already open, drop onto a tab strip to add a tab or onto the edge of a pane to split the view.

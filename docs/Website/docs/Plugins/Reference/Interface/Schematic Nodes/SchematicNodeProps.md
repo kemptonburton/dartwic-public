@@ -13,6 +13,10 @@ import type { SchematicNodeProps } from "@dartwic/interface-sdk/schematic-nodes"
 
 ```ts
 export interface SchematicNodeProps {
+    [key: string]: any;
+    type?: string;
+    width?: number;
+    height?: number;
     data?: any;
     selected?: boolean;
     id?: string;
@@ -23,6 +27,9 @@ export interface SchematicNodeProps {
 
 | Name | Type | Requirement | Description |
 | --- | --- | --- | --- |
+| `type` | `string` | Optional |  |
+| `width` | `number` | Optional |  |
+| `height` | `number` | Optional |  |
 | `data` | `any` | Optional |  |
 | `selected` | `boolean` | Optional |  |
 | `id` | `string` | Optional |  |

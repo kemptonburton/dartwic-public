@@ -1,6 +1,6 @@
 ---
 title: "buildParameterDisplayNodeDefinitionFromChannel"
-summary: "Create a parameter-display schematic node definition from channel data."
+summary: "Legacy alias for buildReadoutNodeDefinitionFromChannel."
 ---
 
 ## Import

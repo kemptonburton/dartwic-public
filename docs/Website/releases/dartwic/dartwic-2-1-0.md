@@ -1,6 +1,6 @@
 ---
 created: 2026-10-27T00:00:00.000Z
-updated: 2026-10-30T17:52
+updated: 2026-11-12T18:04
 component: dartwic
 releaseType: bundled
 releaseMode: planned
@@ -169,13 +169,14 @@ DARTWIC 2.1 brings together the changes made since DARTWIC 2.0: a simpler way to
 
 A lot of this update started with the documentation. Working through the guides showed where explanations were hard to follow—and where the software itself was asking people to do too much. We improved both, and will keep doing that!
 
+![](_attachments/Pasted%20image%2020261112180442.png)
 # Config Maps: less work to configure a plugin
 
 Config Maps give plugin settings, modules, and tasks a shared configuration editor. A plugin describes its fields and mapping rows; DARTWIC handles the forms, validation, and saving.
 
 Search for a channel in the Channel Searcher to trace it back to hardware bindings or plugin settings:
-
 ![](_attachments/Pasted%20image%2020261027225624.png)
+
 
 Keep a device's settings, linked tasks, and channels together. Search across configuration sheets and jump to the matching field without opening every task. Long sheet lists have a searchable overflow picker, and narrow panels make better use of their space.
 

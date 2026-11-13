@@ -1,8 +1,6 @@
 ---
-title: TEMPEST Reference
-summary: Operations and telemetry topics built into the DARTWIC engine and TEMPEST core.
-created: 2026-08-03T15:41
-updated: 2026-11-06T22:21
+title: "TEMPEST Reference"
+summary: "Operations and telemetry topics built into the DARTWIC engine and TEMPEST core."
 ---
 
 Read [Using TEMPEST](../../Advanced/Using%20TEMPEST.md) first for the request envelope, response envelope, payload behavior, errors, timeouts, detached jobs, and the difference between operations and telemetry.
@@ -11,5 +9,5 @@ Read [Using TEMPEST](../../Advanced/Using%20TEMPEST.md) first for the request en
 
 | Reference | Entries | Description |
 | --- | --- | --- |
-| [Operations](Operations/Overview.md) | 180 | Request/response operations available in a standard DARTWIC runtime. |
+| [Operations](Operations/Overview.md) | 182 | Request/response operations available in a standard DARTWIC runtime. |
 | [Telemetry](Telemetry/Overview.md) | 38 | Built-in server publications and client telemetry bindings. |

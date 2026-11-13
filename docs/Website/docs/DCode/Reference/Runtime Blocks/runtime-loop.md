@@ -2,7 +2,7 @@
 title: loop
 summary: Define a lightweight repeated automation loop in DCode.
 created: 2026-08-04T17:38
-updated: 2026-10-27T16:09
+updated: 2026-11-12T18:26
 ---
 
 ## Syntax
@@ -38,7 +38,7 @@ DARTWIC tracks changes to the block when loading the loop.
 ## Generated channels
 
 - `<name>_target_frequency`
-- `<name>_actual_frequency`
+- `<name>_average_frequency`
 - `<name>_execution_time`
 - `<name>_missed_cycles`
 - `<name>_failed_cycles`

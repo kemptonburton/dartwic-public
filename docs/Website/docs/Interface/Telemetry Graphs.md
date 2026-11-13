@@ -1,7 +1,7 @@
 ---
 summary: Plot signals, navigate live and recorded ranges, and compare events and logs.
 created: 2026-10-24
-updated: 2026-11-06T23:09
+updated: 2026-11-12T17:57
 ---
 
 Open **Telemetry** in the left sidebar to plot channel measurements and commands against time. Compare signals live, review recorded tests, and export their data.
@@ -54,6 +54,8 @@ Choose the settings icon in the bottom right and configure **Rows** and **Column
 ![](_attachments/Pasted%20image%2020261030150303.png)
 
 Choose **Save view** in that bar, enter a name, and save the current graph arrangement, series, windows, and graph settings for everyone using the workspace. Select a saved view from the tabs to open it. Every graph starts in realtime when a saved view opens; a historical time range or selected dataframe is not saved. After changing a selected view, choose **Apply** to update its shared snapshot. **Save view** creates a separate named snapshot. To remove the selected shared view, choose the trash icon beside Save and confirm. The current graphs stay open as an unsaved view.
+
+The main dock tab shows the selected saved view's name. An unsaved view uses the normal **Telemetry** tab title.
 
 ![](_attachments/Pasted%20image%2020261030150123.png)
 

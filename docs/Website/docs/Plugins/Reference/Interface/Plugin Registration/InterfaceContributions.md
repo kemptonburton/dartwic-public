@@ -18,6 +18,7 @@ export interface InterfaceContributions {
     moduleUis: InterfaceContributionEntry[];
     resources: InterfaceContributionEntry[];
     schematicNodes: InterfaceContributionEntry[];
+    schematicNodePresets?: InterfaceContributionEntry[];
     settingsPanels: InterfaceContributionEntry[];
     popupUis: InterfaceContributionEntry[];
 }
@@ -32,5 +33,6 @@ export interface InterfaceContributions {
 | `moduleUis` | `InterfaceContributionEntry[]` | Required |  |
 | `resources` | `InterfaceContributionEntry[]` | Required |  |
 | `schematicNodes` | `InterfaceContributionEntry[]` | Required |  |
+| `schematicNodePresets` | `InterfaceContributionEntry[]` | Optional |  |
 | `settingsPanels` | `InterfaceContributionEntry[]` | Required |  |
 | `popupUis` | `InterfaceContributionEntry[]` | Required |  |

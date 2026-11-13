@@ -14,6 +14,14 @@ Open **Scripts** and select an existing file, or right-click its resource list a
 
 Add your code or start with an example from the DCode guides below. Create any channels or other inputs required by the example first. Check the file's save/synchronization status while editing; saving and activating are separate steps.
 
+# Run from the File Explorer
+
+Use the play button beside a DCode file in **Scripts** to activate it without switching tabs. Click once to show a checkmark, then click it to confirm. If the file is open, Run saves the current editor contents first. If the file is closed, Run activates the saved copy. Wait for the activation result before using the runtime controls.
+
+Expand a script to see badges for its registered tasks, sequences, and timelines. Each badge uses the same symbol as the editor gutter. Click that symbol to open the task in **Tasks**. Task badges contain **Start**, **Hold**, and **Stop** where supported, with the same checkmark confirmation as Run.
+
+Search the Scripts explorer by file or registered task name. A task-name match keeps its script in the results and expands the folders and script arrow to reveal the badge. Matching text is highlighted in blue.
+
 # Editor
 
 The editor provides language help while you write, so you can check syntax, look up arguments, and follow references without leaving your script.

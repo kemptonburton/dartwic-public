@@ -1,6 +1,6 @@
 ---
 summary: Compile DCode on the engine, use shared values, and review fixed-channel execution.
-updated: 2026-10-28T21:11
+updated: 2026-11-12T18:21
 created: 2026-09-07T05:26
 ---
 
@@ -126,7 +126,7 @@ Check compilation, bindings, and runtime behavior separately:
 | --- | --- |
 | Activated | Successful activation and Builder `VERIFY / READY`; loaded metadata matches the source and `native_cpp` mode. |
 | Bound as intended | Editor fixed/dynamic counts and Builder binding details. A successful build can still include dynamic inputs. |
-| Running as intended | Outputs, actual frequency, execution time, and missed cycles under representative load. |
+| Running as intended | Outputs, average frequency, execution time, and missed cycles under representative load. |
 
 Generated code, libraries, and compiler logs stay in the instance's `cache/<project>/dcode/native_dcode/` directory, outside workspace Git. Its `build/`, `bin/`, and `logs/` folders hold compiler work, libraries, and per-script output. A cache hit does not replay compiler lines.
 

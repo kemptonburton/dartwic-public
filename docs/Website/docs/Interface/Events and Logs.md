@@ -1,7 +1,7 @@
 ---
 summary: Investigate events, respond to prompts and holds, and read live or recorded logs.
 created: 2026-08-03T15:41
-updated: 2026-10-30T14:38
+updated: 2026-11-12T17:04
 ---
 
 Events flag conditions that need attention; logs preserve timestamped output explaining what happened. **ARGUS** manages and records both. Open **Events** or **Logs** in the left sidebar, or use their [Node Board views](Node%2C%20Context%2C%20and%20Project%20Board.md#node-activity) beside your main tab.
@@ -27,6 +27,8 @@ White sections select start and end days with the grey highlighting days in betw
 ![](_attachments/Pasted%20image%2020261030000617.png)
 
 Click an event and scroll its details to read the description, resolution, origins, and graphs. Use its actions to acknowledge or resolve it, answer a prompt, or release a hold. Select several events for bulk actions.
+
+Channel graphs allow room for both the plot and its series legend. For task timing-variation warnings, the Diagnostics shortcut beside Trigger Origin searches the shared channel prefix and shows the minimum and maximum frequency rows. Each row has its own warning settings, and either can trigger the same task warning. The description records the range that triggered the warning; a live graph can show newer readings after timing recovers.
 
 Open **Node Board** near the bottom of the sidebar to keep events beside your main tab; the activity bar also opens aborts, holds, and prompts. See [Node Activity](Node%2C%20Context%2C%20and%20Project%20Board.md#node-activity).
 

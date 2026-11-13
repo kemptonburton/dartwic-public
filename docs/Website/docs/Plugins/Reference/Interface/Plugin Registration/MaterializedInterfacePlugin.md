@@ -22,6 +22,7 @@ export interface MaterializedInterfacePlugin {
     moduleUis: Record<string, ModuleUiDefinition>;
     resources: ResourceDefinition[];
     schematicNodes: SchematicNodeDefinition[];
+    schematicNodePresets?: SchematicNodePresetDefinition[];
     settingsPanels: SettingsPanelDefinition[];
     popupUis: Record<string, PopupUiDefinition>;
     contributions: {interface: InterfaceContributions};
@@ -41,6 +42,7 @@ export interface MaterializedInterfacePlugin {
 | `moduleUis` | `Record<string, ModuleUiDefinition>` | Required |  |
 | `resources` | `ResourceDefinition[]` | Required |  |
 | `schematicNodes` | `SchematicNodeDefinition[]` | Required |  |
+| `schematicNodePresets` | `SchematicNodePresetDefinition[]` | Optional |  |
 | `settingsPanels` | `SettingsPanelDefinition[]` | Required |  |
 | `popupUis` | `Record<string, PopupUiDefinition>` | Required |  |
 | `contributions` | `{interface: InterfaceContributions}` | Required |  |
