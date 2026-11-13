@@ -1,6 +1,8 @@
 ---
-title: "SchematicChannelBinding"
-summary: "Synchronous data patch only; must not write channel values or perform I/O."
+title: SchematicChannelBinding
+summary: Synchronous data patch only; must not write channel values or perform I/O.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

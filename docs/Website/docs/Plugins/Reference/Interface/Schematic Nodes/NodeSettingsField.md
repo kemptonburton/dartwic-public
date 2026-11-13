@@ -1,6 +1,8 @@
 ---
-title: "NodeSettingsField"
-summary: "Searchable, mixed-value-aware entry in a node configuration section."
+title: NodeSettingsField
+summary: Searchable, mixed-value-aware entry in a node configuration section.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

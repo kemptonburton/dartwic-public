@@ -1,6 +1,8 @@
 ---
-title: "BaseNode"
-summary: "Use the host's shared node backend with a custom center. No Engine write occurs during rendering."
+title: BaseNode
+summary: Use the host's shared node backend with a custom center. No Engine write occurs during rendering.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

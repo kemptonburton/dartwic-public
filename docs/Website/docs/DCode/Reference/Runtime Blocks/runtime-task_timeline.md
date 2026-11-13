@@ -1,6 +1,8 @@
 ---
-title: "task_timeline"
-summary: "Schedule cooperative DCode sequence buckets against a signed T-/T+ mission clock. Buckets share one tick thread; ordinary blocking code stalls the entire timeline."
+title: task_timeline
+summary: Schedule cooperative DCode sequence buckets against a signed T-/T+ mission clock. Buckets share one tick thread; ordinary blocking code stalls the entire timeline.
+created: 2026-10-04T18:31
+updated: 2026-11-13T00:56
 ---
 
 ## Syntax

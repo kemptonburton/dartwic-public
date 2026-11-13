@@ -2,7 +2,7 @@
 title: SchematicNodeDefinition
 summary: Complete renderer, editor, palette, sizing, and command contract for a node type.
 created: 2026-08-04T17:38
-updated: 2026-11-12T23:58
+updated: 2026-11-13T00:56
 ---
 
 ## Import

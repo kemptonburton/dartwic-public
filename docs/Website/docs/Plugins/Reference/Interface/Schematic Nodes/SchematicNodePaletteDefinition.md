@@ -2,7 +2,7 @@
 title: SchematicNodePaletteDefinition
 summary: Palette label and default node data for a schematic contribution.
 created: 2026-08-04T17:38
-updated: 2026-11-12T23:58
+updated: 2026-11-13T00:56
 ---
 
 ## Import

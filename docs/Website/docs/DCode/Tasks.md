@@ -1,7 +1,7 @@
 ---
 summary: Choose periodic, state-machine, or sequence tasks and use their shared lifecycle.
 created: 2026-10-26
-updated: 2026-10-27T21:02
+updated: 2026-11-13T00:56
 ---
 
 Declare automation with `task_periodic`, `task_state_machine`, or `task_sequence`. These work in Lua and Native C++. [Engine task structures](../Engine/Modules%20and%20Tasks.md#task-structures) explains when to choose each; the syntax and examples are below.

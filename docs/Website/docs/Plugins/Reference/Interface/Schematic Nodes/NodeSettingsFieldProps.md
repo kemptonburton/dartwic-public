@@ -1,6 +1,8 @@
 ---
-title: "NodeSettingsFieldProps"
-summary: "A searchable configuration entry; settingPath enables shared selection editing and mixed values."
+title: NodeSettingsFieldProps
+summary: A searchable configuration entry; settingPath enables shared selection editing and mixed values.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

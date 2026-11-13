@@ -2,7 +2,7 @@
 title: loop
 summary: Define a lightweight repeated automation loop in DCode.
 created: 2026-08-04T17:38
-updated: 2026-11-12T18:26
+updated: 2026-11-13T00:56
 ---
 
 ## Syntax

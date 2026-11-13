@@ -1,6 +1,8 @@
 ---
-title: "defineSchematicNodePreset"
-summary: "Define serializable initial data for registration with addSchematicNodePreset. No filesystem writes."
+title: defineSchematicNodePreset
+summary: Define serializable initial data for registration with addSchematicNodePreset. No filesystem writes.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

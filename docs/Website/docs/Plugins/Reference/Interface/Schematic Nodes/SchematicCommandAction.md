@@ -2,7 +2,7 @@
 title: SchematicCommandAction
 summary: Operator command exposed by a schematic node.
 created: 2026-08-04T17:38
-updated: 2026-10-11T21:36
+updated: 2026-11-13T00:57
 ---
 
 ## Import
@@ -48,6 +48,6 @@ export interface SchematicCommandAction {
 | `disabled` | `boolean` | Optional |  |
 | `hidden` | `boolean` | Optional |  |
 | `description` | `string` | Optional |  |
-| `input` | `{<br>        type?: "text" \| "number";<br>        placeholder?: string;<br>        defaultValue?: unknown;<br>        min?: string \| number;<br>        max?: string \| number;<br>        step?: string \| number;<br>    }` | Optional |  |
-| `choice` | `{<br>        items: Array<{value: string; label: string; keywords?: string[]}>;<br>        defaultValue?: unknown;<br>        placeholder?: string;<br>        searchPlaceholder?: string;<br>        emptyPlaceholder?: string;<br>    }` | Optional |  |
+| `input` | `{<br>        type?: "text" \| "number";<br>        placeholder?: string;<br>        defaultValue?: unknown;<br>        min?: string \| number;<br>        max?: string \| number;<br>        step?: string \| number;<br>    }` | Optional |  |
+| `choice` | `{<br>        items: Array<{value: string; label: string; keywords?: string[]}>;<br>        defaultValue?: unknown;<br>        placeholder?: string;<br>        searchPlaceholder?: string;<br>        emptyPlaceholder?: string;<br>    }` | Optional |  |
 | `onRun` | `(value?: unknown) => unknown \| Promise<unknown>` | Optional |  |

@@ -1,6 +1,8 @@
 ---
-title: "ReadoutContent"
-summary: "Shared title, value, units, gauge/bar and sparkline presentation."
+title: ReadoutContent
+summary: Shared title, value, units, gauge/bar and sparkline presentation.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

@@ -1,6 +1,8 @@
 ---
-title: "GeneralNodeConfig"
-summary: "Edit General Node using the same tabs and mixed-selection behavior as built-ins."
+title: GeneralNodeConfig
+summary: Edit General Node using the same tabs and mixed-selection behavior as built-ins.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

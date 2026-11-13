@@ -1,6 +1,8 @@
 ---
-title: "BaseNodeConfig"
-summary: "Render the standard shared editor and dedicated sections."
+title: BaseNodeConfig
+summary: Render the standard shared editor and dedicated sections.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

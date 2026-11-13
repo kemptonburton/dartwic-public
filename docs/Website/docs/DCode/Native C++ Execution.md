@@ -1,6 +1,6 @@
 ---
 summary: Compile DCode on the engine, use shared values, and review fixed-channel execution.
-updated: 2026-11-12T18:21
+updated: 2026-11-13T00:56
 created: 2026-09-07T05:26
 ---
 

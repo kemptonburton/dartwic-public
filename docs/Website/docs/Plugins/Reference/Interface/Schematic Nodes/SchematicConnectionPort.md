@@ -1,6 +1,8 @@
 ---
-title: "SchematicConnectionPort"
-summary: "Stable normalized connection coordinate and outward edge direction."
+title: SchematicConnectionPort
+summary: Stable normalized connection coordinate and outward edge direction.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

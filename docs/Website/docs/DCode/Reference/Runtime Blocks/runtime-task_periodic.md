@@ -1,6 +1,8 @@
 ---
-title: "task_periodic"
-summary: "Define a periodic CAESAR task in DCode."
+title: task_periodic
+summary: Define a periodic CAESAR task in DCode.
+created: 2026-08-04T17:38
+updated: 2026-11-13T00:56
 ---
 
 ## Syntax

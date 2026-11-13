@@ -1,6 +1,8 @@
 ---
-title: "SchematicNodeConfigSection"
-summary: "Dedicated custom-content tab appended to the shared node editor."
+title: SchematicNodeConfigSection
+summary: Dedicated custom-content tab appended to the shared node editor.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

@@ -2,7 +2,7 @@
 title: Schematic Nodes
 summary: Define custom schematic nodes, palette entries, commands, and configuration views.
 created: 2026-08-04T17:38
-updated: 2026-11-12T23:58
+updated: 2026-11-13T00:56
 ---
 
 | Export | Import path | Description |

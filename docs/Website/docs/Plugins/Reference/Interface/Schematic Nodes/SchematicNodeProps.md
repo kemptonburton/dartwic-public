@@ -1,6 +1,8 @@
 ---
-title: "SchematicNodeProps"
-summary: "Props passed to the canvas renderer for one schematic node."
+title: SchematicNodeProps
+summary: Props passed to the canvas renderer for one schematic node.
+created: 2026-08-04T17:38
+updated: 2026-11-13T00:56
 ---
 
 ## Import

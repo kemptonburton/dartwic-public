@@ -1,7 +1,7 @@
 ---
 summary: Run lightweight repeated work on activation and inspect its state and timing.
 created: 2026-10-26
-updated: 2026-11-12T18:22
+updated: 2026-11-13T00:56
 ---
 
 A loop is lightweight work that repeats at a requested frequency and starts when its file is activated. Use it for simple background automation. Use a [task](Tasks.md) when an operator needs explicit start, hold, and stop controls.

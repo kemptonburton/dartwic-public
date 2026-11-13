@@ -1,6 +1,8 @@
 ---
-title: "SchematicNodePresetDefinition"
-summary: "Named data-only browser, Insert Node and gallery contribution. Use type general for shared building blocks."
+title: SchematicNodePresetDefinition
+summary: Named data-only browser, Insert Node and gallery contribution. Use type general for shared building blocks.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

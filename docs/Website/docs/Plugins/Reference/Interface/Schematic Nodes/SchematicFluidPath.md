@@ -1,6 +1,8 @@
 ---
-title: "SchematicFluidPath"
-summary: "One independent passive fluid relay group. IDs remain stable when paths are renamed or reordered."
+title: SchematicFluidPath
+summary: One independent passive fluid relay group. IDs remain stable when paths are renamed or reordered.
+created: 2026-11-12T23:58
+updated: 2026-11-13T00:56
 ---
 
 ## Import

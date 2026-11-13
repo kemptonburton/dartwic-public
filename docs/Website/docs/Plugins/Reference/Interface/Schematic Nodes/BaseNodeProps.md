@@ -1,6 +1,8 @@
 ---
-title: "BaseNodeProps"
+title: BaseNodeProps
 summary: "Shared canvas wrapper: labels, rotation/size, handle roles, inspection and alerts."
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

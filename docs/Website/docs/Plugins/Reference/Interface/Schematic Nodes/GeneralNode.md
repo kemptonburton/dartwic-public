@@ -1,6 +1,8 @@
 ---
-title: "GeneralNode"
-summary: "Render the configurable General Node, including readout, command, shape and media building blocks."
+title: GeneralNode
+summary: Render the configurable General Node, including readout, command, shape and media building blocks.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

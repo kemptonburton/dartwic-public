@@ -1,6 +1,8 @@
 ---
-title: "NodeSettingsToggle"
-summary: "Searchable, mixed-value-aware switch in a node configuration section."
+title: NodeSettingsToggle
+summary: Searchable, mixed-value-aware switch in a node configuration section.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

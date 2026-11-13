@@ -1,6 +1,8 @@
 ---
-title: "SchematicNodeConfigProps"
-summary: "Props passed to a schematic node configuration component."
+title: SchematicNodeConfigProps
+summary: Props passed to a schematic node configuration component.
+created: 2026-08-04T17:38
+updated: 2026-11-13T00:56
 ---
 
 ## Import

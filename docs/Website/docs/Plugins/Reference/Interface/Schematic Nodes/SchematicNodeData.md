@@ -2,7 +2,7 @@
 title: SchematicNodeData
 summary: Saved node data; custom fields are retained by normal editing and persistence.
 created: 2026-11-12T15:51
-updated: 2026-11-12T23:58
+updated: 2026-11-13T00:56
 ---
 
 ## Import

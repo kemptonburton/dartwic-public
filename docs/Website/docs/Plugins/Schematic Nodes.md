@@ -1,7 +1,7 @@
 ---
 title: Schematic Nodes
 created: 2026-11-12T15:51
-updated: 2026-11-13T00:26
+updated: 2026-11-13T00:56
 ---
 
 An Interface plugin can add a preset built from General Node or provide a custom renderer. Both appear in the node browser and Node Gallery. Presets with channel-binding support also appear in Insert Node and accept channels dropped onto existing instances.

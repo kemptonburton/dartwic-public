@@ -1,6 +1,8 @@
 ---
-title: "SchematicChannelDropContext"
-summary: "Metadata supplied for channel insertion and existing-node drops."
+title: SchematicChannelDropContext
+summary: Metadata supplied for channel insertion and existing-node drops.
+created: 2026-11-12T15:51
+updated: 2026-11-13T00:56
 ---
 
 ## Import

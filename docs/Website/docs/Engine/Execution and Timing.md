@@ -1,7 +1,7 @@
 ---
 summary: Understand inline reactions, scheduled releases, ordering, and completion.
 created: 2026-09-06T14:34
-updated: 2026-11-12T18:27
+updated: 2026-11-13T00:56
 ---
 When writing device drivers, automation, and commanding actual hardware, it is important to keep in mind when things happen. Just because a channel is written does not mean that the hardware will move instantly.
 

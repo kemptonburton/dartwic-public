@@ -1,7 +1,7 @@
 ---
 summary: Interpret runtime evidence and choose the next check when work fails or falls behind.
 created: 2026-10-24
-updated: 2026-11-12T18:18
+updated: 2026-11-13T00:56
 ---
 
 Diagnostics help explain a slow task, missing recordings, or a display that stops updating. Use the measurements to identify which part of the system needs investigation, then check its events and logs.
