@@ -1,6 +1,6 @@
 ---
 created: 2026-11-08T16:30
-updated: 2026-11-13T00:19
+updated: 2026-11-16
 component: dartwic
 releaseType: bundled
 releaseMode: planned
@@ -253,6 +253,10 @@ The option starts off and changes only the exported CSV. It preserves timestamps
 - **Polish:** improved navigation/loading, plugin prerelease badges, refreshed schematic examples, SDK examples, and guides.
 
 # Upgrading
+
+When upgrading from 2.1.x on Windows, use [Desktop Interface 2.2.1](https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.2.1) or [Webserver Interface 2.2.1](https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.2.1). Older Desktop updaters can finish downloading 2.2.0 but stall before installation or relaunch. Download the Windows ZIP and extract the complete Interface folder once, closing the old Interface first. Copy its `.dartwic` and `plugins` folders to keep settings and plugins; preserve `config.json` for Webserver installations.
+
+If your Engine is still on 2.1.x, also download and extract [Engine 2.2.0](https://github.com/kemptonburton/dartwic-public/releases/tag/engine-v2.2.0), closing the old Engine first and preserving `instances`, `plugins` and your authored workspaces. An Engine already on 2.2.0 can stay installed. The corrected Desktop Interface can install later local Engine updates without starting a stopped Engine.
 
 Existing schematics may migrate to the new editor, but compatibility is not guaranteed. Keep a backup and check that your layouts, connections, readouts, and commands work correctly after upgrading. Some schematics may need manual fixes or rebuilding. Embedded draw.io diagrams no longer render and must be replaced with supported nodes or imported artwork.
 
