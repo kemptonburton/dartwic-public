@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-13T08:34:24.185Z",
+  "generatedAt": "2026-11-16T23:20:53.498Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -1867,6 +1867,34 @@
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.2.0/SHA256SUMS.txt",
             "size": 207,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-desktop-v2.2.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-desktop-v2.2.1",
+        "prerelease": false,
+        "published_at": "2026-11-16T23:20:45Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-desktop-v2.2.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-desktop-v2.2.1",
+        "assets": [
+          {
+            "name": "interface-desktop-2.2.1-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.2.1/interface-desktop-2.2.1-win64.zip",
+            "size": 136400713,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-desktop-2.2.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.2.1/release-manifest-interface-desktop-2.2.1.json",
+            "size": 1669,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-desktop-v2.2.1/SHA256SUMS.txt",
+            "size": 100,
             "state": "uploaded"
           }
         ]
