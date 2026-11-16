@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-16T23:20:53.498Z",
+  "generatedAt": "2026-11-16T23:21:09.764Z",
   "repositories": {
     "kemptonburton/dartwic-checklists-plugin": [
       {
@@ -2389,6 +2389,34 @@
             "name": "SHA256SUMS.txt",
             "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.2.0/SHA256SUMS.txt",
             "size": 211,
+            "state": "uploaded"
+          }
+        ]
+      },
+      {
+        "tag_name": "interface-webserver-v2.2.1",
+        "html_url": "https://github.com/kemptonburton/dartwic-public/releases/tag/interface-webserver-v2.2.1",
+        "prerelease": false,
+        "published_at": "2026-11-16T23:21:02Z",
+        "zipball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/zipball/interface-webserver-v2.2.1",
+        "tarball_url": "https://api.github.com/repos/kemptonburton/dartwic-public/tarball/interface-webserver-v2.2.1",
+        "assets": [
+          {
+            "name": "interface-webserver-2.2.1-win64.zip",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.2.1/interface-webserver-2.2.1-win64.zip",
+            "size": 29430096,
+            "state": "uploaded"
+          },
+          {
+            "name": "release-manifest-interface-webserver-2.2.1.json",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.2.1/release-manifest-interface-webserver-2.2.1.json",
+            "size": 1759,
+            "state": "uploaded"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "browser_download_url": "https://github.com/kemptonburton/dartwic-public/releases/download/interface-webserver-v2.2.1/SHA256SUMS.txt",
+            "size": 102,
             "state": "uploaded"
           }
         ]
