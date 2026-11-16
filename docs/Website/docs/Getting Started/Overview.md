@@ -125,6 +125,8 @@ Updates are stored on the computer hosting the component being updated, separate
 
 A disconnected local Engine update uses the Interface host to replace the verified Engine software without launching a preparation Engine. Its temporary files are stored under `<interface>/.dartwic/engine-update-*/`; a failed update keeps them for recovery and reports their location. Workspace files, instance configuration, license files and recordings remain separate from the managed software. [Configuration and Storage](../Engine/Configuration%20and%20Storage.md) explains those folders.
 
+If an older Windows Interface finishes downloading but never installs or restarts, download the latest Desktop Interface ZIP and extract its complete folder as a fresh installation. Close the old Interface before launching the replacement. Copy your `.dartwic` and `plugins` folders into the new installation to retain settings and Interface plugins; keep your existing Engine and workspace folders. The corrected Interface can update a stopped local Engine directly. Download a fresh Windows Engine ZIP too if your Engine predates the updater fixes; retain its `instances` and `plugins` folders and your authored workspaces. After a download interrupted by an Interface restart, the corrected Interface reports an error and lets you try again.
+
 # Documentation, Bugs and Feedback
 
 Open the Interface's version menu or General settings for **Docs**, **Report a bug**, and **Give feedback**. 
